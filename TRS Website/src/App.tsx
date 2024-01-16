@@ -1,30 +1,23 @@
-
-import Banner from './components/Banner';
-import Navbar from './components/NavBar';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Banner from "./components/Banner";
+import Navbar from "./components/NavBar";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 // import PrivateRoute from './utils/PrivateRoute';
-import { AuthProvider } from './context/AuthContext';
-
-import HomePage from './components/homepage';
-import RegisterPage from './components/register';
-import LoginPage from './components/login';
-// import Dashboard from './components/dashboard';
-
+// import { AuthProvider } from "./context/AuthContext";
+import LoginPage from "./components/Login";
+import RegisterPage from "./components/RegisterPage";
+import HomePage from "./components/Homepage";
 function App() {
   return (
     <>
       <div>
         <Router>
-          <AuthProvider>
-            {/* <Banner /> */}
-            <Navbar />
-            <Switch>
-              <Route component={LoginPage} path="/login" />
-              <Route component={RegisterPage} path="/register" />
-              <Route component={HomePage} path="/" />
-             
-            </Switch>
-          </AuthProvider>
+          <Banner />
+          <Navbar />
+          <Switch>
+            <Route component={LoginPage} path="/login" />
+            <Route component={RegisterPage} path="/register" />
+            <Route component={HomePage} path="/" />
+          </Switch>
         </Router>
       </div>
     </>
