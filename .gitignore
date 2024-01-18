@@ -6,13 +6,10 @@
 /TRS Website/yarn-error.log*
 /TRS Website/pnpm-debug.log*
 /TRS Website/lerna-debug.log*
-/TRS Website/
-/TRS Website/node_modules
+/TRS Website/node_modules/
 /TRS Website/dist
 /TRS Website/dist-ssr
 /TRS Website/*.local
-/TRS Website/
-/TRS Website/# Editor directories and files
 /TRS Website/.vscode/*
 /TRS Website/!.vscode/extensions.json
 /TRS Website/.idea

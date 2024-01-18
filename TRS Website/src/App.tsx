@@ -1,23 +1,29 @@
 import Banner from "./components/Banner";
 import Navbar from "./components/NavBar";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import PrivateRoute from './utils/PrivateRoute';
-// import { AuthProvider } from "./context/AuthContext";
-import LoginPage from "./components/Login";
-import RegisterPage from "./components/RegisterPage";
-import HomePage from "./components/Homepage";
+import { AuthProvider } from "./context/AuthContext";
+import { Login } from "./components/Login";
+import { SearchProvider } from "./context/SearchContext";
+import { Register } from "./components/RegisterPage";
+import { Home } from "./components/Homepage";
 function App() {
+  localStorage.setItem("check", "false");
   return (
     <>
       <div>
         <Router>
-          <Banner />
-          <Navbar />
-          <Switch>
-            <Route component={LoginPage} path="/login" />
-            <Route component={RegisterPage} path="/register" />
-            <Route component={HomePage} path="/" />
-          </Switch>
+          <AuthProvider>
+            <SearchProvider>
+              <Banner />
+              <Navbar />
+              <Routes>
+                <Route element={<Login />} path="/login" />
+                <Route element={<Register />} path="/register" />
+                <Route element={<Home />} path="/" />
+              </Routes>
+            </SearchProvider>
+          </AuthProvider>
         </Router>
       </div>
     </>
