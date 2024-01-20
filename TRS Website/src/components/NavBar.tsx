@@ -1,82 +1,50 @@
-import Logo from '../assets/IItlogo.png'
-// import DropInput from './DropInput'
-import {useContext} from 'react'
-import {jwtDecode} from 'jwt-decode'
-import AuthContext from '../context/AuthContext'
-import {Link} from 'react-router-dom'
+import { useContext, useEffect, useState } from "react";
+import AuthContext from "../context/AuthContext";
+import DropdownInput from "./DropInput";
 
 const Navbar = () => {
-
-  
-    const {logoutUser} = useContext(AuthContext)
-    let username='';
-  const token = localStorage.getItem("authTokens");
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      const user_id = decoded.user_id;
-      username=decoded.username;
-      console.log(user_id);
-    } catch (error) {
-      console.error("Error decoding token:", error);
+  const { logoutUser } = useContext(AuthContext);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const handleClick = () => {
+    console.log("Logged out");
+    logoutUser();
+    setIsAuthenticated(false);
+  };
+  useEffect(() => {
+    if (localStorage.getItem("loggedIn") === "true") {
+      setIsAuthenticated(true);
     }
-  } else {
-    console.log("No token found in localStorage");
-  }
+  }, [isAuthenticated]);
+  return (
+    <nav className="fixed top-24 left-0 w-full h-16 bg-red-500 shadow-md flex items-center justify-between text-white p-4">
+      <a href="/" className="text-xl font-bold">
+        The Robotics Society
+      </a>
 
+      <div className="flex items-center flex-grow mx-4">
+        <DropdownInput />
+      </div>
 
-
-
-
-    return (
-        
-        
-        <nav className="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">
-            <img style={{width:'80px',padding:'2px'}}src={Logo} alt="" />
-
+      <div className="flex items-center">
+        {!isAuthenticated ? (
+          <a
+            href="/login"
+            className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white"
+          >
+            Login
           </a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
+        ) : (
+          <button
+            className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white"
+            onClick={handleClick}
+          >
+            Logout
           </button>
-          
-            <ul className="navbar-nav">
-              
-              {token===null &&
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">Login</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/register">Register</Link>
-                </li>
-              </>
-              }  
+        )}
+      </div>
+    </nav>
+  );
+};
 
-              {token!==null && 
-              <>
-              
-              <li className="nav-item">
-                  <spam className="nav-link" style={{ color: '#fff' }} href="/dashboard">Hello {username}</spam>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" style={{ color: '#fff' }} href="/dashboard">Dashboard</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" onClick={logoutUser} style={{cursor:"pointer",color: '#fff'}} >Logout</a>
-                </li>
-              </>
-              }
+export default Navbar;
 
-
-            </ul>
-          
-        </div>
-      </nav>    
-
-
-    )
-}
-
-export default Navbar
