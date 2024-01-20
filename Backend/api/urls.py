@@ -9,4 +9,6 @@ urlpatterns=[
     path('token/refresh',TokenRefreshView.as_view()),
     path('register/',RegisterView.as_view()),
     path('dashboard/',dashboard),
+    path('verify/', VerifyOTP.as_view()),
+    path('send-otp/',sendOtp.as_view())
 ]

@@ -8,7 +8,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ['username', 'email','is_verified']
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod    
@@ -21,7 +21,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
         token['bio'] = user.profile.bio
         token['image'] = str(user.profile.image)
-        token['verified'] = user.profile.verified
+        token['verified'] = user.profile.upload_verified
         # ...
         return token
 
@@ -54,3 +54,19 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+    
+class VerifyAccountSerializer(serializers.Serializer):
+    email=serializers.EmailField()
+    otp=serializers.CharField()
+
+    
+class OTPVerificationSerializer(serializers.Serializer):
+    otp = serializers.CharField(max_length=6, min_length=6, write_only=True)
+
+    def validate_otp(self, value):
+        user = self.context['request'].user
+
+        if user.otp != value:
+            raise serializers.ValidationError('Invalid OTP.')
+
+        return value
