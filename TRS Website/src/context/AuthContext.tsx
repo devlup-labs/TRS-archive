@@ -43,9 +43,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       : null,
   );
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const loginUser = async (email: string, password: string) => {
     const response = await fetch("http://127.0.0.1:8000/api/token/", {
@@ -74,12 +74,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log(data.access);
       localStorage.setItem("loggedIn", "true");
       localStorage.setItem("authTokens", JSON.stringify(data));
-      history("/");
+      navigate("/");
       Swal.fire({
         title: "Login Successful \nRedirecting to home",
         icon: "success",
         toast: true,
-        timer: 6000,
+        timer: 3000,
         position: "top-right",
         timerProgressBar: true,
         showConfirmButton: false,
@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         title: "Username or password does not exist",
         icon: "error",
         toast: true,
-        timer: 6000,
+        timer: 3000,
         position: "top-right",
         timerProgressBar: true,
         showConfirmButton: false,
@@ -119,12 +119,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
 
     if (response.status === 201) {
-      history("/login"); //to redirect to the login page
       Swal.fire({
-        title: "Registration Successful, Login Now",
+        title: "Check your email to complete registration",
         icon: "success",
         toast: true,
-        timer: 6000,
+        timer: 3000,
         position: "top-right",
         timerProgressBar: true,
         showConfirmButton: false,
@@ -136,12 +135,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         title: `An Error occurred ${response.status}`,
         icon: "error",
         toast: true,
-        timer: 6000,
+        timer: 3000,
         position: "top-right",
         timerProgressBar: true,
         showConfirmButton: false,
       });
     }
+
+      const otpResponse = await fetch('http://127.0.0.1:8000/api/send-otp/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
+      
+      await Promise.all([otpResponse]);
+      
+      if (otpResponse.ok) {
+        // OTP sent successfully
+        navigate('/otp',{ state: { email } }
+        ); // Redirect to OTP verification page
+      }
+   
   };
 
   const logoutUser = () => {
@@ -149,12 +167,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null);
     localStorage.removeItem("authTokens"); //to remove the authtoken from the local storage
     localStorage.removeItem("loggedIn");
-    history("/login");
+    navigate("/login");
     Swal.fire({
       title: "You have been logged out",
       icon: "success",
       toast: true,
-      timer: 6000,
+      timer: 2000,
       position: "top-right",
       timerProgressBar: true,
       showConfirmButton: false,

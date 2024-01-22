@@ -7,6 +7,8 @@ import { Login } from "./components/Login";
 import { SearchProvider } from "./context/SearchContext";
 import { Register } from "./components/RegisterPage";
 import { Home } from "./components/Homepage";
+import Otp from "./components/Otp"
+
 function App() {
   localStorage.setItem("check", "false");
   return (
@@ -20,7 +22,9 @@ function App() {
               <Routes>
                 <Route element={<Login />} path="/login" />
                 <Route element={<Register />} path="/register" />
+                <Route element={<Otp />} path="/otp" />
                 <Route element={<Home />} path="/" />
+
               </Routes>
             </SearchProvider>
           </AuthProvider>

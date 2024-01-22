@@ -6,6 +6,8 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     username = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
+    is_verified=models.BooleanField(default=False)
+    otp=models.CharField(max_length=4,null=True,blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -19,12 +21,16 @@ class Profile(models.Model):
     full_name = models.CharField(max_length=1000)
     bio = models.CharField(max_length=100)
     image = models.ImageField(upload_to="user_images", default="default.jpg")
-    verified = models.BooleanField(default=False)
+    upload_verified = models.BooleanField(default=False)
 
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        profile=Profile.objects.create(user=instance)
+    
+    if ".iit" in instance.email:
+            profile.upload_verified = True
+            profile.save()
 
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
