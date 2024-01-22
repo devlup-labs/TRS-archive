@@ -9,7 +9,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.response import Response
 
-from api.serializer import UserSerializer,MyTokenObtainPairSerializer,RegisterSerializer,VerifyAccountSerializer,OTPVerificationSerializer
+from api.serializer import UserSerializer,MyTokenObtainPairSerializer,RegisterSerializer,VerifyAccountSerializer,OTPVerificationSerializer, UploadSerializer
 from django.utils.crypto import get_random_string
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status
@@ -18,7 +18,34 @@ from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .emails import *
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
+import os
+from django.conf import settings
 
+class UploadViewSet(ViewSet):
+    serializer_class = UploadSerializer
+
+    def list(self, request): 
+        files_list = os.listdir(settings.MEDIA_ROOT)
+        if files_list:
+            return Response(f"Last uploaded file is {files_list[-1]}")
+        else:
+            return Response("No files uploaded yet")
+
+    def create(self, request):
+        file_uploaded = request.FILES.get('file_uploaded')
+        
+        if file_uploaded is None:
+            return Response("FILE is missing")
+        
+        file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
+
+        with open(file_path, 'wb') as dt:
+            for content in file_uploaded.chunks():
+                dt.write(content)
+        
+        return Response("File uploaded successfully")
 
 
 class MyTokenObtainPairView(TokenObtainPairView):

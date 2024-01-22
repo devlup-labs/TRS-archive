@@ -6,7 +6,7 @@ from .models import User
 def send_otp_via_email(email):
     subject='Your OTP for registering on TRS web'
     otp=random.randint(1000,9999)
-    message=f'Here is your {otp}, keep exploaring!! '
+    message=f'Here is your {otp}, keep exploring!! '
     email_from=settings.EMAIL_HOST
     send_mail(subject,message,email_from,[email])
     user_obj=User.objects.get(email=email)

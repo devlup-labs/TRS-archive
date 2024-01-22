@@ -10,5 +10,6 @@ urlpatterns=[
     path('register/',RegisterView.as_view()),
     path('dashboard/',dashboard),
     path('verify/', VerifyOTP.as_view()),
-    path('send-otp/',sendOtp.as_view())
+    path('send-otp/',sendOtp.as_view()),
+    path('upload/',UploadViewSet.as_view({'get': 'list', 'post': 'create'})),
 ]
