@@ -1,20 +1,19 @@
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render
-from api.models import Profile,User
-from api.serializer import UserSerializer,MyTokenObtainPairSerializer,RegisterSerializer
+from api.models import Profile, User, Fileupload
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from api.serializer import UserSerializer,MyTokenObtainPairSerializer,RegisterSerializer,VerifyAccountSerializer,OTPVerificationSerializer, UploadSerializer
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, UploadSerializer
 from django.utils.crypto import get_random_string
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, mixins, RetrieveAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .emails import *
@@ -22,30 +21,60 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 import os
 from django.conf import settings
+import datetime
 
-class UploadViewSet(ViewSet):
+
+
+class UploadViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+    queryset = Fileupload.objects.all()
     serializer_class = UploadSerializer
 
-    def list(self, request): 
-        files_list = os.listdir(settings.MEDIA_ROOT)
-        if files_list:
-            return Response(f"Last uploaded file is {files_list[-1]}")
+    def get(self, request, *args, **kwargs):
+        file_list = Fileupload.objects.all()
+        if file_list:
+            return Response(f"Last uploaded file is {file_list.last().file} and uploaded at {file_list.last().uploaded_at.strftime('%Y-%m-%d %H:%M:%S')}")
         else:
             return Response("No files uploaded yet")
 
-    def create(self, request):
+    def post(self, request, *args, **kwargs):
         file_uploaded = request.FILES.get('file_uploaded')
-        
-        if file_uploaded is None:
-            return Response("FILE is missing")
-        
-        file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
 
+        if file_uploaded is None:
+            return Response("FILE is missing", status=400)
+        Fileupload.objects.create(file=file_uploaded, uploaded_at= datetime.datetime.now())
+
+        file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
         with open(file_path, 'wb') as dt:
             for content in file_uploaded.chunks():
                 dt.write(content)
+        return Response("File uploaded successfully", status=201)
+
+
+
+
+# class UploadViewSet(ViewSet):
+#     serializer_class = UploadSerializer
+
+#     def list(self, request): 
+#         files_list = os.listdir(settings.MEDIA_ROOT)
+#         if files_list:
+#             return Response(f"Last uploaded file is {files_list[-1]}")
+#         else:
+#             return Response("No files uploaded yet")
+
+#     def create(self, request):
+#         file_uploaded = request.FILES.get('file_uploaded')
         
-        return Response("File uploaded successfully")
+#         if file_uploaded is None:
+#             return Response("FILE is missing")
+        
+#         file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
+
+#         with open(file_path, 'wb') as dt:
+#             for content in file_uploaded.chunks():
+#                 dt.write(content)
+        
+#         return Response("File uploaded successfully")
 
 
 class MyTokenObtainPairView(TokenObtainPairView):

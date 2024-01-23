@@ -2,7 +2,11 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
 
+class Fileupload(models.Model):
+    file = models.FileField(upload_to='uploads/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    
 class User(AbstractUser):
     username = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
