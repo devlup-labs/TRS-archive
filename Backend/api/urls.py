@@ -11,5 +11,5 @@ urlpatterns=[
     path('dashboard/',dashboard),
     path('verify/', VerifyOTP.as_view()),
     path('send-otp/',sendOtp.as_view()),
-    path('upload/',UploadViewSet.as_view()),
+    path('upload/',PostsViewSet.as_view()),
 ]

@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render
-from api.models import Profile, User, Fileupload
+from api.models import Profile, User, Posts
 from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView 
@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, UploadSerializer
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, PostsSerializer
 from django.utils.crypto import get_random_string
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status
@@ -25,23 +25,23 @@ import datetime
 
 
 
-class UploadViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
-    queryset = Fileupload.objects.all()
-    serializer_class = UploadSerializer
+class PostsViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+    queryset = Posts.objects.all()
+    serializer_class = PostsSerializer
+    permission_classes = [IsAuthenticated]
 
+    
     def get(self, request, *args, **kwargs):
-        file_list = Fileupload.objects.all()
-        if file_list:
-            return Response(f"Last uploaded file is {file_list.last().file} and uploaded at {file_list.last().uploaded_at.strftime('%Y-%m-%d %H:%M:%S')}")
-        else:
-            return Response("No files uploaded yet")
+        lists = Posts.objects.all()
+        return Response(lists)
 
     def post(self, request, *args, **kwargs):
         file_uploaded = request.FILES.get('file_uploaded')
 
         if file_uploaded is None:
             return Response("FILE is missing", status=400)
-        Fileupload.objects.create(file=file_uploaded, uploaded_at= datetime.datetime.now())
+        
+        Posts.objects.create(document=file_uploaded, created_at= datetime.datetime.now())
 
         file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
         with open(file_path, 'wb') as dt:

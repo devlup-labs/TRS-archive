@@ -2,11 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
 
-class Fileupload(models.Model):
-    file = models.FileField(upload_to='uploads/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
 
-    
 class User(AbstractUser):
     username = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -41,3 +37,11 @@ def save_user_profile(sender, instance, **kwargs):
 
 post_save.connect(create_user_profile, sender=User)
 post_save.connect(save_user_profile, sender=User)
+
+class Posts(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    body = models.TextField()
+    status = models.BooleanField(default=False)
+    document = models.FileField(upload_to='uploads/')
+    created_at = models.DateTimeField(auto_now_add=True)
