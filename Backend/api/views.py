@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render
-from api.models import Profile, User, Posts
+from api.models import User, Posts
 from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView 
@@ -22,6 +22,8 @@ from rest_framework.viewsets import ViewSet
 import os
 from django.conf import settings
 import datetime
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.db import IntegrityError
 
 
 
@@ -32,49 +34,32 @@ class PostsViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixi
 
     
     def get(self, request, *args, **kwargs):
-        lists = Posts.objects.all()
-        return Response(lists)
+        posts = Posts.objects.all()
+        serializer = self.serializer_class(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK) 
 
     def post(self, request, *args, **kwargs):
         file_uploaded = request.FILES.get('file_uploaded')
 
+        
         if file_uploaded is None:
             return Response("FILE is missing", status=400)
         
-        Posts.objects.create(document=file_uploaded, created_at= datetime.datetime.now())
+        user = request.user 
+
+        try:
+            Posts.objects.create(user=user, document=file_uploaded, created_at=datetime.datetime.now())
+        except IntegrityError as e:
+            return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
+
+
+        # Posts.objects.create(document=file_uploaded, created_at= datetime.datetime.now())
 
         file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
         with open(file_path, 'wb') as dt:
             for content in file_uploaded.chunks():
                 dt.write(content)
         return Response("File uploaded successfully", status=201)
-
-
-
-
-# class UploadViewSet(ViewSet):
-#     serializer_class = UploadSerializer
-
-#     def list(self, request): 
-#         files_list = os.listdir(settings.MEDIA_ROOT)
-#         if files_list:
-#             return Response(f"Last uploaded file is {files_list[-1]}")
-#         else:
-#             return Response("No files uploaded yet")
-
-#     def create(self, request):
-#         file_uploaded = request.FILES.get('file_uploaded')
-        
-#         if file_uploaded is None:
-#             return Response("FILE is missing")
-        
-#         file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
-
-#         with open(file_path, 'wb') as dt:
-#             for content in file_uploaded.chunks():
-#                 dt.write(content)
-        
-#         return Response("File uploaded successfully")
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
