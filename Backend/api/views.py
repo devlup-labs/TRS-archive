@@ -1,20 +1,19 @@
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render
-from api.models import Profile,User
-from api.serializer import UserSerializer,MyTokenObtainPairSerializer,RegisterSerializer
+from api.models import User, Posts
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from api.serializer import UserSerializer,MyTokenObtainPairSerializer,RegisterSerializer,VerifyAccountSerializer,OTPVerificationSerializer, UploadSerializer
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, PostsSerializer
 from django.utils.crypto import get_random_string
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, mixins, RetrieveAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .emails import *
@@ -22,30 +21,45 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 import os
 from django.conf import settings
+import datetime
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.db import IntegrityError
 
-class UploadViewSet(ViewSet):
-    serializer_class = UploadSerializer
 
-    def list(self, request): 
-        files_list = os.listdir(settings.MEDIA_ROOT)
-        if files_list:
-            return Response(f"Last uploaded file is {files_list[-1]}")
-        else:
-            return Response("No files uploaded yet")
 
-    def create(self, request):
+class PostsViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+    queryset = Posts.objects.all()
+    serializer_class = PostsSerializer
+    permission_classes = [IsAuthenticated]
+
+    
+    def get(self, request, *args, **kwargs):
+        posts = Posts.objects.all()
+        serializer = self.serializer_class(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK) 
+
+    def post(self, request, *args, **kwargs):
         file_uploaded = request.FILES.get('file_uploaded')
+
         
         if file_uploaded is None:
-            return Response("FILE is missing")
+            return Response("FILE is missing", status=400)
         
-        file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
+        user = request.user 
 
+        try:
+            Posts.objects.create(user=user, document=file_uploaded, created_at=datetime.datetime.now())
+        except IntegrityError as e:
+            return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
+
+
+        # Posts.objects.create(document=file_uploaded, created_at= datetime.datetime.now())
+
+        file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
         with open(file_path, 'wb') as dt:
             for content in file_uploaded.chunks():
                 dt.write(content)
-        
-        return Response("File uploaded successfully")
+        return Response("File uploaded successfully", status=201)
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
