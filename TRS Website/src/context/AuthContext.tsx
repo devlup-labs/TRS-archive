@@ -142,24 +142,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
     }
 
-      const otpResponse = await fetch('http://127.0.0.1:8000/api/send-otp/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-        }),
-      });
-      
-      await Promise.all([otpResponse]);
-      
-      if (otpResponse.ok) {
-        // OTP sent successfully
-        navigate('/otp',{ state: { email } }
-        ); // Redirect to OTP verification page
-      }
-   
+    const otpResponse = await fetch("http://127.0.0.1:8000/api/send-otp/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+      }),
+    });
+
+    await Promise.all([otpResponse]);
+
+    if (otpResponse.ok) {
+      // OTP sent successfully
+      navigate("/otp", { state: { email } }); // Redirect to OTP verification page
+    } else {
+      console.log("Not sent");
+    }
   };
 
   const logoutUser = () => {
