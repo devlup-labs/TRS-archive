@@ -13,12 +13,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email','is_verified']
 
-class PostsSerializer(Serializer):
-    file_uploaded = FileField()
+class PostsSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    file_uploaded = serializers.FileField(write_only=True)
+
     class Meta:
         model = Posts
-        fields = '__all__'   
+        fields = '__all__' 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod    
@@ -26,12 +27,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         
         #Adding custom claims
-        token['full_name'] = user.profile.full_name
+        token['full_name'] = user.full_name
         token['username'] = user.username
         token['email'] = user.email
-        token['bio'] = user.profile.bio
-        token['image'] = str(user.profile.image)
-        token['verified'] = user.profile.upload_verified
+        token['bio'] = user.bio
+        token['image'] = str(user.image)
+        token['verified'] = user.upload_verified
         # ...
         return token
 
