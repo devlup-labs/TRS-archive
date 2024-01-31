@@ -16,7 +16,7 @@ export const Register = () => {
       <div className="mt-48 text-green-500"></div>
       <form
         onSubmit={handleSubmit}
-        className="mx-auto mt-16 w-1/5 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
+        className="mx-auto mt-16 w-1/3 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
       >
         <label className="block mb-2">Email:</label>
         <div className="relative mb-4">
@@ -59,12 +59,12 @@ export const Register = () => {
         <label className="block mb-2">Reenter your Password:</label>
         <div className="relative mb-4">
           <input
-            type="text"
+            type="password"
             className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
             required
             value={password2}
             onChange={(e) => setPassword2(e.target.value)}
-            placeholder="Reenter your password"
+            placeholder="Reenter your Password"
           />
           <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
         </div>

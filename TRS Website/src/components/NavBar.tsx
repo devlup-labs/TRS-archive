@@ -14,10 +14,13 @@ const Navbar = () => {
     if (localStorage.getItem("loggedIn") === "true") {
       setIsAuthenticated(true);
     }
-  }, [isAuthenticated]);
+  }, []);
   return (
-    <nav className="fixed top-24 left-0 w-full h-16 bg-red-500 shadow-md flex items-center justify-between text-white p-4">
-      <a href="/" className="text-xl font-bold">
+    <nav className="fixed top-24 left-0 w-full h-16 bg-red-500  z-10 shadow-md flex items-center justify-between text-white p-4">
+      <a
+        href="/"
+        className="text-xl font-bold hover:text-white no-underline hover:no-underline"
+      >
         The Robotics Society
       </a>
 
@@ -29,7 +32,7 @@ const Navbar = () => {
         {!isAuthenticated ? (
           <a
             href="/login"
-            className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white"
+            className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline"
           >
             Login
           </a>
@@ -47,4 +50,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
