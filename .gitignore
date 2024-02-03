@@ -19,5 +19,5 @@
 /TRS Website/*.njsproj
 /TRS Website/*.sln
 /TRS Website/*.sw?
-
+/Backend/media
 /myenv
