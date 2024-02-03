@@ -41,7 +41,7 @@ class PostsViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixi
     def post(self, request, *args, **kwargs):
         file_uploaded = request.FILES.get('file_uploaded')
 
-        
+        print("yes")
         if file_uploaded is None:
             return Response("FILE is missing", status=400)
         
@@ -52,13 +52,6 @@ class PostsViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixi
         except IntegrityError as e:
             return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
 
-
-        # Posts.objects.create(document=file_uploaded, created_at= datetime.datetime.now())
-
-        file_path = os.path.join(settings.MEDIA_ROOT, file_uploaded.name)
-        with open(file_path, 'wb') as dt:
-            for content in file_uploaded.chunks():
-                dt.write(content)
         return Response("File uploaded successfully", status=201)
 
 
@@ -110,6 +103,7 @@ class sendOtp(APIView):
             })
 
         except Exception as e:
+            print(e)
             return Response({
                 'status': 500,
                 'message': f'Error: {str(e)}',
