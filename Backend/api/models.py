@@ -16,6 +16,17 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
+    def save(self, *args, **kwargs):
+            college_domains = ['iit']
+            for domain in college_domains:
+                if domain in self.email:  # Check if the email contains '.iit'
+                    print(f"Email contains '{domain}': {self.email}")
+                    self.upload_verified = True # Set upload_verified to True
+                    break  
+                else:
+                    print(f"Email does not contain '{domain}'")
+            super().save(*args, **kwargs)
+
 
 class Posts(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
