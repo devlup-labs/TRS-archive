@@ -11,7 +11,9 @@ import Otp from "./components/Otp";
 import { Upload } from "./components/Upload";
 
 function App() {
-  localStorage.setItem("check", "false");
+  if (!localStorage.getItem("loggedIn")) {
+    localStorage.setItem("loggedIn", "false");
+  }
   return (
     <>
       <div>
