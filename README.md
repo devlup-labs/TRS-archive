@@ -36,3 +36,32 @@ export default {
 - npm install
 - npm run dev (For running on development Server)
 
+
+## To setup Backend 
+
+
+- create virtualenv and activate it
+
+```js
+pip install virtualenv
+```
+```js
+virtualenv venv
+```
+```js
+cd venv/Scripts
+activate
+```
+
+- Installing dependicies
+```js
+pip install django djangorestframework djangorestframework-simplejwt django-cors-headers Pillow python-dotenv
+```
+- Starting the django backend server
+
+```js
+cd Backend
+```
+```js
+python manage.py runserver
+```
