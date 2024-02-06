@@ -5,6 +5,7 @@ export const Home = () => {
   const { searchQuery } = useSearch();
   const data = mainPageData;
   const filtered = data.filter((item) => item.topic.includes(searchQuery));
+  const verified = localStorage.getItem("verified");
 
   return (
     <div className="relative flex flex-row top-40 overflow-y-visible p-4 w-full">
@@ -27,9 +28,7 @@ export const Home = () => {
           </li>
         ))}
       </ul>
-      <div>
-        <a href="/Upload">Upload</a>
-      </div>
+      <div>{verified == "true" ? <a href="/Upload">Upload</a> : <></>}</div>
     </div>
   );
 };
