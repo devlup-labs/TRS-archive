@@ -8,6 +8,9 @@ django = "*"
 djangorestframework = "*"
 rest-framework-simplejwt = "*"
 django-schema-graph = '*'
+python-decouple = '*'
+django-cors-headers = '*'
+django-extensions = '*'
 
 [dev-packages]
 
