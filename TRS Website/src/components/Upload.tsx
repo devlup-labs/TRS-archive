@@ -19,6 +19,8 @@ export const Upload = () => {
   const [email, setEmail] = useState("");
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
+  const authTokensString = localStorage.getItem("authTokens");
+  const authTokens = JSON.parse(authTokensString||"");
 
   useEffect(() => {
     const token = localStorage.getItem("authTokens");
@@ -38,26 +40,29 @@ export const Upload = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     if (!selectedFile) {
       alert("Please select a file");
       console.error("Please select a file");
       return;
     }
-    console.log(selectedFile);
+  
     try {
+      const { access, refresh } = authTokens;
+      const formData = new FormData();
+      formData.append('user', email);
+      formData.append('title', title);
+      formData.append('body', body);
+      formData.append('document', selectedFile);
+  
       const response = await fetch("http://127.0.0.1:8000/api/upload/", {
         method: "POST",
-        body: JSON.stringify({
-          user: email,
-          title,
-          body,
-          Document: selectedFile,
-          // category,
-          // subCategory
-        }),
+        headers: {
+          "Authorization": `Bearer ${access}`
+        },
+        body: formData,
       });
-
+  
       if (response.ok) {
         console.log("File successfully uploaded to the backend");
         setTitle("");
@@ -71,6 +76,7 @@ export const Upload = () => {
       console.error("Error uploading file:", error);
     }
   };
+  
 
   return (
     <div className="relative top-44 md:w-1/3 mx-auto w-full">
@@ -118,7 +124,7 @@ export const Upload = () => {
         <label className="block mb-2">Document (PDF only):</label>
         <input
           type="file"
-          accept=".pdf"
+          accept="application/pdf"
           onChange={handleFileChange}
           className="mb-2"
         />
