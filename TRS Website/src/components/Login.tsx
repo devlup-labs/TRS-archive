@@ -11,7 +11,6 @@ export const Login = () => {
     e.preventDefault();
     loginUser(email, password);
     if (verified.includes(email.trim().split("@")[1])) {
-      alert(email.split("@")[1]);
       setIsVerified(true);
     } else {
       setIsVerified(false);
@@ -19,7 +18,6 @@ export const Login = () => {
     }
   };
   useEffect(() => {
-    alert(isVerified);
     localStorage.setItem("verified", isVerified.toString());
   }, [isVerified]);
   return (
