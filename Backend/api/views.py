@@ -30,7 +30,7 @@ from django.db import IntegrityError
 class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     
     def get(self, request, *args, **kwargs):
@@ -39,20 +39,28 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
         return Response(serializer.data, status=status.HTTP_200_OK) 
 
     def post(self, request, *args, **kwargs):
+        self.permission_classes = [IsAuthenticated]
         file_uploaded = request.FILES.get('document')
 
-        print("yes")
         if file_uploaded is None:
-            return Response("FILE is missing", status=400)
-        
+            return Response("FILE is missing", status=status.HTTP_400_BAD_REQUEST)
+    
         user = request.user 
 
         try:
-            Post.objects.create(user=user, document=file_uploaded, created_at=datetime.datetime.now())
+            post = Post.objects.create(
+                user=user,
+                title=request.data.get('title'),
+                body=request.data.get('body'),
+                category=request.data.get('category'),
+                sub_category=request.data.get('sub_category'),
+                document=file_uploaded,
+                created_at=datetime.datetime.now()
+            )
+            post.save()  # Save the post object to the database
         except IntegrityError as e:
             return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
-
-        return Response("File uploaded successfully", status=201)
+        return Response("File uploaded successfully", status=status.HTTP_201_CREATED)
 
 
 class MyTokenObtainPairView(TokenObtainPairView):

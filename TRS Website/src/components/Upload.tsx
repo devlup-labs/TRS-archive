@@ -53,6 +53,8 @@ export const Upload = () => {
       formData.append('user', email);
       formData.append('title', title);
       formData.append('body', body);
+      formData.append('category', category);
+      formData.append('sub_category', subCategory);
       formData.append('document', selectedFile);
   
       const response = await fetch("http://127.0.0.1:8000/api/upload/", {
