@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import Serializer, FileField
-from .models import Posts
+from .models import Post
 
         
 class UserSerializer(serializers.ModelSerializer):
@@ -13,12 +13,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email','is_verified']
 
-class PostsSerializer(serializers.ModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     file_uploaded = serializers.FileField(write_only=True)
 
     class Meta:
-        model = Posts
+        model = Post
         fields = '__all__' 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

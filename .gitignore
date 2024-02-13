@@ -24,3 +24,7 @@
 /Backend/venv
 /myenv
 /Backend/.env
+
+# Dont add Migration and pycache
+**/migrations
+**/__pycache__

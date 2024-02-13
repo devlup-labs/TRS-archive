@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render
-from api.models import User, Posts
+from api.models import User, Post
 from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView 
@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, PostsSerializer
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, PostSerializer
 from django.utils.crypto import get_random_string
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status
@@ -28,27 +28,25 @@ from django.db import IntegrityError
 
 
 class PostsViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
-    queryset = Posts.objects.all()
-    serializer_class = PostsSerializer
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
 
     
     def get(self, request, *args, **kwargs):
-        posts = Posts.objects.all()
+        posts = Post.objects.all()
         serializer = self.serializer_class(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK) 
 
     def post(self, request, *args, **kwargs):
         file_uploaded = request.FILES.get('file_uploaded')
-
-        print("yes")
         if file_uploaded is None:
             return Response("FILE is missing", status=400)
         
         user = request.user 
 
         try:
-            Posts.objects.create(user=user, document=file_uploaded, created_at=datetime.datetime.now())
+            Post.objects.create(user=user, document=file_uploaded, created_at=datetime.datetime.now())
         except IntegrityError as e:
             return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
 
