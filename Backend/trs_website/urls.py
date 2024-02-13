@@ -18,11 +18,13 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
+from schema_graph.views import Schema
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('',include("registration.urls"),name='registration'),
     path('api/',include('api.urls')),
+    path('schema/', Schema.as_view()),
 
 ]
 if settings.DEBUG:
