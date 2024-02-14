@@ -19,7 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['user', 'title', 'body', 'status', 'category', 'sub_category', 'file_uploaded'] 
+        fields = '__all__' 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod    
