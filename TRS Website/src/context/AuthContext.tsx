@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+  import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -208,6 +208,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               setAuthToken({ access: data.access, refresh: authTokens.refresh });
             } else {
               console.error("Refresh token request failed");
+              logoutUser();
             }
           } catch (error) {
             console.error("Error refreshing access token:", error);
