@@ -1,68 +1,62 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const VerifyOTPPage = () => {
-  const [otp, setOTP] = useState('');
+  const [otp, setOTP] = useState("");
   const navigate = useNavigate();
-  const {state} = useLocation();
+  const { state } = useLocation();
 
   const email = state?.email;
 
-  const handleVerifyOTP = async (event) => {
-    event.preventDefault(); 
-    
+  const handleVerifyOTP = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     try {
       // console.log("heroewkj")
-      const response = await fetch('http://127.0.0.1:8000/api/verify/', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:8000/api/verify/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: email,
           otp: otp,
         }),
       });
-      console.log('entered try')
-      
+      console.log("entered try");
 
       if (response.ok) {
         // OTP verification successful
         Swal.fire({
-          title: 'OTP Verified Successfully',
-          icon: 'success',
+          title: "OTP Verified Successfully",
+          icon: "success",
           toast: true,
           timer: 2000,
-          position: 'top-right',
+          position: "top-right",
           timerProgressBar: true,
           showConfirmButton: false,
         });
 
         // You can navigate to the login page or perform other actions
-        navigate('/login');
-      } 
-      else {
+        navigate("/login");
+      } else {
         // OTP verification failed
         const errorData = await response.json();
-        console.log(errorData)
+        console.log(errorData);
         Swal.fire({
           title: `Error: ${errorData.message}`,
-          icon: 'error',
+          icon: "error",
           toast: true,
           timer: 2000,
-          position: 'top-right',
+          position: "top-right",
           timerProgressBar: true,
           showConfirmButton: false,
         });
       }
-    } 
-
-
-    catch (error) {
-      console.error('Error while verifying OTP:', error);
+    } catch (error) {
+      console.error("Error while verifying OTP:", error);
     }
   };
   return (
@@ -72,7 +66,6 @@ const VerifyOTPPage = () => {
         onSubmit={handleVerifyOTP}
         className="mx-auto mt-16 w-1/5 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
       >
-
         <label className="block mb-2">OTP:</label>
         <div className="relative mb-4">
           <input
@@ -95,7 +88,6 @@ const VerifyOTPPage = () => {
       </form>
     </>
   );
-}
-
+};
 
 export default VerifyOTPPage;

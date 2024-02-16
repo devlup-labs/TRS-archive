@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { verified } from "../constants";
 
@@ -10,11 +10,16 @@ export const Login = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     loginUser(email, password);
-    if (email.split("@")[1] in verified) {
+    if (verified.includes(email.trim().split("@")[1])) {
       setIsVerified(true);
+    } else {
+      setIsVerified(false);
       localStorage.setItem("verified", isVerified.toString());
     }
   };
+  useEffect(() => {
+    localStorage.setItem("verified", isVerified.toString());
+  }, [isVerified]);
   return (
     <>
       <div className="mt-48 text-green-500 bg-opacity-0"></div>

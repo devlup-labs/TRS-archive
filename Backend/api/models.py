@@ -28,10 +28,12 @@ class User(AbstractUser):
             super().save(*args, **kwargs)
 
 
-class Posts(models.Model):
+class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     title = models.CharField(max_length=100)
     body = models.TextField()
     status = models.BooleanField(default=False)
+    category = models.CharField(max_length=100)
+    sub_category = models.CharField(max_length=100)
     document = models.FileField(upload_to='uploads/')
     created_at = models.DateTimeField(auto_now_add=True)

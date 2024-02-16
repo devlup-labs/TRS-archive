@@ -18,7 +18,7 @@ interface AuthContextProps {
     email: string,
     username: string,
     password: string,
-    password2: string,
+    password2: string
   ) => Promise<void>;
   loginUser: (email: string, password: string) => Promise<void>;
   logoutUser: () => void;
@@ -34,13 +34,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authTokens, setAuthToken] = useState(() =>
     localStorage.getItem("authTokens")
       ? JSON.parse(localStorage.getItem("authTokens")!)
-      : null,
+      : null
   );
 
   const [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
       ? jwtDecode(localStorage.getItem("authTokens")!)
-      : null,
+      : null
   );
 
   const [loading, setLoading] = useState(false);
@@ -103,7 +103,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     email: string,
     username: string,
     password: string,
-    password2: string,
+    password2: string
   ) => {
     const response = await fetch("http://127.0.0.1:8000/api/register/", {
       method: "POST",
@@ -162,11 +162,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const logoutUser = () => {
     setAuthToken(null);
     setUser(null);
     localStorage.removeItem("authTokens"); //to remove the authtoken from the local storage
-    localStorage.removeItem("loggedIn");
+    localStorage.setItem("loggedIn", "false");
+    localStorage.removeItem("verified");
     navigate("/login");
     Swal.fire({
       title: "You have been logged out",
@@ -190,22 +192,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         if (acctokenExpirationTime < currentTime) {
           try {
-            const response = await fetch("http://127.0.0.1:8000/api/token/refresh", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                refresh: authTokens.refresh,
-              })
-            });
+            const response = await fetch(
+              "http://127.0.0.1:8000/api/token/refresh",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  refresh: authTokens.refresh,
+                }),
+              }
+            );
 
             // console.log(await response.text())
 
             if (response.ok) {
               console.log("Refresh token success");
               const data = await response.json();
-              setAuthToken({ access: data.access, refresh: authTokens.refresh });
+              setAuthToken({
+                access: data.access,
+                refresh: authTokens.refresh,
+              });
             } else {
               console.error("Refresh token request failed");
               logoutUser();
@@ -214,9 +222,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             console.error("Error refreshing access token:", error);
             // Handle error
           }
-
         } else if (reftokenExpirationTime < currentTime) {
-          console.log("adosfjaosidjf")
+          console.log("adosfjaosidjf");
           logoutUser();
         }
       }
@@ -228,10 +235,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     return () => clearInterval(interval);
   }, [authTokens, setAuthToken, logoutUser]);
-
-
-
-
 
   const contextData: AuthContextProps = {
     user,
@@ -250,7 +253,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     setLoading(false);
   }, [authTokens, loading]);
-
 
   return (
     <AuthContext.Provider value={contextData}>
