@@ -6,7 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { Login } from "./components/Login";
 import { SearchProvider } from "./context/SearchContext";
 import { Register } from "./components/RegisterPage";
-import { Home } from "./components/Homepage";
+import  Home  from "./components/Homepage";
 import Otp from "./components/Otp";
 import { Upload } from "./components/Upload";
 import Dashboard from "./components/Dashboard";

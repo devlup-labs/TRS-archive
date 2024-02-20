@@ -5,7 +5,7 @@ import { useSearch } from "../context/SearchContext";
 import { useNavigate } from "react-router-dom";
 import Search from "./Search";
 
-export const Home = () => {
+export default function Home() {
   const { searchQuery } = useSearch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -13,16 +13,25 @@ export const Home = () => {
   // const data = mainPageData;
   const [data ,setData] =useState([]);
   const filtered = data.filter((item) => item.title.includes(searchQuery));
-  const verified = localStorage.getItem("verified");
+  // const verified = localStorage.getItem("verified");
+  const token = localStorage.getItem("authTokens");
+  const [upload, setUpload] = useState(false)
+
+
+ 
+  
   useEffect(() => {
     const token = localStorage.getItem("authTokens");
     if (token) {
       setEmail(jwtDecode(JSON.parse(token).access).email);
       getData();
+      const decode = jwtDecode(token);
+      setUpload(decode.upload_verified);
+     
     } else {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate,token]);
   const trunctate = (s: string) => {
     if (s.length > 200) {
       return s.substring(0, 200) + "...";
@@ -30,6 +39,7 @@ export const Home = () => {
       return s;
     }
   };
+  // console.log(upload)
   const getData = async () => {
     const token = localStorage.getItem("authTokens");
     try {
@@ -41,11 +51,11 @@ export const Home = () => {
       else{
         
         const data1 = await response.json();
-        console.log(data1);
+        // console.log(data1);
         setData(data1);
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
   return (
@@ -68,7 +78,7 @@ export const Home = () => {
                 <a
                   href={baseDir + item.document}
                   target="_blank"
-                  onClick={() => console.log(`Clicked ${index} link`)}
+                  // onClick={() => console.log(`Clicked ${index} link`)}
                 >
                   PDF
                 </a>
@@ -79,7 +89,8 @@ export const Home = () => {
           ))}
         </ul>
         <div className="items-center">
-          {verified == "true" ? <a href="/Upload">Upload</a> : <></>}
+          
+          {upload == true? <a href="/Upload">Upload</a> : <></>}
         </div>
       </div>
     </div>

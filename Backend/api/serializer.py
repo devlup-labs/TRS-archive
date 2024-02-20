@@ -32,7 +32,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
         token['bio'] = user.bio
         token['image'] = str(user.image)
-        token['verified'] = user.upload_verified
+        token['is_verified'] = user.upload_verified
+        token['upload_verified'] = user.upload_verified
         # ...
         return token
 
