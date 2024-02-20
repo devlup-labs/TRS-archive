@@ -8,7 +8,7 @@ const Navbar = () => {
     console.log("Logged out");
     logoutUser();
   };
-  const logggedIn = localStorage.getItem("loggedIn");
+  const loggedIn = localStorage.getItem("loggedIn");
   return (
     <nav className="fixed top-24 left-0 w-full h-16 bg-red-500  z-10 shadow-md flex items-center justify-between text-white p-4">
       <a
@@ -23,14 +23,15 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center">
-        {logggedIn == "false" ? (
+        {loggedIn == "false" ? (
           <a
             href="/login"
             className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline"
           >
             Login
           </a>
-        ) : (
+        ) : ( 
+          
           <button
             className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white"
             onClick={handleClick}

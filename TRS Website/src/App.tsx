@@ -9,6 +9,7 @@ import { Register } from "./components/RegisterPage";
 import { Home } from "./components/Homepage";
 import Otp from "./components/Otp";
 import { Upload } from "./components/Upload";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   if (!localStorage.getItem("loggedIn")) {
@@ -28,6 +29,7 @@ function App() {
                 <Route element={<Otp />} path="/otp" />
                 <Route element={<Home />} path="/" />
                 <Route element={<Upload />} path="/Upload" />
+                <Route element={<Dashboard />} path="/dashboard" />
               </Routes>
             </SearchProvider>
           </AuthProvider>

@@ -90,7 +90,7 @@ export const Upload = () => {
         <label className="block mb-2">Title:</label>
         <input
           type="text"
-          value={title}
+          value={title} 
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title"
           required
