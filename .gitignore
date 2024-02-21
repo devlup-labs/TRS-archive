@@ -23,4 +23,4 @@
 /Backend/media/uploads/
 /Backend/venv
 /myenv
-/Backend/.env
+.env
