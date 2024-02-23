@@ -10,6 +10,7 @@ import  Home  from "./components/Homepage";
 import Otp from "./components/Otp";
 import { Upload } from "./components/Upload";
 import Dashboard from "./components/Dashboard";
+import Edit_p from "./components/Edit_p"
 
 function App() {
   if (!localStorage.getItem("loggedIn")) {
@@ -30,6 +31,7 @@ function App() {
                 <Route element={<Home />} path="/" />
                 <Route element={<Upload />} path="/Upload" />
                 <Route element={<Dashboard />} path="/dashboard" />
+                <Route element={<Edit_p />} path="/edit_profile" />
               </Routes>
             </SearchProvider>
           </AuthProvider>
