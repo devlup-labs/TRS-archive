@@ -13,5 +13,8 @@ urlpatterns=[
     path('send-otp/',sendOtp.as_view()),
     path('upload/',PostViewSet.as_view()),
     path('profile/edit/',edit_profile, name='edit_profile'),
+    path('post/<int:post_id>',AllCommentsViewSet.as_view()),
+    path('post/<int:post_id>/comment/<int:comment_id>',DestroyCommentViewSet.as_view()),
+    path('post/<int:post_id>/comment/',CreateCommentViewSet.as_view()),
     # path('token_det/',token_details,name="token_det"),
 ]

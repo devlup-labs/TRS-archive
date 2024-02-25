@@ -37,3 +37,10 @@ class Post(models.Model):
     sub_category = models.CharField(max_length=100)
     document = models.FileField(upload_to='uploads/')
     created_at = models.DateTimeField(auto_now_add=True)
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    body = models.TextField()
+    likes = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)

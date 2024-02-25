@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
-from django.shortcuts import render
-from api.models import User, Post
+from django.shortcuts import render, get_object_or_404
+from api.models import User, Post, Comment
 from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView 
@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, PostSerializer
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, PostSerializer, CommentSeralizer
 from django.utils.crypto import get_random_string
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status
@@ -29,12 +29,58 @@ from django.http import JsonResponse
 import jwt,json
 
 
+class AllCommentsViewSet(mixins.ListModelMixin, GenericAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSeralizer
+
+    def get(self, request, post_id, *args, **kwargs):
+        comments = Comment.objects.filter(post=post_id)
+        serializer = self.serializer_class(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DestroyCommentViewSet(GenericAPIView, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSeralizer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, post_id, comment_id=None, *args, **kwargs):
+        comments = Comment.objects.filter(post_id=post_id).filter(id=comment_id)
+        serializer = self.serializer_class(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def delete(self, request, post_id, comment_id, *args, **kwargs):
+        user = request.user
+        comment = get_object_or_404(Comment, id=comment_id, post_id=post_id)
+        if user != comment.user:
+            return Response("You are not authorized to delete this comment", status=status.HTTP_401_UNAUTHORIZED)
+        comment.delete()
+        return Response("Comment deleted successfully", status=status.HTTP_200_OK)
+
+class CreateCommentViewSet(GenericAPIView, mixins.CreateModelMixin):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSeralizer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id, *args, **kwargs):
+        user = request.user
+        try:
+            comment = Comment.objects.create(
+                user=user,
+                post_id=post_id,
+                body=request.data.get('body'),
+                created_at=datetime.datetime.now()
+            )
+            comment.save()  
+        except IntegrityError as e:
+            return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
+        return Response("Comment created successfully", status=status.HTTP_201_CREATED)
+    
 class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     # permission_classes = [IsAuthenticated]
 
-    
     def get(self, request, *args, **kwargs):
         posts = Post.objects.all()
         serializer = self.serializer_class(posts, many=True)
