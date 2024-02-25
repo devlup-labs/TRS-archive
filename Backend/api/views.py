@@ -24,7 +24,9 @@ from django.conf import settings
 import datetime
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db import IntegrityError
-
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import jwt,json
 
 
 class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
@@ -157,3 +159,56 @@ class VerifyOTP(APIView):
                 'status': 500,
                 'message': f'Error: {str(e)}',
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated]) 
+def edit_profile(request):
+    if request.method == 'GET':
+        context = f"Hey {request.user.username} you're seeing a GET response and {request.user.email} "
+        return Response({'response': context}, status=status.HTTP_200_OK)
+
+
+    if request.method == 'POST':
+        # Check if the Authorization header is present
+
+
+        # response_data = {
+            # 'message': 'Token extracted successfully',
+            # 'token': token
+        # }
+
+        # return JsonResponse(response_data, status=200)
+
+        try:
+            # Decode the JWT token to extract user information
+            
+
+            # Get the user profile based on the user ID
+           
+
+            # Extract data from the request body
+            data = request.data
+
+            # Update user profile fields
+            request.user.username=data.get('username',request.user.username)
+            request.user.email = data.get('email', request.user.email)
+            # Update other fields as needed
+
+            # Save the updated user profile
+            request.user.save()
+            response = f"Hey {request.user.username} your text is {request.user.email}"
+            return Response({'response': response}, status=status.HTTP_200_OK)
+            return JsonResponse({'message': 'Profile updated successfully'}, status=200)
+
+        except jwt.ExpiredSignatureError:
+            return JsonResponse({'error': 'Expired token'}, status=401)
+        except jwt.InvalidTokenError:
+            return JsonResponse({'error': 'Invalid token'}, status=401)
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User profile not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

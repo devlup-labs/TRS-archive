@@ -1,4 +1,4 @@
-  import React, { createContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -182,59 +182,70 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
   useEffect(() => {
     const checkTokenExpiration = async () => {
-      if (authTokens) {
-        const decodedaccToken = jwtDecode(authTokens.access);
-        const decodedrefToken = jwtDecode(authTokens.refresh);
-        const acctokenExpirationTime = decodedaccToken.exp * 1000;
-        const reftokenExpirationTime = decodedrefToken.exp * 1000;
-        const currentTime = Date.now();
-        // TOKEN_EXPIRATION_THRESHOLD=
+      console.log("checking start")
+        if (authTokens) {
+            const decodedAccessToken = jwtDecode(authTokens.access);
+            const decodedRefreshToken = jwtDecode(authTokens.refresh);
+            const accessTokenExpirationTime = decodedAccessToken.exp * 1000;
+            const refreshTokenExpirationTime = decodedRefreshToken.exp * 1000;
+            const currentTime = Date.now();
 
-        if (acctokenExpirationTime < currentTime) {
-          try {
-            const response = await fetch(
-              "http://127.0.0.1:8000/api/token/refresh",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  refresh: authTokens.refresh,
-                }),
-              }
-            );
+            if (accessTokenExpirationTime < currentTime) {
+                // Access token has expired
+                if (refreshTokenExpirationTime < currentTime) {
+                    // Both tokens have expired, logout the user
+                    console.log("refresh time exceed")
+                    logoutUser();
+                } else {
+                    // Refresh the access token using the refresh token
+                    try {
+                        const response = await fetch(
+                          "http://127.0.0.1:8000/api/token/refresh",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    refresh: authTokens.refresh,
+                                }),
+                            }
+                        );
 
-            // console.log(await response.text())
+                        if (response.ok) {
+                            const data = await response.json();
 
-            if (response.ok) {
-              console.log("Refresh token success");
-              const data = await response.json();
-              setAuthToken({
-                access: data.access,
-                refresh: authTokens.refresh,
-              });
-            } else {
-              console.error("Refresh token request failed");
-              logoutUser();
+                            const tokensToUpdate = {
+                              refresh: authTokens.refresh,
+                              access: data.access,
+                              
+                          };
+                          setAuthToken(tokensToUpdate)
+                          localStorage.setItem("authTokens", JSON.stringify(tokensToUpdate));
+                          console.log("token updated")
+              
+                        } else {
+                          console.log("using old ref token")
+                            // Refresh token request failed, logout the user
+                            logoutUser();
+                        }
+                    } catch (error) {
+                        console.error("Error refreshing access token:", error);
+                        // Handle error
+                    }
+                }
             }
-          } catch (error) {
-            console.error("Error refreshing access token:", error);
-            // Handle error
-          }
-        } else if (reftokenExpirationTime < currentTime) {
-          console.log("adosfjaosidjf");
-          logoutUser();
         }
-      }
     };
 
     checkTokenExpiration();
 
-    const interval = setInterval(checkTokenExpiration, 60000);
+    // Set up a timer to check token expiration periodically
+    const interval = setInterval(checkTokenExpiration, 60000); // Check every minute
 
+    // Clean up the interval when the component unmounts
     return () => clearInterval(interval);
-  }, [authTokens, setAuthToken, logoutUser]);
+}, [authTokens, setAuthToken, logoutUser]);
 
   const contextData: AuthContextProps = {
     user,

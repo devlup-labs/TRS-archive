@@ -12,4 +12,6 @@ urlpatterns=[
     path('verify/', VerifyOTP.as_view()),
     path('send-otp/',sendOtp.as_view()),
     path('upload/',PostViewSet.as_view()),
+    path('profile/edit/',edit_profile, name='edit_profile'),
+    # path('token_det/',token_details,name="token_det"),
 ]
