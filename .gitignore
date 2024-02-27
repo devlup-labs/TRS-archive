@@ -22,5 +22,12 @@
 /Backend/media/
 /Backend/media/uploads/
 /Backend/venv
+/Backend/api/__pycache__/
+/Backend/api/migrations/
+/Backend/api/db.sqlite3
+/Backend/trs_website/__pycache__/
 /myenv
 .env
+dbsqlite
+/TRS Website/*/__pycache__/
+/TRS Website/*/migrations/
