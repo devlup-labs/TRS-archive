@@ -1,11 +1,10 @@
-from api.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import Serializer, FileField
-from .models import Post
+from .models import Post, Comment, User
 
         
 class UserSerializer(serializers.ModelSerializer):
@@ -21,6 +20,14 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = '__all__' 
 
+
+class CommentSeralizer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = Comment
+        fields = ['user', 'post', 'likes', 'body', 'created_at']
+
+        
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod    
     def get_token(cls, user):
