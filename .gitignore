@@ -24,3 +24,5 @@
 /Backend/venv
 /myenv
 .env
+Backend/db.sqlite3
+# this is for not making incompatible chnages
