@@ -1,36 +1,33 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const VerifyOTPPage = () => {
-  const [otp, setOTP] = useState("");
+const change_pass = () => {
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const {id} = useParams();
+//   const { state } = useLocation();
 
-  const email = state?.email;
 
-  const handleVerifyOTP = async (event: React.FormEvent<HTMLFormElement>) => {
+  const reset_pass = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
       // console.log("heroewkj")
-      const response = await fetch("http://127.0.0.1:8000/api/verify/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({  
-          email: email,
-          otp: otp,
-        }),
-      });
-      console.log("email");
+      const response = await fetch("http://127.0.0.1:8000/api/change_password/"+id+'/', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              password:password,
+            }),
+          });
 
       if (response.ok) {
-        // OTP verification successful
+        console.log(password)
         Swal.fire({
-          title: "OTP Verified Successfully",
+          title: "Password Reset Successfully",
           icon: "success",
           toast: true,
           timer: 2000,
@@ -39,8 +36,10 @@ const VerifyOTPPage = () => {
           showConfirmButton: false,
         });
 
+        navigate("/login")
+   
         // You can navigate to the login page or perform other actions
-        navigate("/login");
+        
       } else {
         // OTP verification failed
         const errorData = await response.json();
@@ -56,14 +55,14 @@ const VerifyOTPPage = () => {
         });
       }
     } catch (error) {
-      console.error("Error while verifying OTP:", error);
+      console.error("Error while sending mail:", error);
     }
   };
   return (
     <>
       <div className="mt-48 text-green-500 bg-opacity-0"></div>
       <form
-        onSubmit={handleVerifyOTP}
+        onSubmit={reset_pass}
         className="mx-auto mt-16 w-1/5 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
       >
         <label className="block mb-2">OTP:</label>
@@ -72,8 +71,8 @@ const VerifyOTPPage = () => {
             type="password"
             className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             required
-            onChange={(e) => setOTP(e.target.value)}
-            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="password"
           />
 
           <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
@@ -90,4 +89,4 @@ const VerifyOTPPage = () => {
   );
 };
 
-export default VerifyOTPPage;
+export default change_pass;

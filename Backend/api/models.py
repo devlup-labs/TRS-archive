@@ -1,9 +1,12 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
+import uuid,random
+
 
 
 class User(AbstractUser):
+    id = models.IntegerField(primary_key=True, unique=True, default=str(uuid.uuid4().int)[:10], editable=False)
     username = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     is_verified=models.BooleanField(default=False)
@@ -27,8 +30,11 @@ class User(AbstractUser):
                     print(f"Email does not contain '{domain}'")
             super().save(*args, **kwargs)
 
+            
+
 
 class Post(models.Model):
+    id = models.IntegerField(primary_key=True,unique=True, default=str(uuid.uuid4().int)[:10], editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     title = models.CharField(max_length=100)
     body = models.TextField()
