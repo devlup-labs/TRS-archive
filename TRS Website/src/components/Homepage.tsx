@@ -11,15 +11,12 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const baseDir = "http://127.0.0.1:8000";
   // const data = mainPageData;
-  const [data ,setData] =useState([]);
+  const [data, setData] = useState([]);
   const filtered = data.filter((item) => item.title.includes(searchQuery));
   // const verified = localStorage.getItem("verified");
   const token = localStorage.getItem("authTokens");
-  const [upload, setUpload] = useState(false)
+  const [upload, setUpload] = useState(false);
 
-
- 
-  
   useEffect(() => {
     const token = localStorage.getItem("authTokens");
     if (token) {
@@ -27,11 +24,11 @@ export default function Home() {
       getData();
       const decode = jwtDecode(token);
       setUpload(decode.upload_verified);
-     
-    } else {
-      navigate("/login");
     }
-  }, [navigate,token]);
+    // else {
+    //   navigate("/login");
+    // }
+  }, [navigate, token]);
   const trunctate = (s: string) => {
     if (s.length > 200) {
       return s.substring(0, 200) + "...";
@@ -43,13 +40,13 @@ export default function Home() {
   const getData = async () => {
     const token = localStorage.getItem("authTokens");
     try {
-      const access = JSON.parse(token ||"").access;
+      const access = JSON.parse(token || "").access;
       const response = await fetch("http://127.0.0.1:8000/api/upload/", {
         method: "GET",
       });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      else{
-        
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      else {
         const data1 = await response.json();
         // console.log(data1);
         setData(data1);
@@ -89,10 +86,9 @@ export default function Home() {
           ))}
         </ul>
         <div className="items-center">
-          
-          {upload == true? <a href="/Upload">Upload</a> : <></>}
+          {upload == true ? <a href="/Upload">Upload</a> : <></>}
         </div>
       </div>
     </div>
   );
-};
+}

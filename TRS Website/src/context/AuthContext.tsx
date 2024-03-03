@@ -74,9 +74,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log(data.access);
       localStorage.setItem("loggedIn", "true");
       localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/");
+      navigate("/dashboard");
       Swal.fire({
-        title: "Login Successful \nRedirecting to home",
+        title: "Login Successful \nRedirecting to Dashboard",
         icon: "success",
         toast: true,
         timer: 3000,
@@ -182,60 +182,61 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
   useEffect(() => {
     const checkTokenExpiration = async () => {
-      console.log("checking start")
-        if (authTokens) {
-            const decodedAccessToken = jwtDecode(authTokens.access);
-            const decodedRefreshToken = jwtDecode(authTokens.refresh);
-            const accessTokenExpirationTime = decodedAccessToken.exp * 1000;
-            const refreshTokenExpirationTime = decodedRefreshToken.exp * 1000;
-            const currentTime = Date.now();
+      console.log("checking start");
+      if (authTokens) {
+        const decodedAccessToken = jwtDecode(authTokens.access);
+        const decodedRefreshToken = jwtDecode(authTokens.refresh);
+        const accessTokenExpirationTime = decodedAccessToken.exp * 1000;
+        const refreshTokenExpirationTime = decodedRefreshToken.exp * 1000;
+        const currentTime = Date.now();
 
-            if (accessTokenExpirationTime < currentTime) {
-                // Access token has expired
-                if (refreshTokenExpirationTime < currentTime) {
-                    // Both tokens have expired, logout the user
-                    console.log("refresh time exceed")
-                    logoutUser();
-                } else {
-                    // Refresh the access token using the refresh token
-                    try {
-                        const response = await fetch(
-                          "http://127.0.0.1:8000/api/token/refresh",
-                            {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify({
-                                    refresh: authTokens.refresh,
-                                }),
-                            }
-                        );
-
-                        if (response.ok) {
-                            const data = await response.json();
-
-                            const tokensToUpdate = {
-                              refresh: authTokens.refresh,
-                              access: data.access,
-                              
-                          };
-                          setAuthToken(tokensToUpdate)
-                          localStorage.setItem("authTokens", JSON.stringify(tokensToUpdate));
-                          console.log("token updated")
-              
-                        } else {
-                          console.log("using old ref token")
-                            // Refresh token request failed, logout the user
-                            logoutUser();
-                        }
-                    } catch (error) {
-                        console.error("Error refreshing access token:", error);
-                        // Handle error
-                    }
+        if (accessTokenExpirationTime < currentTime) {
+          // Access token has expired
+          if (refreshTokenExpirationTime < currentTime) {
+            // Both tokens have expired, logout the user
+            console.log("refresh time exceed");
+            logoutUser();
+          } else {
+            // Refresh the access token using the refresh token
+            try {
+              const response = await fetch(
+                "http://127.0.0.1:8000/api/token/refresh",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    refresh: authTokens.refresh,
+                  }),
                 }
+              );
+
+              if (response.ok) {
+                const data = await response.json();
+
+                const tokensToUpdate = {
+                  refresh: authTokens.refresh,
+                  access: data.access,
+                };
+                setAuthToken(tokensToUpdate);
+                localStorage.setItem(
+                  "authTokens",
+                  JSON.stringify(tokensToUpdate)
+                );
+                console.log("token updated");
+              } else {
+                console.log("using old ref token");
+                // Refresh token request failed, logout the user
+                logoutUser();
+              }
+            } catch (error) {
+              console.error("Error refreshing access token:", error);
+              // Handle error
             }
+          }
         }
+      }
     };
 
     checkTokenExpiration();
@@ -245,7 +246,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Clean up the interval when the component unmounts
     return () => clearInterval(interval);
-}, [authTokens, setAuthToken, logoutUser]);
+  }, [authTokens, setAuthToken, logoutUser]);
 
   const contextData: AuthContextProps = {
     user,

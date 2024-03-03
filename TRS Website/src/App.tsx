@@ -6,15 +6,16 @@ import { AuthProvider } from "./context/AuthContext";
 import { Login } from "./components/Login";
 import { SearchProvider } from "./context/SearchContext";
 import { Register } from "./components/RegisterPage";
-import  Home  from "./components/Homepage";
+import Home from "./components/Homepage";
 import Otp from "./components/Otp";
 import { Upload } from "./components/Upload";
-import Dashboard from "./components/Dashboard";
+import {Dashboard} from "./components/Dashboard";
 import Edit_p from "./components/Edit_p";
 import Mssg from "./components/Blank"
-import { verified } from "../constants";
+// import { verified } from "../constants";
 import Forgot_pass from "./components/Reset_email"
 import Change_pwd from "./components/Change_pass"
+
 
 
 
