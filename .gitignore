@@ -29,4 +29,5 @@
 /myenv
 .env
 Backend/db.sqlite3
-# this is for not making incompatible chnages
+/TRS Website/*/__pycache__/
+/TRS Website/*/migrations/

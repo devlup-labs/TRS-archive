@@ -1,5 +1,5 @@
 from django.contrib import admin
-from api.models import User,Post,Comment
+from api.models import User,Post,Comment,New,Review
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ['username', 'email','is_verified']
@@ -27,7 +27,14 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['likes']
 
     
+class NewsAdmin(admin.ModelAdmin):
+    list_display = ['title', 'description', 'image']
+
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['description', 'pdf_file_status', 'reviewer_id']
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(New, NewsAdmin)
+admin.site.register(Review, ReviewAdmin)
