@@ -65,7 +65,7 @@ const change_pass = () => {
         onSubmit={reset_pass}
         className="mx-auto mt-16 w-1/5 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
       >
-        <label className="block mb-2">OTP:</label>
+        <label className="block mb-2">New Password:</label>
         <div className="relative mb-4">
           <input
             type="password"

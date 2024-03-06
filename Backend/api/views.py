@@ -269,22 +269,25 @@ class send_email(APIView):
         try:
             data=request.data
             email=data.get('email')
-
+            print(email)
 
             verify=User.objects.filter(email=email).first()
             if verify:
                 link=f'http://localhost:5173/change_pass/{verify.id}'
                 send_mail(
-                'Hello ',
+                'Reset Password for TRS_website ',
                 "We've received a request to reset your password. Please click on the link below to reset your password:" + link,
                 'your_email@example.com',
                 [email],
+                'Thanks,',
+                'Team TRS',
                 fail_silently=False,
                 
             )
                 return JsonResponse({'bool':True,'msg':'Please Check your email'})
             else:
-                return JsonResponse({'bool':False,'msg':'Invalid Email!!!'})
+                print("error")
+                return JsonResponse({'bool':False,'msg':"User with this email doesn't exist"})
             
         except Exception as e:
             print(e)
