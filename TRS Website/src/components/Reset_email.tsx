@@ -25,7 +25,25 @@
         }),
         
       });
-        if (response.ok) {
+
+      const responseData = await response.json();
+    
+        // Handle other errors
+        if (responseData.msg === "User with this email doesn't exist") {
+            // Display error message to the user
+            Swal.fire({
+                title: "Error",
+                text: responseData.msg,
+                icon: "error",
+                toast: true,
+                timer: 2000,
+                position: "top-right",
+                timerProgressBar: true,
+                showConfirmButton: false,
+            });
+        }
+        
+        else if (response.ok) {
           // console.log(response)
           Swal.fire({
             title: "Reset Request Sended",
@@ -39,20 +57,10 @@
   
           navigate("/blank")
           
-        } else {
-          const errorData = await response.json();
-          console.log(errorData);
-          Swal.fire({
-            title: `Error: ${errorData.message}`,
-            icon: "error",
-            toast: true,
-            timer: 2000,
-            position: "top-right",
-            timerProgressBar: true,
-            showConfirmButton: false,
-          });
-        }
-      } catch (error) {
+        } 
+      }
+        
+        catch (error) {
         console.error("Error while sending mail:", error);
       }
     };
