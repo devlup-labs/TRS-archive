@@ -32,9 +32,15 @@ export default {
 
 ## To setup Frontend Part
 
-- cd TRS WebSite
-- npm install
-- npm run dev (For running on development Server)
+```js
+cd "TRS WebSite"
+```
+```js
+npm install
+```
+```js
+npm run dev (For running on development Server)
+```
 
 
 ## To setup Backend 
