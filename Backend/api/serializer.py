@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import Serializer, FileField
-from .models import Post, Comment, User
+from .models import Post, Comment, User, Institute, Category, New, Review
 
         
 class UserSerializer(serializers.ModelSerializer):
@@ -96,3 +96,15 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class ResetPasswordEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+
+
+
+class NewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = New
+        fields = ['title', 'description', 'image']
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['description', 'pdf_file_status', 'reviewer_id', 'post']

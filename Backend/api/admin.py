@@ -1,5 +1,5 @@
 from django.contrib import admin
-from api.models import User,Post,Comment,Institute,Category
+from api.models import User,Post,Comment,Institute,Category, Review, New
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ['username', 'email','is_verified']
@@ -36,9 +36,29 @@ class CategoriesAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_filter = ['name']
     
+class InstituteAdmin(admin.ModelAdmin):
+    list_display = ['college_name', 'email_tag', 'is_approved']
+    fieldsets = (
+        (None, {
+            'fields': ('college_name', 'email_tag', 'is_approved')
+        }),
+    )
+    search_fields = ['college_name', 'email_tag']
+    list_filter = ['is_approved']
+
+class NewsAdmin(admin.ModelAdmin):
+    list_display = ['title', 'description', 'image']
+    search_fields = ['title']
+
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['description', 'pdf_file_status', 'reviewer_id', 'post']
+    search_fields = ['description', 'pdf_file_status', 'reviewer_id', 'post']
+    list_filter = ['pdf_file_status','post']
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Institute,InstituteAdmin)
 admin.site.register(Category,CategoriesAdmin)
+admin.site.register(New, NewsAdmin)
+admin.site.register(Review, ReviewAdmin)
