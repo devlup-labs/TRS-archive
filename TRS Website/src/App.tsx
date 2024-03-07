@@ -11,6 +11,7 @@ import Otp from "./components/Otp";
 import { Upload } from "./components/Upload";
 import {Dashboard} from "./components/Dashboard";
 import Edit_p from "./components/Edit_p";
+<<<<<<< Updated upstream
 import Mssg from "./components/Blank"
 // import { verified } from "../constants";
 import Forgot_pass from "./components/Reset_email"
@@ -18,6 +19,9 @@ import Change_pwd from "./components/Change_pass"
 
 
 
+=======
+import { LoginPage } from "./components/Admin/LoginPage";
+>>>>>>> Stashed changes
 
 function App() {
   if (!localStorage.getItem("loggedIn")) {
@@ -39,9 +43,13 @@ function App() {
                 <Route element={<Upload />} path="/Upload" />
                 <Route element={<Dashboard />} path="/dashboard" />
                 <Route element={<Edit_p />} path="/edit_profile" />
+<<<<<<< Updated upstream
                 <Route element={<Mssg />} path="/blank" />
                 <Route element={<Forgot_pass />} path="/forgot-password" />
                 <Route element={<Change_pwd />} path="/change_pass/:id" />
+=======
+                <Route element={<LoginPage />} path="/admin/login" />
+>>>>>>> Stashed changes
               </Routes>
             </SearchProvider>
           </AuthProvider>
