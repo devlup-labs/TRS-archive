@@ -51,7 +51,6 @@ export const Login = () => {
             placeholder="Password"
           />
 
-
           <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
         </div>
 
@@ -64,9 +63,6 @@ export const Login = () => {
         <p>
           Do not Have an account? <a href="/register">Register</a>
         </p>
-        <div className=" mb-4">
-          <a href="/forgot-password" className="text-green-500">Forgot Password?</a>
-        </div>
       </form>
     </>
   );

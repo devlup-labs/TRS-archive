@@ -20,12 +20,12 @@ const VerifyOTPPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({  
+        body: JSON.stringify({
           email: email,
           otp: otp,
         }),
       });
-      console.log("email");
+      console.log("entered try");
 
       if (response.ok) {
         // OTP verification successful
