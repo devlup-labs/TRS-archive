@@ -20,6 +20,13 @@ Categories_Choices=(
 
 )
 
+Status_Choices=(
+
+    ('ongoing','Ongoing'),
+    ('need_changes','Changes_Reqd'),
+    ('reviewed','Reviewed'),
+)
+
 class Institute(models.Model):
     college_name = models.CharField(max_length=100)
     email_tag = models.CharField(max_length=50)  # e.g., @iitk.ac.in
@@ -37,7 +44,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 class User(AbstractUser):
-    id = models.IntegerField(primary_key=True, unique=True, default=str(uuid.uuid4().int)[:10], editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     is_verified=models.BooleanField(default=False)
@@ -72,7 +79,7 @@ class User(AbstractUser):
 
 
 class Post(models.Model):
-    id = models.IntegerField(primary_key=True,unique=True, default=str(uuid.uuid4().int)[:10], editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     title = models.CharField(max_length=100)
     body = models.TextField()
@@ -81,6 +88,9 @@ class Post(models.Model):
     sub_category = models.CharField(max_length=100)
     document = models.FileField(upload_to='uploads/')
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    
+
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
@@ -91,7 +101,7 @@ class Comment(models.Model):
 
 class Review(models.Model):
     description = models.TextField()
-    pdf_file_status = models.CharField(max_length=20, choices=Roles_Choices, default='Normal_User')  
+    pdf_file_status = models.CharField(max_length=20, choices=Status_Choices, default='Ongoing')  
     reviewer_id = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 

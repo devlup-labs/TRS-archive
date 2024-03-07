@@ -2,12 +2,12 @@ from django.contrib import admin
 from api.models import User,Post,Comment,Institute,Category, Review, New
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email','is_verified']
+    list_display = ['id','username', 'email','is_verified']
 
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['user', 'title','body','category','sub_category','status', 'document','created_at']
+    list_display = ['id', 'user', 'title','body','category','sub_category','status', 'document','created_at']
     fieldsets = (
         (None, {
             'fields': ('user', 'title', 'body','status','category','sub_category','document')

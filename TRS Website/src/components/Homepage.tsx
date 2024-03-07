@@ -19,9 +19,9 @@ export default function Home() {
 
   useEffect(() => {
     const token = localStorage.getItem("authTokens");
+    getData();
     if (token) {
       setEmail(jwtDecode(JSON.parse(token).access).email);
-      getData();
       const decode = jwtDecode(token);
       setUpload(decode.upload_verified);
     }
@@ -40,7 +40,7 @@ export default function Home() {
   const getData = async () => {
     const token = localStorage.getItem("authTokens");
     try {
-      const access = JSON.parse(token || "").access;
+      // const access = JSON.parse(token || "").access;
       const response = await fetch("http://127.0.0.1:8000/api/upload/", {
         method: "GET",
       });
