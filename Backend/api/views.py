@@ -101,6 +101,7 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
         try:
             post = Post.objects.create(
                 user=user,
+                # id=request.data.get('id'),
                 title=request.data.get('title'),
                 body=request.data.get('body'),
                 category=request.data.get('category'),

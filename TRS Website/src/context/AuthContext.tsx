@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         password2,
       }),
     });
-
+  
     if (response.status === 201) {
       Swal.fire({
         title: "Check your email to complete registration",
@@ -128,6 +128,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         timerProgressBar: true,
         showConfirmButton: false,
       });
+      const otpResponse = await fetch("http://127.0.0.1:8000/api/send-otp/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
+  
+      await Promise.all([otpResponse]);
+  
+      if (otpResponse.ok) {
+        // OTP sent successfully
+        navigate("/otp", { state: { email } }); // Redirect to OTP verification page
+      } else {
+        console.log("Not sent");
+      }
     } else {
       console.log(response.status);
       console.log("there was a server issue");
@@ -141,26 +159,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         showConfirmButton: false,
       });
     }
-
-    const otpResponse = await fetch("http://127.0.0.1:8000/api/send-otp/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-      }),
-    });
-
-    await Promise.all([otpResponse]);
-
-    if (otpResponse.ok) {
-      // OTP sent successfully
-      navigate("/otp", { state: { email } }); // Redirect to OTP verification page
-    } else {
-      console.log("Not sent");
-    }
   };
+  
+  
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const logoutUser = () => {

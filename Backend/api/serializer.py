@@ -38,6 +38,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         token['email'] = user.email
         token['bio'] = user.bio
+        token['roles']=user.roles
+        token['affiliation']=user.roles
         token['image'] = str(user.image)
         token['is_verified'] = user.upload_verified
         token['upload_verified'] = user.upload_verified
