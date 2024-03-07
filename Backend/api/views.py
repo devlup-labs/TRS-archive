@@ -1,10 +1,10 @@
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render, get_object_or_404
-from api.models import User, Post, Comment, New, Review
-from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, CommentSeralizer, PostSerializer, NewsSerializer, ReviewSerializer
+from api.models import User, Post, Comment
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView 
-from rest_framework import status,generics
+from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -206,15 +206,6 @@ class VerifyOTP(APIView):
                 'message': f'Error: {str(e)}',
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-class NewsListView(generics.ListAPIView):
-    queryset = New.objects.all()
-    serializer_class = NewsSerializer
-    permission_classes = [IsAuthenticated]
-
-class ReviewListView(generics.ListAPIView):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
 
 
 @api_view(['GET', 'POST'])
@@ -267,5 +258,3 @@ def edit_profile(request):
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-

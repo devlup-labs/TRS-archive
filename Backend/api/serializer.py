@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import Serializer, FileField
-from .models import Post, Comment, User, New, Review
+from .models import Post, Comment, User
 
         
 class UserSerializer(serializers.ModelSerializer):
@@ -89,13 +89,3 @@ class OTPVerificationSerializer(serializers.Serializer):
             raise serializers.ValidationError('Invalid OTP.')
 
         return value
-
-class NewsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = New
-        fields = ['id', 'title', 'description', 'image']
-
-class ReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = ['id', 'description', 'pdf_file_status', 'reviewer_id']
