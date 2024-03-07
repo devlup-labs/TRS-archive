@@ -1,5 +1,5 @@
 from django.contrib import admin
-from api.models import User,Post,Comment,New,Review
+from api.models import User,Post,Comment,Institute,Category
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ['username', 'email','is_verified']
@@ -30,16 +30,15 @@ class CommentAdmin(admin.ModelAdmin):
 
 class NewsAdmin(admin.ModelAdmin):
     list_display = ['title', 'description', 'image']
-    search_fields = ['title']
 
-class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['description', 'pdf_file_status', 'reviewer_id','post']
-    search_fields = ['pdf_file_status','post']
-    list_filter = ['pdf_file_status']
-
+class CategoriesAdmin(admin.ModelAdmin):
+    list_display = ['name','sub_categories']
+    search_fields = ['name']
+    list_filter = ['name']
+    
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(New, NewsAdmin)
-admin.site.register(Review, ReviewAdmin)
+admin.site.register(Institute,InstituteAdmin)
+admin.site.register(Category,CategoriesAdmin)

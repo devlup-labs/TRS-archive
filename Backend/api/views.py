@@ -1,14 +1,14 @@
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render, get_object_or_404
-from api.models import User, Post, Comment, New, Review
-from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, PostSerializer, CommentSeralizer,NewsSerializer,ReviewSerializer
+from api.models import User, Post, Comment
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView 
-from rest_framework import status,generics
+from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, PostSerializer, CommentSeralizer
+from api.serializer import *
 from django.utils.crypto import get_random_string
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status
@@ -27,6 +27,9 @@ from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import jwt,json
+from .models import *
+
+from django.core.mail import send_mail
 
 
 class AllCommentsViewSet(mixins.ListModelMixin, GenericAPIView):
@@ -110,15 +113,6 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
             return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
         return Response("File uploaded successfully", status=status.HTTP_201_CREATED)
 
-class NewsListView(generics.ListAPIView):
-    queryset = New.objects.all()
-    serializer_class = NewsSerializer
-    permission_classes = [IsAuthenticated]
-
-class ReviewListView(generics.ListAPIView):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -267,3 +261,65 @@ def edit_profile(request):
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+
+class send_email(APIView):
+    def post(self,request):
+        try:
+            data=request.data
+            email=data.get('email')
+            print(email)
+
+            verify=User.objects.filter(email=email).first()
+            if verify:
+                link=f'http://localhost:5173/change_pass/{verify.id}'
+                send_mail(
+                'Reset Password for TRS_website ',
+                "We've received a request to reset your password. Please click on the link below to reset your password:" + link,
+                'your_email@example.com',
+                [email],
+                'Thanks,',
+                'Team TRS',
+                fail_silently=False,
+                
+            )
+                return JsonResponse({'bool':True,'msg':'Please Check your email'})
+            else:
+                print("error")
+                return JsonResponse({'bool':False,'msg':"User with this email doesn't exist"})
+            
+        except Exception as e:
+            print(e)
+            return Response({
+                'status': 500,
+                'message': f'Error: {str(e)}',
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+    
+
+
+
+class change_password(APIView):
+    def post(self,request,u_id):
+        try:
+            data=request.data
+            password=data.get('password')
+            verify=User.objects.filter(id=u_id).first()
+            if verify:
+                verify.set_password(password)
+                verify.save()
+
+                return JsonResponse({'bool':True,'msg':'Password has been changed'})
+            else:
+                return JsonResponse({'bool':False,'msg':'Some error has occured'})
+        
+        except Exception as e:
+            print(e)
+            return Response({
+                'status': 500,
+                'message': f'Error: {str(e)}',
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

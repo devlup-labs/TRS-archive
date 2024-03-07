@@ -1,7 +1,8 @@
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
+    
 )
-from django.urls import path
+from django.urls import path,include
 from .views import *
     
 urlpatterns=[
@@ -16,5 +17,7 @@ urlpatterns=[
     path('post/<int:post_id>',AllCommentsViewSet.as_view()),
     path('post/<int:post_id>/comment/<int:comment_id>',DestroyCommentViewSet.as_view()),
     path('post/<int:post_id>/comment/',CreateCommentViewSet.as_view()),
+    path('change_password/<int:u_id>/', change_password.as_view()),
+    path('password_reset/',send_email.as_view()),
     # path('token_det/',token_details,name="token_det"),
 ]

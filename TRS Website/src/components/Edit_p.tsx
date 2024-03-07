@@ -21,7 +21,6 @@ export default function Edit_p() {
                 },
                 body: JSON.stringify({
                     username: fullName,
-                    email: email,
                 })
             });
 
@@ -65,19 +64,7 @@ export default function Edit_p() {
             className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
             />
                 </div>
-            <div>
-                <label className="block mb-2">Email:</label>
-            <input
-            type="text"
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)}
-             placeholder="Your Email_Id"
-            required
-            className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
-            />
-            
-            <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
-            </div>
+    
             <button
           type="submit"
           className="w-full bg-green-500 hover:bg-green-600 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
