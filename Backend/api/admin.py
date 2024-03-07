@@ -31,8 +31,10 @@ class NewsAdmin(admin.ModelAdmin):
     list_display = ['title', 'description', 'image']
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['description', 'pdf_file_status', 'reviewer_id']
-
+    list_display = ['description', 'pdf_file_status', 'reviewer_id', 'post']
+    search_fields = ['pdf_file_status']
+    list_filter = ['pdf_file_status', 'post']
+    
 admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)
