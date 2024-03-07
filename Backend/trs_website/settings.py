@@ -48,15 +48,19 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    
 
 ]
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1:8000"]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -68,7 +72,7 @@ ROOT_URLCONF = 'trs_website.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR, 'templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,13 +92,9 @@ WSGI_APPLICATION = 'trs_website.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres', #Database name
-        'USER': 'postgres', #Login/group roles user(Have to create)
-        'PASSWORD': '1234', #Login/group roles password
-        'HOST': 'localhost',#default host
-        'PORT': '5432', #default port
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
