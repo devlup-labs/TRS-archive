@@ -30,6 +30,7 @@ class CommentAdmin(admin.ModelAdmin):
 
 class NewsAdmin(admin.ModelAdmin):
     list_display = ['title', 'description', 'image']
+    search_fields = ['title']
 
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ['description', 'pdf_file_status', 'reviewer_id','post']
