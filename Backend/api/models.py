@@ -64,5 +64,3 @@ class Review(models.Model):
     ]
     pdf_file_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')  # Assuming you have predefined choices for this field
     reviewer_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-
