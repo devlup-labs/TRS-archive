@@ -44,3 +44,24 @@ class Comment(models.Model):
     body = models.TextField()
     likes = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+class New(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to="news_images", blank=True, null=True)
+
+class Review(models.Model):
+    description = models.TextField()
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+        ('done', 'Done'),
+        ('accept_review_again', 'Accept Review Again'),
+    ]
+    pdf_file_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')  # Assuming you have predefined choices for this field
+    reviewer_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,default=None)
+
+
+

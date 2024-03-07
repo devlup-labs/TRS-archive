@@ -1,10 +1,10 @@
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render, get_object_or_404
-from api.models import User, Post, Comment
-from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer
+from api.models import User, Post, Comment, New, Review
+from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, VerifyAccountSerializer, OTPVerificationSerializer, PostSerializer, CommentSeralizer,NewsSerializer,ReviewSerializer
 
 from rest_framework_simplejwt.views import TokenObtainPairView 
-from rest_framework import status
+from rest_framework import status,generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -110,6 +110,15 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
             return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
         return Response("File uploaded successfully", status=status.HTTP_201_CREATED)
 
+class NewsListView(generics.ListAPIView):
+    queryset = New.objects.all()
+    serializer_class = NewsSerializer
+    permission_classes = [IsAuthenticated]
+
+class ReviewListView(generics.ListAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
