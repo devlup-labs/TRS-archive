@@ -88,3 +88,14 @@ class Comment(models.Model):
     body = models.TextField()
     likes = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+class Review(models.Model):
+    description = models.TextField()
+    pdf_file_status = models.CharField(max_length=20, choices=Roles_Choices, default='Normal_User')  
+    reviewer_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+class New(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to='news_images/')

@@ -6,7 +6,7 @@ from django.urls import path,include
 from .views import *
     
 urlpatterns=[
-    path("token/" ,MyTokenObtainPairView.as_view()),
+    path("token/" ,MyTokenObtainPairView.as_view()),    
     path('token/refresh',TokenRefreshView.as_view()),
     path('register/',RegisterView.as_view()),
     path('dashboard/',dashboard),
@@ -19,5 +19,7 @@ urlpatterns=[
     path('post/<int:post_id>/comment/',CreateCommentViewSet.as_view()),
     path('change_password/<int:u_id>/', change_password.as_view()),
     path('password_reset/',send_email.as_view()),
+    path('news/', NewsListView.as_view(), name='news-list'),
+    path('reviews/', ReviewListView.as_view(), name='review-list'),    
     # path('token_det/',token_details,name="token_det"),
 ]
