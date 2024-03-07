@@ -288,13 +288,13 @@ class send_email(APIView):
                 send_mail(
                 'Reset Password for TRS_website ',
                 "We've received a request to reset your password. Please click on the link below to reset your password:" + link,
+                
                 'your_email@example.com',
                 [email],
-                'Thanks,',
-                'Team TRS',
                 fail_silently=False,
                 
             )
+                print("Email sent successfully")
                 return JsonResponse({'bool':True,'msg':'Please Check your email'})
             else:
                 print("error")
