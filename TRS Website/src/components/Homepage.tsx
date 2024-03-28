@@ -14,6 +14,13 @@ export default function Home() {
   const filtered = data.filter((item) => item.title.includes(searchQuery));
 
   useEffect(() => {
+    const token = localStorage.getItem("authTokens");
+    getData();
+    if (token) {
+      setEmail(jwtDecode(JSON.parse(token).access).email);
+      const decode = jwtDecode(token);
+      setUpload(decode.upload_verified);
+    }
     getData();
     // else {
     //   navigate("/login");
