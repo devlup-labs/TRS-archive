@@ -11,7 +11,7 @@ export const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("authTokens");
+    const token = localStorage.getItem("authToken");
     if (token) {
       const decode = jwtDecode(token);
       setUserName(decode.username);

@@ -48,7 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const navigate = useNavigate();
 
   const loginUser = async (email: string, password: string) => {
-    const response = await fetch("http://127.0.0.1:8000/api/token/", {
+    const response = await fetch("http://127.0.0.1:8000/api/users/token/", {
       //making a backend request
       method: "POST",
       headers: {
@@ -105,7 +105,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     password: string,
     password2: string
   ) => {
-    const response = await fetch("http://127.0.0.1:8000/api/register/", {
+    const response = await fetch("http://127.0.0.1:8000/api/users/register/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -128,7 +128,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         timerProgressBar: true,
         showConfirmButton: false,
       });
-      const otpResponse = await fetch("http://127.0.0.1:8000/api/send-otp/", {
+      const otpResponse = await fetch("http://127.0.0.1:8000/api/users/send-otp/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -201,7 +201,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // Refresh the access token using the refresh token
             try {
               const response = await fetch(
-                "http://127.0.0.1:8000/api/token/refresh",
+                "http://127.0.0.1:8000/api/token/users/refresh",
                 {
                   method: "POST",
                   headers: {

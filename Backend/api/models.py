@@ -43,14 +43,16 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     is_verified=models.BooleanField(default=False)
     area_of_research=models.CharField(max_length=200,null=True,blank=True)#needs to be made reqd
-    affiliation=models.ForeignKey(Institute, on_delete=models.SET_NULL, null=True)
-    default_category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True)
+    affiliation=models.ForeignKey(Institute, on_delete=models.SET_NULL, null=True,blank=True)
+    default_category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,blank=True)
     current_position=models.CharField(max_length=100,blank=True,null=True)
     roles=models.CharField(max_length=20, choices=Roles_Choices,blank=True,null=True)
     otp=models.CharField(max_length=4,null=True,blank=True)

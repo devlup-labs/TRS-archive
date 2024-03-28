@@ -2,7 +2,7 @@ from django.contrib import admin
 from api.models import User,Post,Comment,Institute,Category, Review, New
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['id','username', 'email','is_verified']
+    list_display = ['id','username','email','is_verified','is_staff']
 
 
 
@@ -13,7 +13,7 @@ class PostAdmin(admin.ModelAdmin):
             'fields': ('user', 'title', 'body','status','category','sub_category','document')
         }),
     )
-    search_fields = ['title', 'category', 'sub_category']
+    search_fields = ['title', 'category', 'sub_category']   
     list_filter = ['status', 'category', 'sub_category']
 
 class CommentAdmin(admin.ModelAdmin):

@@ -19,11 +19,11 @@ export const Upload = () => {
   const [email, setEmail] = useState("");
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
-  const authTokensString = localStorage.getItem("authTokens");
+  const authTokensString = localStorage.getItem("authToken");
   const authTokens = JSON.parse(authTokensString||"");
 
   useEffect(() => {
-    const token = localStorage.getItem("authTokens");
+    const token = localStorage.getItem("authToken");
     if (token) {
       setEmail(jwtDecode(JSON.parse(token).access).email);
     } else {
@@ -57,7 +57,7 @@ export const Upload = () => {
       formData.append('sub_category', subCategory);
       formData.append('document', selectedFile);
   
-      const response = await fetch("http://127.0.0.1:8000/api/upload/", {
+      const response = await fetch("http://127.0.0.1:8000/api/posts/upload/", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${access}`

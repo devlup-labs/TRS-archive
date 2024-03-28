@@ -22,7 +22,8 @@
 /Backend/media/
 /Backend/media/uploads/
 /Backend/venv
-/myenv
+/Backend/myenv
+/myenvp
 .env
 Backend/db.sqlite3
 # this is for not making incompatible chnages

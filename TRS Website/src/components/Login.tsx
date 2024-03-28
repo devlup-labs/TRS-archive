@@ -1,30 +1,53 @@
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { verified } from "../constants";
+import {useDispatch,useSelector} from 'react-redux'
+import {Link, redirect,useNavigate,useLocation} from 'react-router-dom'
+import {login} from '../actions/userActions'
+import Loader from './Loader.tsx'
+import Message from './Message.tsx'
+
+
+
+
 
 export const Login = () => {
   const [isVerified, setIsVerified] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loginUser } = useContext(AuthContext);
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    loginUser(email, password);
-    if (verified.includes(email.trim().split("@")[1])) {
-      setIsVerified(true);
-    } else {
-      setIsVerified(false);
-      localStorage.setItem("verified", isVerified.toString());
+
+  const location=useLocation()
+  const navigate=useNavigate()
+  const dispatch=useDispatch()
+
+   const submitHandler = (e) =>{
+        e.preventDefault()
+        console.log('Submitted')
+        dispatch(login(email,password))
     }
-  };
-  useEffect(() => {
-    localStorage.setItem("verified", isVerified.toString());
-  }, [isVerified]);
+
+  const redirect=location.search?location.search.split('=')[1] : '/'
+
+
+  
+  const userLogin = useSelector(state=>state.userLogin)
+  const {error,loading,authToken} = userLogin
+
+    useEffect(() => {
+        if(authToken){
+            navigate(redirect)
+
+        }
+    },[authToken,redirect,navigate])
+
+
   return (
     <>
       <div className="mt-48 text-green-500 bg-opacity-0"></div>
+      {error && <Message variant='danger'>{error}</Message>}
+      {loading && <Loader></Loader>}
       <form
-        onSubmit={handleSubmit}
+        onSubmit={submitHandler}
         className="mx-auto mt-16 w-1/3 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
       >
         <label className="block mb-2">Email:</label>
