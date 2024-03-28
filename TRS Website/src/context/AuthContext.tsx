@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log(username);
       localStorage.setItem("loggedIn", "true");
       localStorage.setItem("authTokens", JSON.stringify(data));
-      if (data.access.role !== "user") {
+      if (data.access.role === "admin") {
         navigate("/admin/dashboard");
       } else {
         navigate("/dashboard");

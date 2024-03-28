@@ -11,9 +11,7 @@ const AdminHomePage = () => {
   const [email, setEmail] = useState("");
   const baseDir = "http://127.0.0.1:8000";
   const [data, setData] = useState([]);
-  const filtered = data.filter(
-    (item) => item.status === false && item.title.includes(searchQuery)
-  );
+  const filtered = data.filter((item) => item.status === false);
   const token = localStorage.getItem("authTokens");
   const [upload, setUpload] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -21,9 +19,9 @@ const AdminHomePage = () => {
   useEffect(() => {
     setIsVisible(true);
     const token = localStorage.getItem("authTokens");
+    getData();
     if (token) {
       setEmail(jwtDecode(JSON.parse(token).access).email);
-      getData();
       const decode = jwtDecode(token);
       setUpload(decode.upload_verified);
     }
@@ -51,6 +49,7 @@ const AdminHomePage = () => {
       else {
         const data1 = await response.json();
         setData(data1);
+        console.log(data1);
       }
     } catch (err) {
       // console.log(err);

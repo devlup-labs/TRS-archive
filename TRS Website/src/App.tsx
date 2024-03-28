@@ -17,6 +17,7 @@ import Forgot_pass from "./components/Reset_email";
 import Change_pwd from "./components/Change_pass";
 
 import { LoginPage } from "./components/Admin/LoginPage";
+import AdminHomePage from "./components/Admin/HomePage";
 
 function App() {
   if (!localStorage.getItem("loggedIn")) {
@@ -42,6 +43,7 @@ function App() {
                 <Route element={<Forgot_pass />} path="/forgot-password" />
                 <Route element={<Change_pwd />} path="/change_pass/:id" />
                 <Route element={<LoginPage />} path="/admin/login" />
+                <Route element={<AdminHomePage />} path="/admin" />
               </Routes>
             </SearchProvider>
           </AuthProvider>
