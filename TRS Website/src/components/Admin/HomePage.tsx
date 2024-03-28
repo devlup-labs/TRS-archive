@@ -1,19 +1,23 @@
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
-import { useSearch } from "../context/SearchContext";
 import { useNavigate } from "react-router-dom";
-import Search from "./Search";
-import News from "./News";
+import News from "../News";
+import { useEffect, useState } from "react";
+import { useSearch } from "../../context/SearchContext";
+import Search from "../Search";
+import { jwtDecode } from "jwt-decode";
 
-export default function Home() {
+const AdminHomePage = () => {
   const { searchQuery } = useSearch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const baseDir = "http://127.0.0.1:8000";
   const [data, setData] = useState([]);
-  const filtered = data.filter((item) => item.title.includes(searchQuery));
+  const filtered = data.filter((item) => item.status === false);
+  const token = localStorage.getItem("authTokens");
+  const [upload, setUpload] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
+    setIsVisible(true);
     const token = localStorage.getItem("authTokens");
     getData();
     if (token) {
@@ -21,11 +25,10 @@ export default function Home() {
       const decode = jwtDecode(token);
       setUpload(decode.upload_verified);
     }
-    getData();
     // else {
     //   navigate("/login");
     // }
-  }, [navigate]);
+  }, [navigate, token]);
   const trunctate = (s: string) => {
     if (s.length > 200) {
       return s.substring(0, 200) + "...";
@@ -35,8 +38,9 @@ export default function Home() {
   };
   // console.log(upload)
   const getData = async () => {
+    const token = localStorage.getItem("authTokens");
     try {
-      // const access = JSON.parse(token || "").access;
+      const access = JSON.parse(token || "").access;
       const response = await fetch("http://127.0.0.1:8000/api/upload/", {
         method: "GET",
       });
@@ -44,8 +48,8 @@ export default function Home() {
         throw new Error(`HTTP error! status: ${response.status}`);
       else {
         const data1 = await response.json();
-        // console.log(data1);
         setData(data1);
+        console.log(data1);
       }
     } catch (err) {
       // console.log(err);
@@ -87,4 +91,6 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminHomePage;
