@@ -1,16 +1,28 @@
 from django.contrib.auth.password_validation import validate_password
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.serializers import Serializer, FileField
 from .models import Post, Comment, User, Institute, Category, New, Review
+from rest_framework_simplejwt.tokens import RefreshToken
 
-        
+
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email','is_verified']
+        fields = ['id','username','email','area_of_research','affiliation','default_category','current_position','roles','image','upload_verified']
+
+
+class UserSerializerWithToken(UserSerializer):
+    access = serializers.CharField(source='access_token', read_only=True)
+    refresh = serializers.CharField(source='refresh_token', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'area_of_research', 'affiliation', 'default_category', 'current_position', 'roles', 'image', 'upload_verified', 'access', 'refresh']
+
+
 
 class PostSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -28,23 +40,23 @@ class CommentSeralizer(serializers.ModelSerializer):
         fields = ['user', 'post', 'likes', 'body', 'created_at']
 
         
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod    
-    def get_token(cls, user):
-        token = super().get_token(user)
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#     @classmethod    
+#     def get_token(cls, user):
+#         token = super().get_token(user)
         
-        #Adding custom claims
-        token['full_name'] = user.full_name
-        token['username'] = user.username
-        token['email'] = user.email
-        token['bio'] = user.bio
-        token['roles']=user.roles
-        token['affiliation']=user.roles
-        token['image'] = str(user.image)
-        token['is_verified'] = user.upload_verified
-        token['upload_verified'] = user.upload_verified
-        # ...
-        return token
+#         #Adding custom claims
+#         token['full_name'] = user.full_name
+#         token['username'] = user.username
+#         token['email'] = user.email
+#         token['bio'] = user.bio
+#         token['roles']=user.roles
+#         token['affiliation']=user.roles
+#         token['image'] = str(user.image)
+#         token['is_verified'] = user.upload_verified
+#         token['upload_verified'] = user.upload_verified
+#         # ...
+#         return token
 
 
 class RegisterSerializer(serializers.ModelSerializer):

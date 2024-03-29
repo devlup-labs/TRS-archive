@@ -51,7 +51,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     is_verified=models.BooleanField(default=False)
     area_of_research=models.CharField(max_length=200,null=True,blank=True)#needs to be made reqd
-    affiliation=models.ForeignKey(Institute, on_delete=models.SET_NULL, null=True,blank=True)
+    affiliation = models.CharField(max_length=100, null=True, blank=True)
     default_category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,blank=True)
     current_position=models.CharField(max_length=100,blank=True,null=True)
     roles=models.CharField(max_length=20, choices=Roles_Choices,blank=True,null=True)
@@ -72,8 +72,8 @@ class User(AbstractUser):
             try:
                 # Try to find the corresponding institute based on email tag
                 institute = Institute.objects.get(email_tag='@' + email_domain)
-                self.affiliation = institute
-                self.upload_verified=self.affiliation.is_approved
+                self.affiliation = institute.college_name
+                self.upload_verified=institute.is_approved
             except Institute.DoesNotExist:
                 pass  # Do nothing if the institute doesn't exist
         super().save(*args, **kwargs)

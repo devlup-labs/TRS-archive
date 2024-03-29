@@ -6,5 +6,10 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     include: ['react-dom'],
-  }
+  },
+  server: {
+    proxy: {
+      '/api': 'http://127.0.0.1:8000'
+    }
+  },
 })

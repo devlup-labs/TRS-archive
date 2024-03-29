@@ -20,14 +20,14 @@ const reducer=combineReducers({
 })
 
 
-const userInfofrom_locStorage=localStorage.getItem('userInfo')?
-    JSON.parse(localStorage.getItem('userInfo')):null //this is done to ensure that whenver we reload the it gets info from the local storage
+const userInfofrom_locStorage=localStorage.getItem('authToken')?
+    JSON.parse(localStorage.getItem('authToken')):null //this is done to ensure that whenver we reload the it gets info from the local storage
 
 
 const middleware = [thunk]
 
 const initialState={
-    userLogin:{userInfo:userInfofrom_locStorage}
+    userLogin:{authToken:userInfofrom_locStorage}
 }
 
 const store= createStore(reducer,initialState,composeWithDevTools(applyMiddleware(...middleware)))

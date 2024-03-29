@@ -20,9 +20,6 @@ import Change_pwd from "./components/Change_pass"
 
 
 function App() {
-  if (!localStorage.getItem("loggedIn")) {
-    localStorage.setItem("loggedIn", "false");
-  }
   return (
     <>
       <div>

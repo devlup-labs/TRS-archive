@@ -1,7 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from api.models import User
-from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, NewsSerializer, ReviewSerializer
-
+from api.serializer import UserSerializer,  RegisterSerializer, NewsSerializer, ReviewSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status,generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -9,6 +8,7 @@ from rest_framework.response import Response
 
 from api.serializer import *
 from rest_framework_simplejwt.views import TokenObtainPairView 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, mixins, RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -28,10 +28,30 @@ from django.core.mail import send_mail
 
 
 
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = self.user
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
+
+        serializer = UserSerializerWithToken(user)
+        data.update(serializer.data)
+
+        return data
+    def get_token(self, user):
+        return super().get_token(user)
+
+class MyTokenObtainPairView(APIView):
     serializer_class = MyTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data)
+
+
+    
 # Define RegisterView as a class-based view with generics.CreateAPIView
 class RegisterView(CreateAPIView):
     queryset = User.objects.all()
@@ -122,56 +142,7 @@ class VerifyOTP(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
-@api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated]) 
-def edit_profile(request):
-    if request.method == 'GET':
-        context = f"Hey {request.user.username} you're seeing a GET response and {request.user.email} "
-        return Response({'response': context}, status=status.HTTP_200_OK)
 
-
-    if request.method == 'POST':
-        # Check if the Authorization header is present
-
-
-        # response_data = {
-            # 'message': 'Token extracted successfully',
-            # 'token': token
-        # }
-
-        # return JsonResponse(response_data, status=200)
-
-        try:
-            # Decode the JWT token to extract user information
-            
-
-            # Get the user profile based on the user ID
-           
-
-            # Extract data from the request body
-            data = request.data
-
-            # Update user profile fields
-            request.user.username=data.get('username',request.user.username)
-            request.user.email = data.get('email', request.user.email)
-            # Update other fields as needed
-
-            # Save the updated user profile
-            request.user.save()
-            response = f"Hey {request.user.username} your text is {request.user.email}"
-            return Response({'response': response}, status=status.HTTP_200_OK)
-            return JsonResponse({'message': 'Profile updated successfully'}, status=200)
-
-        except jwt.ExpiredSignatureError:
-            return JsonResponse({'error': 'Expired token'}, status=401)
-        except jwt.InvalidTokenError:
-            return JsonResponse({'error': 'Invalid token'}, status=401)
-        except User.DoesNotExist:
-            return JsonResponse({'error': 'User profile not found'}, status=404)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 class change_password(APIView):
     def post(self,request,u_id):
@@ -226,3 +197,36 @@ class send_email(APIView):
                 'status': 500,
                 'message': f'Error: {str(e)}',
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserProfile(request):
+    user=request.user
+    serializer=UserSerializer(user,many=False) #as one user request
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateUserProfile(request):
+    user=request.user
+   
+    
+    data=request.data
+    user.username=data['name']
+    user.email=data['email']
+    user.area_of_research=data['aor']
+    # user.default_category=data['category']
+    user.current_position=data['current_postn']
+    user.roles=data['roles']
+
+    user.save()
+    serializer=UserSerializerWithToken(user) #token used as it needs to be updated as information changes
+    response_data = serializer.data
+
+    refresh_token = RefreshToken.for_user(user)
+    response_data['access'] = str(refresh_token.access_token)
+    response_data['refresh'] = str(refresh_token)
+
+
+    return Response(response_data)

@@ -34,7 +34,7 @@ export const login=(email,password) => async (dispatch) => {
             }
         }
         const {data} = await axios.post(
-            'http://127.0.0.1:8000/api/users/token/',
+            '/api/users/token/',
             {
                 email,
                 password,
@@ -96,7 +96,7 @@ export const logout=()=>(dispatch) => {
 
 
 
-export const getUserDetails=(id) => async (dispatch,getState) => {
+export const getUserDetails=(id: string) => async (dispatch,getState) => {
     try{
         dispatch({
             type:USER_DETAILS_REQUEST
@@ -169,7 +169,7 @@ export const updateUserProfile=(user) => async (dispatch,getState) => {
             payload:data
         })
 
-        localStorage.setItem('userInfo',JSON.stringify(data)) //to update the local storage with the new data
+        localStorage.setItem('authToken',JSON.stringify(data)) //to update the local storage with the new data
 
     }
     catch(error){

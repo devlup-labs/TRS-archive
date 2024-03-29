@@ -19,7 +19,6 @@ const Navbar = () => {
 
   const userLogin=useSelector(state=>state.userLogin)
   const {authToken} = userLogin
-  // const loggedIn = userInfo !== null;;
   return (
     
     

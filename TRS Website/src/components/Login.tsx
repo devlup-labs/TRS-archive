@@ -45,7 +45,7 @@ export const Login = () => {
     <>
       <div className="mt-48 text-green-500 bg-opacity-0"></div>
       {error && <Message variant='danger'>{error}</Message>}
-      {loading && <Loader></Loader>}
+    {loading && <Loader></Loader>}
       <form
         onSubmit={submitHandler}
         className="mx-auto mt-16 w-1/3 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"

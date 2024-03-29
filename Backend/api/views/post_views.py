@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render, get_object_or_404
 from api.models import User, Post, Comment, New, Review
-from api.serializer import UserSerializer, MyTokenObtainPairSerializer, RegisterSerializer, NewsSerializer, ReviewSerializer
+from api.serializer import ReviewSerializer
 
 from rest_framework import status,generics
 from rest_framework.permissions import AllowAny, IsAuthenticated

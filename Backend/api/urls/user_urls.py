@@ -12,7 +12,8 @@ urlpatterns=[
     path('dashboard/',views.dashboard),
     path('verify/', views.VerifyOTP.as_view()),
     path('send-otp/',views.sendOtp.as_view()),
-    path('profile/edit/',views.edit_profile, name='edit_profile'),
+    path('profile/',views.getUserProfile,name='user-profile'),
+    path('profile/update/',views.updateUserProfile, name='edit_profile'),
     path('change_password/<int:u_id>/', views.change_password.as_view()),
     path('password_reset/',views.send_email.as_view()),
 ]
