@@ -1,17 +1,27 @@
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import DropdownInput from "./DropInput";
-import { useLocation } from "react-router-dom";
+import { useSelector} from "react-redux";
+import {logout} from '../actions/userActions'
+import {useDispatch} from 'react-redux'
+
 
 const Navbar = () => {
-  const { logoutUser } = useContext(AuthContext);
+  // const { logoutUser } = useContext(AuthContext);
+  const dispatch = useDispatch()
+
+  
   const handleClick = () => {
     console.log("Logged out");
-    logoutUser();
+    dispatch(logout())
+    
   };
-  const location = useLocation();
-  const loggedIn = localStorage.getItem("loggedIn");
+
+  const userLogin=useSelector(state=>state.userLogin)
+  const {authToken} = userLogin
   return (
+    
+    
     <nav className="fixed top-24 left-0 w-full h-16 bg-red-500  z-10 shadow-md flex items-center justify-between text-white p-4">
       <a
         href="/"
@@ -25,7 +35,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center">
-        {loggedIn == "false" ? (
+        {!authToken ? (
           <a
             href="/login"
             className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline"

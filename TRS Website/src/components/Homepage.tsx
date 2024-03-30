@@ -41,7 +41,7 @@ export default function Home() {
     const token = localStorage.getItem("authTokens");
     try {
       // const access = JSON.parse(token || "").access;
-      const response = await fetch("http://127.0.0.1:8000/api/upload/", {
+      const response = await fetch("http://127.0.0.1:8000/api/posts/upload/", {
         method: "GET",
       });
       if (!response.ok)
