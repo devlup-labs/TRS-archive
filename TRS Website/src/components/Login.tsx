@@ -1,31 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
-import Swal from "sweetalert2";
-import { jwtDecode } from "jwt-decode";
+import { verified } from "../constants";
 
 export const Login = () => {
+  const [isVerified, setIsVerified] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { loginUser } = useContext(AuthContext);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     loginUser(email, password);
+    if (verified.includes(email.trim().split("@")[1])) {
+      setIsVerified(true);
+    } else {
+      setIsVerified(false);
+      localStorage.setItem("verified", isVerified.toString());
+    }
   };
   useEffect(() => {
-    if (localStorage.getItem("authTokens")) {
-      const token = localStorage.getItem("authTokens") || "";
-      jwtDecode(token);
-      Swal.fire({
-        title: "You are already logged in",
-        icon: "info",
-        toast: true,
-        timer: 3000,
-        position: "top-right",
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
-    }
-  });
+    localStorage.setItem("verified", isVerified.toString());
+  }, [isVerified]);
   return (
     <>
       <div className="mt-48 text-green-500 bg-opacity-0"></div>

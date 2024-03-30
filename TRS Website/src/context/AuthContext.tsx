@@ -68,17 +68,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log("Logged In");
       const decoded = jwtDecode(data.access) as JwtPayload;
       const { username } = decoded;
-      console.log(decoded);
+      console.log(username);
       setAuthToken(data);
       setUser(jwtDecode(data.access));
-      console.log(username);
+      console.log(data.access);
       localStorage.setItem("loggedIn", "true");
       localStorage.setItem("authTokens", JSON.stringify(data));
-      if (data.access.role === "admin") {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate("/dashboard");
       Swal.fire({
         title: "Login Successful \nRedirecting to Dashboard",
         icon: "success",
