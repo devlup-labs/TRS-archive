@@ -2,7 +2,9 @@ import {legacy_createStore as createStore,combineReducers,applyMiddleware} from 
 import {thunk} from 'redux-thunk'
 import {composeWithDevTools} from '@redux-devtools/extension'
 
-import {UserLoginReducer,
+import {userVerifyReducer,
+        userRegisterReducer,
+        UserLoginReducer,
         userDetailsReducer,
         userUpdateProfileReducer,
         } from './reducers/userReducers'
@@ -12,6 +14,8 @@ import {UserLoginReducer,
 
 
 const reducer=combineReducers({
+    userVerify:userVerifyReducer,
+    userRegister:userRegisterReducer,
     userLogin:UserLoginReducer,
     userDetails:userDetailsReducer,
     userUpdateProfile:userUpdateProfileReducer,

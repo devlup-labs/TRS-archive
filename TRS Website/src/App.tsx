@@ -2,7 +2,6 @@ import Banner from "./components/Banner";
 import Navbar from "./components/NavBar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import PrivateRoute from './utils/PrivateRoute';
-import { AuthProvider } from "./context/AuthContext";
 import { Login } from "./components/Login";
 import { SearchProvider } from "./context/SearchContext";
 import { Register } from "./components/RegisterPage";
@@ -15,6 +14,8 @@ import Mssg from "./components/Blank"
 // import { verified } from "../constants";
 import Forgot_pass from "./components/Reset_email"
 import Change_pwd from "./components/Change_pass"
+import Email_ver from "./components/Email_ver"
+import {Register2} from "./components/RegisterPage2"
 
 
 
@@ -24,14 +25,13 @@ function App() {
     <>
       <div>
         <Router>
-          <AuthProvider>
             <SearchProvider>
               <Banner />
               <Navbar />
               <Routes>
                 <Route element={<Login />} path="/login" />
                 <Route element={<Register />} path="/register" />
-                <Route element={<Otp />} path="/otp" />
+                <Route element={<Email_ver />} path="/activate/:key" />
                 <Route element={<Home />} path="/" />
                 <Route element={<Upload />} path="/Upload" />
                 <Route element={<Dashboard />} path="/dashboard" />
@@ -39,9 +39,9 @@ function App() {
                 <Route element={<Mssg />} path="/blank" />
                 <Route element={<Forgot_pass />} path="/forgot-password" />
                 <Route element={<Change_pwd />} path="/change_pass/:id" />
+                <Route element={<Register2/>} path="/register2" />
               </Routes>
             </SearchProvider>
-          </AuthProvider>
         </Router>
       </div>
     </>

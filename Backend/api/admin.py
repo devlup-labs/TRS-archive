@@ -1,5 +1,5 @@
 from django.contrib import admin
-from api.models import User,Post,Comment,Institute,Category, Review, New
+from api.models import User,Post,Comment,Institute,Category, Review, New,Activation
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ['id','username','email','is_verified','is_staff']
@@ -55,6 +55,11 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ['description', 'pdf_file_status', 'reviewer_id', 'post']
     list_filter = ['pdf_file_status','post']
 
+class ActivationAdmin(admin.ModelAdmin):
+    list_display=['email','activation_key','is_verified']
+
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)
@@ -62,3 +67,4 @@ admin.site.register(Institute,InstituteAdmin)
 admin.site.register(Category,CategoriesAdmin)
 admin.site.register(New, NewsAdmin)
 admin.site.register(Review, ReviewAdmin)
+admin.site.register(Activation,ActivationAdmin)
