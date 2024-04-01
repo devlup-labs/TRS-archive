@@ -21,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import jwt,json
 from ..models import *
+from django.contrib.auth.hashers import make_password
 
 from django.core.mail import send_mail
 
@@ -53,94 +54,32 @@ class MyTokenObtainPairView(APIView):
 
     
 # Define RegisterView as a class-based view with generics.CreateAPIView
-class RegisterView(CreateAPIView):
-    queryset = User.objects.all()
-    permission_classes = (AllowAny,)
-    serializer_class = RegisterSerializer
-
-# Apply permission globally for the function-based view
+# class RegisterView(CreateAPIView):
+#     queryset = User.objects.all()
+#     permission_classes = (AllowAny,)
+#     serializer_class = RegisterSerializer
     
-@api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])  # Apply permission globally for the function-based view
-def dashboard(request):
-    if request.method == 'GET':
-        context = f"Hey {request.user} you're seeing a GET response"
-        return Response({'response': context}, status=status.HTTP_200_OK)
-    elif request.method == 'POST':
-        text = request.data.get('text')  # Use request.data instead of request.POST for JSON payloads
-        response = f"Hey {request.user} your text is {text}"
-        return Response({'response': response}, status=status.HTTP_200_OK)
-    return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def registerUser(request):
+    try:
+        data=request.data
+        print(data)
+        user=User.objects.create(
+            username=data['name'],
+            email=data['email'],
+            password=make_password(data['password']),  #to hash password
 
 
-class sendOtp(APIView):
+        )
+        serializer=UserSerializer(user,many=False)
 
-    def post(self, request):
-        try:
-            data = request.data
-            email = data.get('email')
-            if not email:
-                return Response({
-                    'status': 400,
-                    'message': 'Email not provided',
-                }, status=status.HTTP_400_BAD_REQUEST)
 
-            # Call the send_otp_via_email function
-            send_otp_via_email(email)
-
-            return Response({
-                'status': 200,
-                'message': 'OTP sent successfully',
-            })
-
-        except Exception as e:
-            print(e)
-            return Response({
-                'status': 500,
-                'message': f'Error: {str(e)}',
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
-class VerifyOTP(APIView):
-    def post(self, request):
-        try:
-            data = request.data
-            print("aditya")
-            serializer = VerifyAccountSerializer(data=data)
-            
-            if serializer.is_valid():
-                email = serializer.data['email']
-                otp = serializer.data['otp']
-
-                user = User.objects.filter(email=email, otp=otp, is_verified=False).first()
-
-                if user:
-                    user.is_verified = True
-                    user.save()
-                    return Response({
-                        'status': 200,
-                        'message': 'OTP verified successfully.',
-                        'data': {},
-                    })
-                else:
-                    return Response({
-                        'status': 400,
-                        'message': 'Invalid OTP or user already verified.',
-                        'data': serializer.data,
-                    })
-
-            return Response({
-                'status': 600,
-                'message': 'Invalid data',
-                'data': serializer.errors,
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-        except Exception as e:
-            return Response({
-                'status': 500,
-                'message': f'Error: {str(e)}',
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+        print(serializer.data)
+        return Response(serializer.data)
+    except:
+        message={'detail':'User with this email already exists'}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -166,7 +105,7 @@ class change_password(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
-class send_email(APIView):
+class send_email_pass(APIView):
     def post(self,request):
         try:
             data=request.data
@@ -230,3 +169,67 @@ def updateUserProfile(request):
 
 
     return Response(response_data)
+
+
+@api_view(['POST'])
+def send_activation_email(request):
+   
+    # Assuming you have a form with 'email' field for registration
+    email = request.data['email']
+    print(email)
+
+    
+    # Check if the email is already registered
+    if User.objects.filter(email=email).exists():
+        return JsonResponse({'error': 'Email already exists'}, status=400)
+        # Generate activation key (you can use any method to generate a unique key)
+    activation_key = generate_activation_key()
+
+    # Save the activation key along with the user's email in your database
+    save_activation_key(email, activation_key)
+
+    # Send activation email
+    send_activation_email_to_user(email, activation_key)
+
+    return JsonResponse({'success': 'Activation email sent'}, status=200)
+    
+
+def generate_activation_key():
+    import uuid
+    return str(uuid.uuid4())
+
+def save_activation_key(email, activation_key):
+#     # Save the activation key along with the user's email in your database
+#     # You can use your preferred method for saving data to the database
+#     # Example: creating a model for storing activation keys
+    activation = Activation.objects.create(
+                        email=email, 
+                        activation_key=activation_key
+                )
+
+    activation.save()
+
+def send_activation_email_to_user(email, activation_key):
+    # Send activation email to the user
+    subject = 'Verify your email_id'
+    activation_link = f'http://localhost:5173/activate/{activation_key}'  # Replace 'yourwebsite.com' with your actual website domain
+    message = f'Click the link below to complete your verification: <a href="{activation_link}">{activation_link}</a>'
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [email]
+    send_mail(subject, message, from_email, recipient_list, html_message=message)
+
+@api_view(['POST'])
+def verify_user(request):
+    activation_key=request.data['key']
+    try:
+        # Find the user with the given activation key
+        print(activation_key)
+        activation = Activation.objects.get(activation_key=activation_key)
+        email=activation.email
+        # Mark the user's email as verified
+        activation.is_verified = True
+        activation.save()
+
+        return JsonResponse({'message': 'Email verified successfully','email':email}, status=200)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'Invalid activation key'}, status=400)

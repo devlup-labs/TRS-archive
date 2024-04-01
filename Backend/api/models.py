@@ -79,6 +79,12 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
             
 
+class Activation(models.Model):
+    email=models.EmailField(unique=True,primary_key=True)
+    activation_key=models.UUIDField(editable=True)
+    is_verified=models.BooleanField(default=False)
+
+
 
 class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -91,7 +97,7 @@ class Post(models.Model):
     document = models.FileField(upload_to='uploads/')
     created_at = models.DateTimeField(auto_now_add=True)
     
-    
+
 
 
 class Comment(models.Model):

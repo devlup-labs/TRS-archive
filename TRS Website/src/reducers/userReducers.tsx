@@ -4,6 +4,17 @@ USER_LOGIN_REQUEST,
 USER_LOGOUT,
 USER_LOGIN_FAIL,
 
+USER_VERIFY_REQUEST,
+USER_VERIFY_SUCCESS,
+USER_VERIFY_EMAIL,
+USER_VERIFY_FAIL,
+USER_VERIFY_RESET,
+
+USER_REGISTER_SUCCESS,
+USER_REGISTER_REQUEST,
+USER_REGISTER_FAIL,
+
+
 
 USER_DETAILS_SUCCESS,
 USER_DETAILS_REQUEST,
@@ -18,6 +29,55 @@ USER_UPDATE_PROFILE_RESET,
 
 
 } from '../constants/userConstants'
+
+
+export const userVerifyReducer = (state ={email:null},actions) => {
+    switch(actions.type){
+        case USER_VERIFY_REQUEST:
+            return { ...state, loading:true,esent:false };
+
+        case USER_VERIFY_EMAIL:
+            return { ...state, loading:true, success:false, esent:true };
+        
+        case USER_VERIFY_SUCCESS:
+            return { ...state, loading:false, success:true, email: actions.payload };
+
+        case USER_VERIFY_FAIL:
+            return { ...state, loading:false, error: actions.payload };
+
+        case USER_VERIFY_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+
+
+
+
+export const userRegisterReducer = (state = {},actions) => {
+    switch(actions.type){
+        case USER_REGISTER_REQUEST:
+            return {loading:true}
+        
+        case USER_REGISTER_SUCCESS:
+            console.log("from reducer")
+            console.log(actions.payload)
+            return {loading:false,userInfo:actions.payload}
+
+        case USER_REGISTER_FAIL:
+            return {loading:false,error:actions.payload}
+
+        case USER_LOGOUT:
+            return {}
+
+        default:
+            return state
+    }
+}
+
 
 
 export const UserLoginReducer = (state = {},actions) => {
