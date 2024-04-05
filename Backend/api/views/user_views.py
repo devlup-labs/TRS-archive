@@ -220,6 +220,7 @@ def send_activation_email_to_user(email, activation_key):
 
 @api_view(['POST'])
 def verify_user(request):
+
     activation_key=request.data['key']
     try:
         # Find the user with the given activation key
@@ -233,3 +234,27 @@ def verify_user(request):
         return JsonResponse({'message': 'Email verified successfully','email':email}, status=200)
     except User.DoesNotExist:
         return JsonResponse({'error': 'Invalid activation key'}, status=400)
+    
+
+
+
+
+@api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+def TokenRefreshView(request):
+    refresh_token = request.data['refresh']
+    print(refresh_token)
+    if refresh_token:
+        try:
+            refresh_token_obj = RefreshToken(refresh_token)
+            
+            # Update the user's access token (you can also add more data to the token here)
+            new_access_token = str(refresh_token_obj.access_token)
+            
+           
+            return Response(new_access_token)
+        
+        except Exception as e:
+            return Response({'error': 'Invalid refresh token'}, status=400)
+    else:
+        return Response({'error': 'Refresh token is required'}, status=400)
