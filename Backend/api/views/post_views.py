@@ -31,11 +31,6 @@ class ReviewListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
 
-
-
-
-
-
 class AllCommentsViewSet(mixins.ListModelMixin, GenericAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSeralizer
