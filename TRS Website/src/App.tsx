@@ -16,6 +16,7 @@ import Forgot_pass from "./components/Reset_email"
 import Change_pwd from "./components/Change_pass"
 import Email_ver from "./components/Email_ver"
 import {Register2} from "./components/RegisterPage2"
+import { ProfileSetup } from "./components/ProfileSetup"
 
 
 
@@ -40,6 +41,7 @@ function App() {
                 <Route element={<Forgot_pass />} path="/forgot-password" />
                 <Route element={<Change_pwd />} path="/change_pass/:id" />
                 <Route element={<Register2/>} path="/register2" />
+                <Route element={<ProfileSetup/>} path="/profile_setup"></Route>
               </Routes>
             </SearchProvider>
         </Router>

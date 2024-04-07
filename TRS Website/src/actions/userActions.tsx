@@ -21,6 +21,11 @@ import {
     USER_REGISTER_REQUEST,
     USER_REGISTER_FAIL,
 
+    USER_PROFILE_REQUEST,
+    USER_PROFILE_SUCCESS,
+    USER_PROFILE_FAIL,
+    USER_PROFILE_RESET,
+
 
     USER_UPDATE_PROFILE_SUCCESS,
     USER_UPDATE_PROFILE_REQUEST,
@@ -141,11 +146,73 @@ export const register=(email,name,password) => async (dispatch) => {
 
         const {data} = await axios.post(
             '/api/users/register/',
-            {'name':name, 'email':email,'password':password},
+            {'username':name, 'email':email,'password':password},
             config
         )
         dispatch({
             type:USER_REGISTER_SUCCESS,
+            payload:data
+        })  
+
+        Swal.fire({
+            title: "Step 1 completed now tell us about yourself",
+            icon: "success",
+            toast: true,
+            timer: 3000,
+            position: "top-right",
+            timerProgressBar: true,
+            showConfirmButton: false,
+        })
+
+        // dispatch({
+        //     type:USER_LOGIN_SUCCESS,
+        //     payload:data
+        // })  
+        
+        // localStorage.setItem('userInfo',JSON.stringify(data))
+    }
+    catch(error){
+        dispatch({
+            type: USER_REGISTER_FAIL,
+            payload:error.response && error.response.data.detail 
+            ? error.response.data.detail
+            :error.message, //passing the error 
+        })
+        Swal.fire({
+        title: {error},
+        icon: "error",
+        toast: true,
+        timer: 3000,
+        position: "top-right",
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+    }
+}
+
+
+export const profile_Setup=(email,fn,aor,affil,cp,cat) => async (dispatch) => {
+    try{
+        dispatch({
+            type:USER_PROFILE_REQUEST
+
+        })
+
+        const config={
+            headers:{
+                'Content-type':'application/json'
+            }
+        }
+        
+
+        const {data} = await axios.post(
+            '/api/users/setProfile/',
+            {'email':email,'fullname':fn,'aor':aor,'affil':affil,'cp':cp,'cat':cat},
+            config
+        )
+
+        dispatch({
+            type:USER_PROFILE_SUCCESS,
             payload:data
         })  
 
@@ -168,7 +235,7 @@ export const register=(email,name,password) => async (dispatch) => {
     }
     catch(error){
         dispatch({
-            type: USER_REGISTER_FAIL,
+            type: USER_PROFILE_FAIL,
             payload:error.response && error.response.data.detail 
             ? error.response.data.detail
             :error.message, //passing the error 

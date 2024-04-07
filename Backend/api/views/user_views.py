@@ -65,22 +65,56 @@ def registerUser(request):
     try:
         data=request.data
         print(data)
+
+        if User.objects.filter(email=data['email']).exists():  # Check if user with this email already exists
+            raise ValueError('User with this email already exists')
+
         user=User.objects.create(
-            username=data['name'],
+            username=data['username'],
             email=data['email'],
             password=make_password(data['password']),  #to hash password
 
 
         )
+        print("hello")
         serializer=UserSerializer(user,many=False)
 
 
         print(serializer.data)
         return Response(serializer.data)
-    except:
-        message={'detail':'User with this email already exists'}
-        return Response(message,status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def profileSetup(request):
+    try:
+        data=request.data
+        print(data)
+        email=data['email']
+        user=User.objects.get(email=email)
+        user.full_name=data['fullname']
+        user.area_of_research=data['aor']
+        # if data['affil']:
+        #     user.affiliation=data['affil']
+        user.current_position=data['cp']
+        category_name=data['cat']
+        if category_name:
+            try:
+                category=Category.objects.get(name=category_name)
+                user.default_category=category
+            except  Exception as e:
+                message={"detail":str(e)}
+        user.save()
+        
+        serializer=UserSerializer(user,many=False)
+
+
+        print(serializer.data)
+        return Response(serializer.data)
+    except Exception as e:
+        message={'detail':str(e)}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 
 class change_password(APIView):

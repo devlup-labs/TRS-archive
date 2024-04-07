@@ -3,15 +3,16 @@ import AuthContext from "../context/AuthContext";
 import {useDispatch,useSelector} from 'react-redux'
 import {Link, redirect,useNavigate,useLocation} from 'react-router-dom'
 import Message from './Message'
-import {register } from "../actions/userActions";
+import {profile_Setup } from "../actions/userActions";
 
 
 
-export const Register2 = () => {
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
+export const ProfileSetup = () => {
+  const [fullname, setFullName] = useState("");
+  const [aor, setAOR] = useState("");
+  const [affil, setAffil] = useState("");
+  const [cp, setCp] = useState("");
+  const [cat, setCat] = useState("");
   const [message,setMessage] = useState('')
   
   const location=useLocation()
@@ -19,34 +20,31 @@ export const Register2 = () => {
   const dispatch=useDispatch()
   
   
-  const userVerify=useSelector(state=>state.userVerify)
-  const {error,loading,esent,success,email:verEmail}=userVerify
+  const userRegister=useSelector(state=>state.userRegister)
+  const {error,loading,success,userInfo}=userRegister
   
   
   const handleSubmit = (e) =>{
       e.preventDefault()
-      if (password !== password2){
-          setMessage('password did not match')
-      }
-      else{
+      dispatch(profile_Setup(userInfo.email,fullname,aor,affil,cp,cat));
 
-        dispatch(register(email, username, password));
-      }
         
   }
 
-  const userRegister = useSelector(state=>state.userRegister)
-  const {error:errorRegister,loading:loadingRegister,userInfo} = userRegister
+  const userCreateProfile=useSelector(state=>state.userProfile)
+  const {error:profile_error,loading:loading_profile,success:success_profile,userProfile}=userCreateProfile
+
   
   useEffect(() => {
-    setEmail(verEmail)  //setting email which has being verified
-    if (userInfo) {
-       navigate('/profile_setup')
+    console.log(userInfo.affiliation)
+    setAffil(userInfo.affiliation)  //setting email which has being verified
+    if (userProfile) {
+       navigate('/login')
     }
     else if(!success){  //if user tries to access it with having verfied email 
       navigate('/register')
     }
-  }, [userInfo,loadingRegister, dispatch]);
+  }, [userInfo,loading_profile, dispatch]);
   
   
   
@@ -56,60 +54,77 @@ export const Register2 = () => {
     <>
     
       <div className="mt-48 text-green-500"></div>
-      
+
       <form
         onSubmit={handleSubmit}
         className="mx-auto mt-16 w-1/3 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
       >
-        <h2> Register for the first time(step 1 of 2)</h2>
+        <h2> Register for the first time(step 2 of 2)</h2>
         {message && <Message variant='danger'>{message}</Message>}
-        <label className="block mb-2">Email:</label>
+        <label className="block mb-2">FullName:</label>
         <div className="relative mb-4">
           <input
             type="text"
             className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
-            disabled
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email Address"
+        
+            value={fullname}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="set FullName"
           />
           <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
         </div>
-        <label className="block mb-2">UserName: </label>
+
+
+        <label className="block mb-2">Affilation:(users who donot have current affilation can enter "Unaffilated" or "Independant Researcher")</label>
+        <div className="relative mb-4">
+          <input
+            type="text"
+            className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+          
+            value={affil}
+            disabled={affil !== ''}
+            onChange={(e) => setAffil(e.target.value)}
+            placeholder="set Affiliation"
+          />
+          <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
+        </div>
+
+
+        <label className="block mb-2">Area of Research: </label>
         <div className="relative mb-4">
           <input
             type="text"
             className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
             required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="UserName"
+            value={aor}
+            onChange={(e) => setAOR(e.target.value)}
+            placeholder="Area of Research"
           />
           <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
         </div>
 
-        <label className="block mb-2">Password:</label>
+        <label className="block mb-2">Your Default Category:</label>
         <div className="relative mb-4">
           <input
-            type="password"
+            type="text"
             className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            value={cat}
+            onChange={(e) => setCat(e.target.value)}
+            placeholder="chosse a category"
           />
 
           <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
         </div>
-        <label className="block mb-2">Reenter your Password:</label>
+        <label className="block mb-2">Current Position:</label>
         <div className="relative mb-4">
           <input
-            type="password"
+            type="text"
             className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
             required
-            value={password2}
-            onChange={(e) => setPassword2(e.target.value)}
-            placeholder="Reenter your Password"
+            value={cp}
+            onChange={(e) => setCp(e.target.value)}
+            placeholder="Enter your current position"
           />
           <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
         </div>
