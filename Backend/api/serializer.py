@@ -2,7 +2,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework.serializers import Serializer, FileField
-from .models import Post, Comment, User, Institute, Category, New, Review
+from .models import Post, Comment, User, Institute, Category, New, Review,SubCategory
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -122,3 +122,18 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['description', 'pdf_file_status', 'reviewer_id', 'post']
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = ['name', 'category']
+        search_fields = ['category']
+
+class CategorySerializer(serializers.ModelSerializer):
+    sub_categories = SubCategorySerializer(many=True, read_only=True)  # Modified line
+    class Meta:
+        model = Category
+        fields = ['name', 'sub_categories']
+        # search_fields = ['name']
+        # list_filter = ['name']

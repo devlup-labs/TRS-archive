@@ -37,13 +37,16 @@ class Institute(models.Model):
         return self.college_name
     
 class Category(models.Model):
-    name=models.CharField(max_length=100, choices=Categories_Choices,null=True)
-    sub_categories=models.CharField(max_length=100,null=True,blank=True)
-    description=models.CharField(max_length=300,null=True,blank=True)
-
+    name = models.CharField(max_length=100,null=True)
     def __str__(self):
         return self.name
-    
+
+class SubCategory(models.Model):
+    name = models.CharField(max_length=100,null=True)
+    category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    description = models.TextField(null=True)
+    def __str__(self):
+        return self.name
     
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from api.models import User,Post,Comment,Institute,Category, Review, New,Activation
+from api.models import User,Post,Comment,Institute,Category, Review, New,Activation, SubCategory
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ['id','username','email','is_verified','is_staff']
@@ -32,10 +32,14 @@ class NewsAdmin(admin.ModelAdmin):
     list_display = ['title', 'description', 'image']
 
 class CategoriesAdmin(admin.ModelAdmin):
-    list_display = ['name','sub_categories']
+    list_display = ['name']
     search_fields = ['name']
     list_filter = ['name']
-    
+
+class SubCategoriesAdmin(admin.ModelAdmin):
+    list_display = ['category','name','description']
+    search_fields = ['category']
+    list_filter = ['name']
 class InstituteAdmin(admin.ModelAdmin):
     list_display = ['college_name', 'email_tag', 'is_approved']
     fieldsets = (
@@ -68,3 +72,4 @@ admin.site.register(Category,CategoriesAdmin)
 admin.site.register(New, NewsAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Activation,ActivationAdmin)
+admin.site.register(SubCategory,SubCategoriesAdmin)
