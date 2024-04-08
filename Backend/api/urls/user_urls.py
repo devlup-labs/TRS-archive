@@ -17,4 +17,6 @@ urlpatterns=[
     path('profile/update/',views.updateUserProfile, name='edit_profile'),
     path('change_password/<int:u_id>/', views.change_password.as_view()),
     path('password_reset/',views.send_email_pass.as_view()),
+    path('getUsers/',views.getUsers),
+    path('getCategories/',views.getCategories)
 ]

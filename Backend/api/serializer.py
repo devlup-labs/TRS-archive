@@ -23,6 +23,13 @@ class UserSerializerWithToken(UserSerializer):
         fields = ['id', 'username','full_name', 'email', 'area_of_research', 'affiliation', 'default_category', 'current_position', 'roles', 'image', 'upload_verified', 'access', 'refresh']
 
 
+class AllUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=['email','username','affiliation','is_staff']
+    
+
+
 
 class PostSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

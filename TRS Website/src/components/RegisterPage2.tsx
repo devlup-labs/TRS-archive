@@ -61,7 +61,7 @@ export const Register2 = () => {
         onSubmit={handleSubmit}
         className="mx-auto mt-16 w-1/3 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
       >
-        <h2> Register for the first time(step 1 of 2)</h2>
+        <h1 className="text-[40px]"> Register for the first time(step 1 of 2)</h1>
         {message && <Message variant='danger'>{message}</Message>}
         <label className="block mb-2">Email:</label>
         <div className="relative mb-4">

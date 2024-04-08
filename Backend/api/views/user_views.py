@@ -3,7 +3,7 @@ from api.models import User
 from api.serializer import UserSerializer,  RegisterSerializer, NewsSerializer, ReviewSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status,generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 
 from api.serializer import *
@@ -270,12 +270,11 @@ def verify_user(request):
         return JsonResponse({'error': 'Invalid activation key'}, status=400)
     
 
-
-
-
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 def TokenRefreshView(request):
+
+
     refresh_token = request.data['refresh']
     print(refresh_token)
     if refresh_token:
@@ -292,3 +291,27 @@ def TokenRefreshView(request):
             return Response({'error': 'Invalid refresh token'}, status=400)
     else:
         return Response({'error': 'Refresh token is required'}, status=400)
+    
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUsers(request):
+    try:
+        users=User.objects.all()
+        serializer=AllUserSerializer(users,many=True)
+        return Response(serializer.data)    
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def getCategories(request):
+    try:
+        categories=Category.objects.all()
+        serializers=CategorySerializer(categories,many=True)
+        return Response(serializers.data)
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+# user_views
