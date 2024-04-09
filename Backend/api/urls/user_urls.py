@@ -11,9 +11,12 @@ urlpatterns=[
     path('send_email/',views.send_activation_email),
     path('verify/',views.verify_user),
     path('register/',views.registerUser),
+    path('setProfile/',views.profileSetup),
     # path('verify/', views.VerifyOTP.as_view()),
     path('profile/',views.getUserProfile,name='user-profile'),
     path('profile/update/',views.updateUserProfile, name='edit_profile'),
     path('change_password/<int:u_id>/', views.change_password.as_view()),
     path('password_reset/',views.send_email_pass.as_view()),
+    path('getUsers/',views.getUsers),
+    path('getCategories/',views.getCategories)
 ]

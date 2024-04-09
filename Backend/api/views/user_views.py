@@ -3,7 +3,7 @@ from api.models import User
 from api.serializer import UserSerializer,  RegisterSerializer, NewsSerializer, ReviewSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework import status,generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 
 from api.serializer import *
@@ -65,22 +65,56 @@ def registerUser(request):
     try:
         data=request.data
         print(data)
+
+        if User.objects.filter(email=data['email']).exists():  # Check if user with this email already exists
+            raise ValueError('User with this email already exists')
+
         user=User.objects.create(
-            username=data['name'],
+            username=data['username'],
             email=data['email'],
             password=make_password(data['password']),  #to hash password
 
 
         )
+        print("hello")
         serializer=UserSerializer(user,many=False)
 
 
         print(serializer.data)
         return Response(serializer.data)
-    except:
-        message={'detail':'User with this email already exists'}
-        return Response(message,status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def profileSetup(request):
+    try:
+        data=request.data
+        print(data)
+        email=data['email']
+        user=User.objects.get(email=email)
+        user.full_name=data['fullname']
+        user.area_of_research=data['aor']
+        # if data['affil']:
+        #     user.affiliation=data['affil']
+        user.current_position=data['cp']
+        category_name=data['cat']
+        if category_name:
+            try:
+                category=Category.objects.get(name=category_name)
+                user.default_category=category
+            except  Exception as e:
+                message={"detail":str(e)}
+        user.save()
+        
+        serializer=UserSerializer(user,many=False)
+
+
+        print(serializer.data)
+        return Response(serializer.data)
+    except Exception as e:
+        message={'detail':str(e)}
+        return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 
 class change_password(APIView):
@@ -236,12 +270,11 @@ def verify_user(request):
         return JsonResponse({'error': 'Invalid activation key'}, status=400)
     
 
-
-
-
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 def TokenRefreshView(request):
+
+
     refresh_token = request.data['refresh']
     print(refresh_token)
     if refresh_token:
@@ -258,3 +291,27 @@ def TokenRefreshView(request):
             return Response({'error': 'Invalid refresh token'}, status=400)
     else:
         return Response({'error': 'Refresh token is required'}, status=400)
+    
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUsers(request):
+    try:
+        users=User.objects.all()
+        serializer=AllUserSerializer(users,many=True)
+        return Response(serializer.data)    
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def getCategories(request):
+    try:
+        categories=Category.objects.all()
+        serializers=CategorySerializer(categories,many=True)
+        return Response(serializers.data)
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+# user_views

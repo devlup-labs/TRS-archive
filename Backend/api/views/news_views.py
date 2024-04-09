@@ -7,4 +7,4 @@ from rest_framework.permissions import IsAuthenticated
 class NewsListView(ListAPIView):
     queryset = New.objects.all()
     serializer_class = NewsSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]

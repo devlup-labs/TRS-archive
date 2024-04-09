@@ -4,6 +4,7 @@ import {composeWithDevTools} from '@redux-devtools/extension'
 
 import {userVerifyReducer,
         userRegisterReducer,
+        userProfileReducer,
         UserLoginReducer,
         userDetailsReducer,
         userUpdateProfileReducer,
@@ -16,6 +17,7 @@ import {userVerifyReducer,
 const reducer=combineReducers({
     userVerify:userVerifyReducer,
     userRegister:userRegisterReducer,
+    userProfile:userProfileReducer,
     userLogin:UserLoginReducer,
     userDetails:userDetailsReducer,
     userUpdateProfile:userUpdateProfileReducer,

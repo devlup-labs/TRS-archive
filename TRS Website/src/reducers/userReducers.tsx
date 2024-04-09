@@ -14,6 +14,11 @@ USER_REGISTER_SUCCESS,
 USER_REGISTER_REQUEST,
 USER_REGISTER_FAIL,
 
+USER_PROFILE_REQUEST,
+USER_PROFILE_SUCCESS,
+USER_PROFILE_FAIL,
+USER_PROFILE_RESET,
+
 
 
 USER_DETAILS_SUCCESS,
@@ -65,18 +70,45 @@ export const userRegisterReducer = (state = {},actions) => {
         case USER_REGISTER_SUCCESS:
             console.log("from reducer")
             console.log(actions.payload)
-            return {loading:false,userInfo:actions.payload}
+            return {loading:false,success:true,userInfo:actions.payload}
 
         case USER_REGISTER_FAIL:
             return {loading:false,error:actions.payload}
 
-        case USER_LOGOUT:
+        // case USER_LOGOUT:
+        //     return {}
+
+        default:
+            return state
+    }
+}
+
+export const userProfileReducer = (state = {},actions) => {
+    switch(actions.type){
+        case USER_PROFILE_REQUEST:
+            return {loading:true}
+        
+        case USER_PROFILE_SUCCESS:
+            console.log("from reducer")
+            console.log(actions.payload)
+            return {loading:false,userProfile:actions.payload}
+
+        case USER_PROFILE_FAIL:
+            return {loading:false,error:actions.payload}
+
+        case USER_PROFILE_RESET:
             return {}
 
         default:
             return state
     }
 }
+
+
+
+
+
+
 
 
 
