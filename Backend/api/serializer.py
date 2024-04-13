@@ -20,7 +20,7 @@ class UserSerializerWithToken(UserSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username','full_name', 'email', 'area_of_research', 'affiliation', 'default_category', 'current_position', 'roles', 'image', 'upload_verified', 'access', 'refresh']
+        fields = ['id', 'username','full_name', 'email', 'area_of_research', 'affiliation', 'default_category', 'current_position', 'roles', 'image', 'upload_verified', 'access', 'refresh', 'is_staff']
 
 
 class AllUserSerializer(serializers.ModelSerializer):
