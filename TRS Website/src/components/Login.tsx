@@ -1,51 +1,44 @@
 import { useContext, useEffect, useState } from "react";
-import AuthContext from "../context/AuthContext";
-import { verified } from "../constants";
-import {useDispatch,useSelector} from 'react-redux'
-import {Link, redirect,useNavigate,useLocation} from 'react-router-dom'
-import {login} from '../actions/userActions'
-import Loader from './Loader.tsx'
-import Message from './Message.tsx'
-
-
-
-
+import { useDispatch, useSelector } from "react-redux";
+import { Link, redirect, useNavigate, useLocation } from "react-router-dom";
+import { login } from "../actions/userActions";
+import Loader from "./Loader.tsx";
+import Message from "./Message.tsx";
 
 export const Login = () => {
-  const [isVerified, setIsVerified] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [is_staff, setIsStaff] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const location=useLocation()
-  const navigate=useNavigate()
-  const dispatch=useDispatch()
+  const submitHandler = (e) => {
+    e.preventDefault();
+    console.log("Submitted");
+    dispatch(login(email, password));
+  };
 
-   const submitHandler = (e) =>{
-        e.preventDefault()
-        console.log('Submitted')
-        dispatch(login(email,password))
+  const redirect = location.search ? location.search.split("=")[1] : "/";
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { error, loading, authToken } = userLogin;
+
+  useEffect(() => {
+    if (authToken) {
+      if (authToken.is_staff) {
+        navigate("/admin");
+      } else {
+        navigate(redirect);
+      }
     }
-
-  const redirect=location.search?location.search.split('=')[1] : '/'
-
-
-  
-  const userLogin = useSelector(state=>state.userLogin)
-  const {error,loading,authToken} = userLogin
-
-    useEffect(() => {
-        if(authToken){
-            navigate(redirect)
-
-        }
-    },[authToken,redirect,navigate])
-
+  }, [authToken, redirect, navigate]);
 
   return (
     <>
       <div className="mt-48 text-green-500 bg-opacity-0"></div>
-      {error && <Message variant='danger'>{error}</Message>}
-    {loading && <Loader></Loader>}
+      {error && <Message variant="danger">{error}</Message>}
+      {loading && <Loader></Loader>}
       <form
         onSubmit={submitHandler}
         className="mx-auto mt-16 w-1/3 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
@@ -74,7 +67,6 @@ export const Login = () => {
             placeholder="Password"
           />
 
-
           <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
         </div>
 
@@ -88,7 +80,9 @@ export const Login = () => {
           Do not Have an account? <a href="/register">Register</a>
         </p>
         <div className=" mb-4">
-          <a href="/forgot-password" className="text-green-500">Forgot Password?</a>
+          <a href="/forgot-password" className="text-green-500">
+            Forgot Password?
+          </a>
         </div>
       </form>
     </>

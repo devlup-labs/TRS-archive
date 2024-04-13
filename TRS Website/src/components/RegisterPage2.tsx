@@ -1,68 +1,64 @@
-import { useContext, useEffect, useState } from "react";
-import AuthContext from "../context/AuthContext";
-import {useDispatch,useSelector} from 'react-redux'
-import {Link, redirect,useNavigate,useLocation} from 'react-router-dom'
-import Message from './Message'
-import {register } from "../actions/userActions";
-
-
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
+import Message from "./Message";
+import { getCategoriesAction, register } from "../actions/userActions";
+import Loader from "./Loader";
 
 export const Register2 = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-  const [message,setMessage] = useState('')
-  
-  const location=useLocation()
-  const navigate=useNavigate()
-  const dispatch=useDispatch()
-  
-  
-  const userVerify=useSelector(state=>state.userVerify)
-  const {error,loading,esent,success,email:verEmail}=userVerify
-  
-  
-  const handleSubmit = (e) =>{
-      e.preventDefault()
-      if (password !== password2){
-          setMessage('password did not match')
-      }
-      else{
+  const [message, setMessage] = useState("");
 
-        dispatch(register(email, username, password));
-      }
-        
-  }
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const userRegister = useSelector(state=>state.userRegister)
-  const {error:errorRegister,loading:loadingRegister,userInfo} = userRegister
-  
+  const userVerify = useSelector((state) => state.userVerify);
+  const { error, loading, esent, success, email: verEmail } = userVerify;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password !== password2) {
+      setMessage("password did not match");
+    } else {
+      dispatch(register(email, username, password));
+    }
+  };
+
+  const userRegister = useSelector((state) => state.userRegister);
+  const {
+    error: errorRegister,
+    loading: loadingRegister,
+    userInfo,
+  } = userRegister;
+
   useEffect(() => {
-    setEmail(verEmail)  //setting email which has being verified
+    setEmail(verEmail); //setting email which has being verified
     if (userInfo) {
-       navigate('/profile_setup')
+      navigate("/profile_setup");
+    } else if (!success) {
+      //if user tries to access it with having verfied email
+      navigate("/register");
+    } else {
+      dispatch(getCategoriesAction());
     }
-    else if(!success){  //if user tries to access it with having verfied email 
-      navigate('/register')
-    }
-  }, [userInfo,loadingRegister, dispatch]);
-  
-  
-  
-  
-  
+  }, [userInfo, loadingRegister, dispatch]);
+
   return (
     <>
-    
       <div className="mt-48 text-green-500"></div>
-      
+      {loading && <Loader />}
       <form
         onSubmit={handleSubmit}
         className="mx-auto mt-16 w-1/3 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
       >
-        <h1 className="text-[40px]"> Register for the first time(step 1 of 2)</h1>
-        {message && <Message variant='danger'>{message}</Message>}
+        <h1 className="text-[40px]">
+          {" "}
+          Register for the first time(step 1 of 2)
+        </h1>
+        {message && <Message variant="danger">{message}</Message>}
         <label className="block mb-2">Email:</label>
         <div className="relative mb-4">
           <input
