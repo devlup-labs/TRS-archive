@@ -9,7 +9,7 @@ export default function Home() {
   const { searchQuery } = useSearch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const baseDir = "http://127.0.0.1:8000";
+  const baseDir = import.meta.env.BACKEND_URL;
   // const data = mainPageData;
   const [data, setData] = useState([]);
   const filtered = data.filter((item) => item.title.includes(searchQuery));
@@ -41,7 +41,7 @@ export default function Home() {
     const token = localStorage.getItem("authTokens");
     try {
       // const access = JSON.parse(token || "").access;
-      const response = await fetch("http://127.0.0.1:8000/api/posts/upload/", {
+      const response = await fetch(baseDir + "/api/posts/upload/", {
         method: "GET",
       });
       if (!response.ok)

@@ -98,7 +98,7 @@ export const Upload = () => {
         />
         <label className="block mb-2">Body:</label>
         <input
-          type="text"
+          type="textarea"
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Body"

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "./Loader";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getUsers } from "../actions/userActions";
 import { useNavigate } from "react-router-dom";
 import { News } from "./News";
@@ -13,7 +13,6 @@ export const AdminPage = () => {
   const { loading, usersInfo, success } = getallUser;
   const navigate = useNavigate();
   useEffect(() => {
-    console.log("Called");
     if (!authToken) {
       navigate("/login");
     } else {
@@ -25,11 +24,25 @@ export const AdminPage = () => {
     }
   }, [authToken, dispatch, navigate]);
   return (
-    <div className="mt-48">
+    <div className="mt-44">
       {loading && <Loader />}
-      <div>{success && JSON.stringify(usersInfo)}</div>
-      <div>Hello</div>
-      <News />
+      <div className="flex flex-row">
+        {success && (
+          <div className="w-[60%] overflow-y-auto p-2">
+            <ul className="flex flex-col gap-2 border border-transparent">
+              {usersInfo.map((user, index) => (
+                <li key={index} className="border bg-gray-500 p-2">
+                  <p>Username: {user.username}</p>
+                  <p>Email: {user.email}</p>
+                  <p>Affiliation: {user.affiliation || "N/A"}</p>
+                  <p>Is Staff: {user.is_staff ? "Yes" : "No"} </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <News />
+      </div>
     </div>
   );
 };

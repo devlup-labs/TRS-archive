@@ -62,7 +62,7 @@ export const ProfileSetup = () => {
       {success && successCat && (
         <form
           onSubmit={handleSubmit}
-          className="mx-auto mt-16 w-1/3 bg-gradient-to-r from-red-600 to-red-800 text-white p-8 rounded-md shadow-md"
+          className="mx-auto mt-16 w-1/3 bg-gradient-to-r from-blue-600 to-blue-800 text-white p-8 rounded-md shadow-md"
         >
           <h1> Register for the first time(step 2 of 2)</h1>
           {message && <Message variant="danger">{message}</Message>}
@@ -70,12 +70,12 @@ export const ProfileSetup = () => {
           <div className="relative mb-4">
             <input
               type="text"
-              className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+              className="w-full p-2 bg-gray-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
               value={fullname}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="set FullName"
             />
-            <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
+            <div className="absolute w-full left-0 bottom-0 h-1 bg-gray-900 transition-colors"></div>
           </div>
 
           <label className="block mb-2">
@@ -85,50 +85,53 @@ export const ProfileSetup = () => {
           <div className="relative mb-4">
             <input
               type="text"
-              className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+              className="w-full p-2 bg-gray-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
               value={affil}
               disabled={affil !== ""}
               onChange={(e) => setAffil(e.target.value)}
               placeholder="set Affiliation"
             />
-            <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
+            <div className="absolute w-full left-0 bottom-0 h-1 bg-gray-900 transition-colors"></div>
           </div>
 
           <label className="block mb-2">Area of Research: </label>
           <div className="relative mb-4">
             <input
               type="text"
-              className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+              className="w-full p-2 bg-gray-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
               required
               value={aor}
               onChange={(e) => setAOR(e.target.value)}
               placeholder="Area of Research"
             />
-            <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
+            <div className="absolute w-full left-0 bottom-0 h-1 bg-gray-900 transition-colors"></div>
           </div>
 
           <label className="block mb-2">Your Default Category:</label>
           <div className="relative mb-4">
-            <DropdownInput options={cats} onOptionSelect={handleOptionSelect} />
-
-            <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
+            <DropdownInput
+              options={cats}
+              onOptionSelect={handleOptionSelect}
+              style="h-full w-full bg-gray-800 rounded-md"
+              b_bar={true}
+            />
           </div>
           <label className="block mb-2">Current Position:</label>
           <div className="relative mb-4">
             <input
               type="text"
-              className="w-full p-2 bg-red-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+              className="w-full p-2 bg-gray-800 border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
               required
               value={cp}
               onChange={(e) => setCp(e.target.value)}
               placeholder="Enter your current position"
             />
-            <div className="absolute w-full left-0 bottom-0 h-1 bg-green-700 transition-colors"></div>
+            <div className="absolute w-full left-0 bottom-0 h-1 bg-gray-900 transition-colors"></div>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-green-500 hover:bg-green-600 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full bg-yellow-400 hover:bg-yellow-600 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900"
           >
             Submit
           </button>
