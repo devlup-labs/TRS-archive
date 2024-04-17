@@ -1,178 +1,195 @@
 import {
-USER_LOGIN_SUCCESS,
-USER_LOGIN_REQUEST,
-USER_LOGOUT,
-USER_LOGIN_FAIL,
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_REQUEST,
+  USER_LOGOUT,
+  USER_LOGIN_FAIL,
+  USER_VERIFY_REQUEST,
+  USER_VERIFY_SUCCESS,
+  USER_VERIFY_EMAIL,
+  USER_VERIFY_FAIL,
+  USER_VERIFY_RESET,
+  USER_REGISTER_SUCCESS,
+  USER_REGISTER_REQUEST,
+  USER_REGISTER_FAIL,
+  USER_PROFILE_REQUEST,
+  USER_PROFILE_SUCCESS,
+  USER_PROFILE_FAIL,
+  USER_PROFILE_RESET,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_FAIL,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
+  USERS_GET_ALL_REQUEST,
+  USERS_GET_ALL_REQUEST_SUCCESS,
+  USERS_GET_ALL_REQUEST_FAIL,
+  USERS_GET_ALL_REQUEST_RESET,
+  CATEGORIES_GET_ALL_REQUEST,
+  CATEGORIES_GET_ALL_REQUEST_SUCCESS,
+  CATEGORIES_GET_ALL_REQUEST_FAIL,
+  CATEGORIES_GET_ALL_REQUEST_RESET,
+} from "../constants/userConstants";
 
-USER_VERIFY_REQUEST,
-USER_VERIFY_SUCCESS,
-USER_VERIFY_EMAIL,
-USER_VERIFY_FAIL,
-USER_VERIFY_RESET,
+export const userVerifyReducer = (state = { email: null }, actions) => {
+  switch (actions.type) {
+    case USER_VERIFY_REQUEST:
+      return { ...state, loading: true, esent: false };
 
-USER_REGISTER_SUCCESS,
-USER_REGISTER_REQUEST,
-USER_REGISTER_FAIL,
+    case USER_VERIFY_EMAIL:
+      return { ...state, loading: true, success: false, esent: true };
 
-USER_PROFILE_REQUEST,
-USER_PROFILE_SUCCESS,
-USER_PROFILE_FAIL,
-USER_PROFILE_RESET,
+    case USER_VERIFY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        email: actions.payload,
+      };
 
+    case USER_VERIFY_FAIL:
+      return { ...state, loading: false, error: actions.payload };
 
+    case USER_VERIFY_RESET:
+      return {};
 
-USER_DETAILS_SUCCESS,
-USER_DETAILS_REQUEST,
-USER_DETAILS_FAIL,
+    default:
+      return state;
+  }
+};
 
+export const userRegisterReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case USER_REGISTER_REQUEST:
+      return { loading: true };
 
-USER_UPDATE_PROFILE_REQUEST,
-USER_UPDATE_PROFILE_SUCCESS,
-USER_UPDATE_PROFILE_FAIL,
-USER_UPDATE_PROFILE_RESET,
+    case USER_REGISTER_SUCCESS:
+      console.log("from reducer");
+      console.log(actions.payload);
+      return { loading: false, success: true, userInfo: actions.payload };
 
+    case USER_REGISTER_FAIL:
+      return { loading: false, error: actions.payload };
 
+    // case USER_LOGOUT:
+    //     return {}
 
-} from '../constants/userConstants'
+    default:
+      return state;
+  }
+};
 
+export const userProfileReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case USER_PROFILE_REQUEST:
+      return { loading: true };
 
-export const userVerifyReducer = (state ={email:null},actions) => {
-    switch(actions.type){
-        case USER_VERIFY_REQUEST:
-            return { ...state, loading:true,esent:false };
+    case USER_PROFILE_SUCCESS:
+      console.log("from reducer");
+      console.log(actions.payload);
+      return { loading: false, userProfile: actions.payload };
 
-        case USER_VERIFY_EMAIL:
-            return { ...state, loading:true, success:false, esent:true };
-        
-        case USER_VERIFY_SUCCESS:
-            return { ...state, loading:false, success:true, email: actions.payload };
+    case USER_PROFILE_FAIL:
+      return { loading: false, error: actions.payload };
 
-        case USER_VERIFY_FAIL:
-            return { ...state, loading:false, error: actions.payload };
+    case USER_PROFILE_RESET:
+      return {};
 
-        case USER_VERIFY_RESET:
-            return {}
+    default:
+      return state;
+  }
+};
 
-        default:
-            return state
-    }
-}
+export const UserLoginReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case USER_LOGIN_REQUEST:
+      return { loading: true };
 
+    case USER_LOGIN_SUCCESS:
+      return { loading: false, authToken: actions.payload };
 
+    case USER_LOGIN_FAIL:
+      return { loading: false, error: actions.payload };
 
+    case USER_LOGOUT:
+      return {};
 
+    default:
+      return state;
+  }
+};
 
-export const userRegisterReducer = (state = {},actions) => {
-    switch(actions.type){
-        case USER_REGISTER_REQUEST:
-            return {loading:true}
-        
-        case USER_REGISTER_SUCCESS:
-            console.log("from reducer")
-            console.log(actions.payload)
-            return {loading:false,success:true,userInfo:actions.payload}
+export const userDetailsReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case USER_DETAILS_REQUEST:
+      return { ...state, loading: true };
 
-        case USER_REGISTER_FAIL:
-            return {loading:false,error:actions.payload}
+    case USER_DETAILS_SUCCESS:
+      return { loading: false, user: actions.payload };
 
-        // case USER_LOGOUT:
-        //     return {}
+    case USER_DETAILS_FAIL:
+      return { loading: false, error: actions.payload };
 
-        default:
-            return state
-    }
-}
+    // case USER_DETAILS_RESET:
+    //     return {user:{}}
 
-export const userProfileReducer = (state = {},actions) => {
-    switch(actions.type){
-        case USER_PROFILE_REQUEST:
-            return {loading:true}
-        
-        case USER_PROFILE_SUCCESS:
-            console.log("from reducer")
-            console.log(actions.payload)
-            return {loading:false,userProfile:actions.payload}
-
-        case USER_PROFILE_FAIL:
-            return {loading:false,error:actions.payload}
-
-        case USER_PROFILE_RESET:
-            return {}
-
-        default:
-            return state
-    }
-}
-
-
-
-
-
-
-
-
-
-export const UserLoginReducer = (state = {},actions) => {
-    switch(actions.type){
-        case USER_LOGIN_REQUEST:
-            return {loading:true}
-        
-        case USER_LOGIN_SUCCESS:
-            return {loading:false,authToken:actions.payload}
-
-        case USER_LOGIN_FAIL:
-            return {loading:false,error:actions.payload}
-
-        case USER_LOGOUT:
-            return {}
-
-        default:
-            return state
-    }
-}
-
-
-
-export const userDetailsReducer = (state = {},actions) => {
-    switch(actions.type){
-        case USER_DETAILS_REQUEST:
-            return {...state, loading:true}
-        
-        case USER_DETAILS_SUCCESS:
-            return {loading:false,user:actions.payload}
-
-        case USER_DETAILS_FAIL:
-            return {loading:false,error:actions.payload}
-
-        // case USER_DETAILS_RESET:
-        //     return {user:{}}
-
-
-        default:
-            return state
-    }
-}
-
-
-
+    default:
+      return state;
+  }
+};
 
 export const userUpdateProfileReducer = (state = {}, actions) => {
-    switch(actions.type){
-        case USER_UPDATE_PROFILE_REQUEST:
-            return {...state, loading:true}
-        
-        case USER_UPDATE_PROFILE_SUCCESS:
-            return {loading:false,success:true,userInfo:actions.payload}
+  switch (actions.type) {
+    case USER_UPDATE_PROFILE_REQUEST:
+      return { ...state, loading: true };
 
-        case USER_UPDATE_PROFILE_FAIL:
-            return {loading:false,error:actions.payload}
+    case USER_UPDATE_PROFILE_SUCCESS:
+      return { loading: false, success: true, userInfo: actions.payload };
 
-        case USER_UPDATE_PROFILE_RESET:
-            return {}
+    case USER_UPDATE_PROFILE_FAIL:
+      return { loading: false, error: actions.payload };
 
+    case USER_UPDATE_PROFILE_RESET:
+      return {};
 
+    default:
+      return state;
+  }
+};
 
-        default:
-            return state
-    }
-}
+export const getAllUsersReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case USERS_GET_ALL_REQUEST:
+      return { ...state, loading: true };
+    case USERS_GET_ALL_REQUEST_SUCCESS:
+      return { loading: false, success: true, usersInfo: actions.payload };
+    case USERS_GET_ALL_REQUEST_FAIL:
+      return { loading: false, error: actions.payload };
+    case USERS_GET_ALL_REQUEST_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+
+export const getCategoriesReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case CATEGORIES_GET_ALL_REQUEST:
+      return { ...state, loadingCat: true };
+    case CATEGORIES_GET_ALL_REQUEST_SUCCESS:
+      return {
+        loadingCat: false,
+        successCat: true,
+        categoriesInfo: actions.payload,
+      };
+    case CATEGORIES_GET_ALL_REQUEST_FAIL:
+      return { loadingCat: false, error: actions.payload };
+    case CATEGORIES_GET_ALL_REQUEST_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};

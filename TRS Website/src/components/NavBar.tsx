@@ -1,28 +1,34 @@
-import { useContext } from "react";
-import AuthContext from "../context/AuthContext";
 import DropdownInput from "./DropInput";
-import { useSelector} from "react-redux";
-import {logout} from '../actions/userActions'
-import {useDispatch} from 'react-redux'
-
+import { useSelector, useDispatch } from "react-redux";
+import { logout, getCategoriesAction } from "../actions/userActions";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
-  // const { logoutUser } = useContext(AuthContext);
-  const dispatch = useDispatch()
-
-  
+  const dispatch = useDispatch();
+  const [cats, setCats] = useState([]);
+  const [cat, setCat] = useState("");
   const handleClick = () => {
     console.log("Logged out");
-    dispatch(logout())
-    
+    dispatch(logout());
   };
+  const handleOptionSelect = (option) => {
+    setCat(option);
+  };
+  const getCategories = useSelector((state) => state.getCategories);
+  const { loadingCat, successCat, categoriesInfo } = getCategories;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { authToken } = userLogin;
+  useEffect(() => {
+    if (!categoriesInfo) {
+      dispatch(getCategoriesAction());
+    } else {
+      console.log(categoriesInfo);
+      setCats(categoriesInfo.map((category) => category.name));
+    }
+  }, [dispatch, categoriesInfo]);
 
-  const userLogin=useSelector(state=>state.userLogin)
-  const {authToken} = userLogin
   return (
-    
-    
-    <nav className="fixed top-24 left-0 w-full h-16 bg-red-500  z-10 shadow-md flex items-center justify-between text-white p-4">
+    <nav className="fixed top-24 left-0 w-full h-16 bg-blue-800  z-10 shadow-md flex items-center justify-between text-white p-4">
       <a
         href="/"
         className="text-xl font-bold hover:text-white no-underline hover:no-underline"
@@ -30,9 +36,16 @@ const Navbar = () => {
         The Robotics Society
       </a>
 
-      <div className="flex items-center flex-grow mx-4">
-        <DropdownInput />
-      </div>
+      {!loadingCat && successCat && (
+        <div className="flex items-center flex-grow mx-4">
+          <DropdownInput
+            options={cats}
+            style="bg-gray-900"
+            b_bar={false}
+            onOptionSelect={handleOptionSelect}
+          />
+        </div>
+      )}
 
       <div className="flex items-center">
         {!authToken ? (
