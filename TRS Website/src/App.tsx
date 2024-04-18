@@ -15,8 +15,50 @@ import Email_ver from "./components/Email_ver";
 import { Register2 } from "./components/RegisterPage2";
 import { ProfileSetup } from "./components/ProfileSetup";
 import { AdminPage } from "./components/AdminPage";
+import { refreshAccessToken, logout } from './actions/userActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from "react";
+import {jwtDecode} from 'jwt-decode';
+
 
 function App() {
+  const dispatch = useDispatch();
+  let userInfo = useSelector(state => state.userLogin.authToken);
+  console.log(userInfo)
+
+  useEffect(() => {
+    if (userInfo && userInfo.access) {
+      console.log("checking start")
+      console.log("The access token in the state is: ")
+      
+      let { access:accessToken, refresh:refreshToken } = userInfo;
+      // console.log(accessToken)
+
+      // Decode JWT token to extract expiration times
+      const decodedAccessToken = jwtDecode(accessToken);
+      const decodedRefreshToken = jwtDecode(refreshToken);
+      const accessTokenExpiresAt = decodedAccessToken.exp; // Access token expiration time in Unix timestamp format
+      const refreshTokenExpiresAt = decodedRefreshToken.exp; // Refresh token expiration time in Unix timestamp format
+      const currentTime = Date.now() / 1000; // Current time in Unix timestamp format
+      console.log(accessTokenExpiresAt)
+      console.log(currentTime)
+      // Check if access token is expired
+      if (currentTime > accessTokenExpiresAt) {
+        // Access token is expired, refresh it
+        // console.log("access_token expired")
+         dispatch(refreshAccessToken(refreshToken));
+        
+      }
+
+      // Check if refresh token is expired
+      if (currentTime > refreshTokenExpiresAt) {
+        console.log("refresh_token expired")
+        // Refresh token is expired, dispatch logout action
+        dispatch(logout());
+      }
+    }
+  }, [userInfo,dispatch]);
+
   return (
     <>
       <div>

@@ -137,7 +137,34 @@ class change_password(APIView):
                 'status': 500,
                 'message': f'Error: {str(e)}',
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+def TokenRefreshView(request):
+
+    print("hello")
+    refresh_token = request.data['refresh']
+    # refresh_token=request.refresh_token
+    # print(refresh_token)
+    if refresh_token:
+        try:
+            refresh_token_obj = RefreshToken(refresh_token)
+            
+            # Update the user's access token (you can also add more data to the token here)
+            new_access_token = str(refresh_token_obj.access_token)
+            
+            print(new_access_token)
+            return Response(new_access_token)
         
+        except Exception as e:
+            return Response({'error': 'Invalid refresh token'}, status=400)
+    else:
+        return Response({'error': 'Refresh token is required'}, status=400)        
+
+
+
+
+
 
 class send_email_pass(APIView):
     def post(self,request):
