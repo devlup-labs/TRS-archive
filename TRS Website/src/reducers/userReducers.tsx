@@ -30,6 +30,10 @@ import {
   CATEGORIES_GET_ALL_REQUEST_SUCCESS,
   CATEGORIES_GET_ALL_REQUEST_FAIL,
   CATEGORIES_GET_ALL_REQUEST_RESET,
+  TOKEN_REFRESH_REQUEST,
+  TOKEN_REFRESH_SUCCESS,
+  UPDATE_AUTH_TOKEN,
+  TOKEN_REFRESH_FAIL,
 } from "../constants/userConstants";
 
 export const userVerifyReducer = (state = { email: null }, actions) => {
@@ -101,6 +105,25 @@ export const userProfileReducer = (state = {}, actions) => {
   }
 };
 
+
+
+export const TokenRefreshReducer = (state = {},actions) => {
+  switch(actions.type){
+      case TOKEN_REFRESH_REQUEST:
+          return {loading:true}
+      
+      case TOKEN_REFRESH_SUCCESS:
+          return {loading:false,success:true}
+
+      case TOKEN_REFRESH_FAIL:
+          return {loading:false,error:actions.payload}
+
+      default:
+          return state
+  }
+}
+
+
 export const UserLoginReducer = (state = {}, actions) => {
   switch (actions.type) {
     case USER_LOGIN_REQUEST:
@@ -111,6 +134,15 @@ export const UserLoginReducer = (state = {}, actions) => {
 
     case USER_LOGIN_FAIL:
       return { loading: false, error: actions.payload };
+
+    case UPDATE_AUTH_TOKEN:
+        return {
+            ...state,
+            authToken:{
+                ...state.authToken,
+                access:actions.payload
+            }
+        }
 
     case USER_LOGOUT:
       return {};

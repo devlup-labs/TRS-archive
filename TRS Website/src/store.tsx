@@ -13,6 +13,7 @@ import {
   UserLoginReducer,
   userDetailsReducer,
   userUpdateProfileReducer,
+  TokenRefreshReducer,
   getAllUsersReducer,
   getCategoriesReducer,
 } from "./reducers/userReducers";
@@ -25,6 +26,7 @@ const reducer = combineReducers({
   userLogin: UserLoginReducer,
   userDetails: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  userTokenRefresh:TokenRefreshReducer,
   getallUser: getAllUsersReducer,
   getNews: getNewsReducer,
   getCategories: getCategoriesReducer,

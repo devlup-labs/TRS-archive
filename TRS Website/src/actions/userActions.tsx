@@ -30,6 +30,10 @@ import {
   CATEGORIES_GET_ALL_REQUEST,
   CATEGORIES_GET_ALL_REQUEST_SUCCESS,
   CATEGORIES_GET_ALL_REQUEST_FAIL,
+  TOKEN_REFRESH_REQUEST,
+  TOKEN_REFRESH_SUCCESS,
+  UPDATE_AUTH_TOKEN,
+  TOKEN_REFRESH_FAIL,
 } from "../constants/userConstants";
 
 import axios from "axios";
@@ -436,3 +440,54 @@ export const getCategoriesAction = () => async (dispatch) => {
     });
   }
 };
+
+
+
+export const refreshAccessToken=(refreshToken)=> async (dispatch,getState) => {
+  try{
+      dispatch({
+          type:TOKEN_REFRESH_REQUEST
+
+      })
+
+      const {
+          userLogin:{authToken},
+      } = getState()
+
+      // const config={
+      //     headers:{
+      //         'Content-type':'application/json',
+      //         Authorization: `Bearer ${authToken.access}`  //giving the token of the logged in user
+
+      //     }
+      // }
+      // console.log(refreshToken)
+
+      const {data} = await axios.post(
+          `/api/users/token/refresh/`,
+          {refresh:refreshToken},            
+      )
+      dispatch({
+          type:TOKEN_REFRESH_SUCCESS,
+         
+      })  
+
+      console.log(data)
+
+      dispatch({
+          type:UPDATE_AUTH_TOKEN,
+          payload:data
+      })
+
+      
+
+  }
+  catch(error){
+      dispatch({
+          type: TOKEN_REFRESH_FAIL,
+          payload:error.response && error.response.data.detail 
+          ? error.response.data.detail
+          :error.message, //passing the error 
+      })
+  }
+}
