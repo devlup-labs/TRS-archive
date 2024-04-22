@@ -22,9 +22,9 @@ Categories_Choices=(
 
 Status_Choices=(
 
-    ('ongoing','Ongoing'),
-    ('need_changes','Changes_Reqd'),
-    ('reviewed','Reviewed'),
+    ('Ongoing','Ongoing'),
+    ('Need_changes','Need_changes'),
+    ('Reviewed','Reviewed'),
 )
 
 class Institute(models.Model):

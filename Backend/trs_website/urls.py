@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/posts/',include('api.urls.post_urls')),
     path('api/news/',include('api.urls.news_urls')),
     path('api/categories/',include('api.urls.Categories_urls')),
+    path('api/reviews/',include('api.urls.review_urls')),
 
 ]
 if settings.DEBUG:
