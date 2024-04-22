@@ -114,3 +114,48 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
             return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
         return Response("File uploaded successfully", status=status.HTTP_201_CREATED)
 
+
+
+class ParticularUserPost(GenericAPIView, mixins.ListModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id, *args, **kwargs):
+        posts = Post.objects.filter(user=user_id)
+        serializer = self.serializer_class(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, user_id, post_id, *args, **kwargs):
+        user = request.user
+        post = get_object_or_404(Post, id=post_id, user=user_id)
+        if user != post.user:
+            return Response("You are not authorized to delete this post", status=status.HTTP_401_UNAUTHORIZED)
+        post.delete()
+        return Response("Post deleted successfully", status=status.HTTP_200_OK)
+
+    def put(self, request, user_id, post_id, *args, **kwargs):
+        user = request.user
+        post = get_object_or_404(Post, id=post_id, user=user_id)
+        if user != post.user:
+            return Response("You are not authorized to update this post", status=status.HTTP_401_UNAUTHORIZED)
+        if request.data.get('title'):
+            post.title = request.data.get('title')
+        if request.data.get('body'):
+            post.body = request.data.get('body')
+        if request.data.get('category'):
+            post.category = request.data.get('category')
+        if request.data.get('sub_category'):
+            post.sub_category = request.data.get('sub_category')
+        post.save()
+        return Response("Post updated successfully", status=status.HTTP_200_OK)
+
+class singlepostfromparticularuser(GenericAPIView, mixins.RetrieveModelMixin):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id, post_id, *args, **kwargs):
+        post = get_object_or_404(Post, id=post_id, user=user_id)
+        serializer = self.serializer_class(post)
+        return Response(serializer.data, status=status.HTTP_200_OK)

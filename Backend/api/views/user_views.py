@@ -33,9 +33,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         user = self.user
-
-
-
         serializer = UserSerializerWithToken(user)
         data.update(serializer.data)
 
