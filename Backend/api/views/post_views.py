@@ -17,7 +17,8 @@ from django.conf import settings
 import datetime
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
-
+from django.core.mail import send_mail, EmailMultiAlternatives
+import os
 
 from ..models import *
 
@@ -73,7 +74,7 @@ class CreateCommentViewSet(GenericAPIView, mixins.CreateModelMixin):
                 body=request.data.get('body'),
                 created_at=datetime.datetime.now()
             )
-            comment.save()  
+            comment.save()
         except IntegrityError as e:
             return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
         return Response("Comment created successfully", status=status.HTTP_201_CREATED)
@@ -94,9 +95,15 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
         file_uploaded = request.FILES.get('document')
 
         if file_uploaded is None:
+            # print("hello")
             return Response("FILE is missing", status=status.HTTP_400_BAD_REQUEST)
     
-        user = request.user 
+        # print("hello")
+    
+        # user = request.user 
+        email=request.data.get('user')
+        user = User.objects.get(email=email)
+        # print(user)
 
         try:
             post = Post.objects.create(
@@ -110,9 +117,54 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
                 created_at=datetime.datetime.now()
             )
             post.save()  # Save the post object to the database
-        except IntegrityError as e:
-            return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
-        return Response("File uploaded successfully", status=status.HTTP_201_CREATED)
+
+            file_path = post.document.path
+
+            # Attach the file to the email
+            self.email_for_post_success(email, post, file_path)
+            return Response("File uploaded successfully", status=status.HTTP_201_CREATED)
+        
+        except Exception as e:
+            message = {'detail': str(e)}  # Return specific error message
+            print(message)
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        
+
+    def email_for_post_success(self, email, post, file_path):
+        subject = 'Successful upload of paper on trs_arxiv'
+
+        message = (
+            "Dear User,\n\n"
+            "We are pleased to inform you that your paper has been successfully uploaded to trs_arxiv.\n\n"
+            "Here are the details of your submission:\n\n"
+            f"Title: {post.title}\n"
+            f"Category: {post.category}\n"
+            f"Sub-category: {post.sub_category}\n\n"
+            "Thank you for your contribution!\n\n"
+            "If you have any questions or need further assistance, please don't hesitate to contact us.\n\n"
+            "Best regards,\n"
+            "The trs_arxiv Team"
+        )
+
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [email]
+
+        # Create the email message
+        email_message = EmailMultiAlternatives(
+            subject=subject,
+            body=message,
+            from_email=from_email,
+            to=recipient_list
+        )
+
+        # Attach the file
+        file_name = os.path.basename(file_path)
+        with open(file_path, 'rb') as f:
+            email_message.attach(file_name, f.read(), 'application/pdf')  # Adjust content type as needed
+
+        email_message.send()
+
+
 
 
 
