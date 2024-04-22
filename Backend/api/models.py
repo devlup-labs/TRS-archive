@@ -94,7 +94,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     title = models.CharField(max_length=100)
     body = models.TextField()
-    status = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=Status_Choices, default='Ongoing')
     category = models.CharField(max_length=100)
     sub_category = models.CharField(max_length=100)
     document = models.FileField(upload_to='uploads/')
