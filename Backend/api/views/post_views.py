@@ -24,14 +24,6 @@ from ..models import *
 
 from django.core.mail import send_mail
 
-
-
-class ReviewListView(generics.ListAPIView):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
-
-
 class AllCommentsViewSet(mixins.ListModelMixin, GenericAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSeralizer

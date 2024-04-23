@@ -61,7 +61,6 @@ class MyTokenObtainPairView(APIView):
 def registerUser(request):
     try:
         data=request.data
-        print(data)
 
         if User.objects.filter(email=data['email']).exists():  # Check if user with this email already exists
             raise ValueError('User with this email already exists')
@@ -73,11 +72,9 @@ def registerUser(request):
 
 
         )
-        print("hello")
         serializer=UserSerializer(user,many=False)
 
 
-        print(serializer.data)
         return Response(serializer.data)
     except Exception as e:
         message = {'detail': str(e)}  # Return specific error message
@@ -87,7 +84,6 @@ def registerUser(request):
 def profileSetup(request):
     try:
         data=request.data
-        print(data)
         email=data['email']
         user=User.objects.get(email=email)
         user.full_name=data['fullname']
@@ -107,7 +103,6 @@ def profileSetup(request):
         serializer=UserSerializer(user,many=False)
 
 
-        print(serializer.data)
         return Response(serializer.data)
     except Exception as e:
         message={'detail':str(e)}
@@ -129,7 +124,6 @@ class change_password(APIView):
                 return JsonResponse({'bool':False,'msg':'Some error has occured'})
         
         except Exception as e:
-            print(e)
             return Response({
                 'status': 500,
                 'message': f'Error: {str(e)}',
@@ -144,7 +138,6 @@ class TokenRefreshView(GenericAPIView, mixins.CreateModelMixin):
                 # Update the user's access token (you can also add more data to the token here)
                 new_access_token = str(refresh_token_obj.access_token)
                 
-                print(new_access_token)
                 return Response(new_access_token)
             
             except Exception as e:
@@ -162,7 +155,6 @@ class send_email_pass(APIView):
         try:
             data=request.data
             email=data.get('email')
-            print(email)
 
             verify=User.objects.filter(email=email).first()
             if verify:
@@ -176,14 +168,11 @@ class send_email_pass(APIView):
                 fail_silently=False,
                 
             )
-                print("Email sent successfully")
                 return JsonResponse({'bool':True,'msg':'Please Check your email'})
             else:
-                print("error")
                 return JsonResponse({'bool':False,'msg':"User with this email doesn't exist"})
             
         except Exception as e:
-            print(e)
             return Response({
                 'status': 500,
                 'message': f'Error: {str(e)}',
@@ -228,7 +217,6 @@ def send_activation_email(request):
    
     # Assuming you have a form with 'email' field for registration
     email = request.data['email']
-    print(email)
 
     
     # Check if the email is already registered
@@ -276,7 +264,6 @@ def verify_user(request):
     activation_key=request.data['key']
     try:
         # Find the user with the given activation key
-        print(activation_key)
         activation = Activation.objects.get(activation_key=activation_key)
         email=activation.email
         # Mark the user's email as verified
@@ -294,7 +281,6 @@ def TokenRefreshView(request):
 
 
     refresh_token = request.data['refresh']
-    print(refresh_token)
     if refresh_token:
         try:
             refresh_token_obj = RefreshToken(refresh_token)
