@@ -17,6 +17,11 @@ import {
   getAllUsersReducer,
   getCategoriesReducer,
 } from "./reducers/userReducers";
+
+import{
+  postUploadReducer,
+}from "./reducers/postReducers";
+
 import { getNewsReducer } from "./reducers/newsReducer";
 
 const reducer = combineReducers({
@@ -30,6 +35,7 @@ const reducer = combineReducers({
   getallUser: getAllUsersReducer,
   getNews: getNewsReducer,
   getCategories: getCategoriesReducer,
+  postUpload:postUploadReducer
 });
 
 const userInfofrom_locStorage = localStorage.getItem("authToken")

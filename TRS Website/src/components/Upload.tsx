@@ -1,92 +1,92 @@
-import { jwtDecode } from "jwt-decode";
-import { ChangeEvent, useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { ChangeEvent,useEffect, useRef,useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
+import { uploadPost } from "../actions/postActions";
+import Message from "./Message";
+import Loader from "./Loader";
 
 export const Upload = () => {
-  const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    // Focus the file input when the component mounts
-    if (fileInputRef.current) {
-      fileInputRef.current.focus();
-    }
-  }, []);
-
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [email, setEmail] = useState("");
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
-  const authTokensString = localStorage.getItem("authToken");
-  const authTokens = JSON.parse(authTokensString||"");
+  const [message, setMessage] = useState("");
+
+  const postUpload=useSelector((state)=>state.postUpload)
+  const {error,loading,success}=postUpload;
+
+
+
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { authToken } = userLogin;
+
+
+
+
+  const navigate = useNavigate();
+  const dispatch=useDispatch()
+
+
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      setEmail(jwtDecode(JSON.parse(token).access).email);
-    } else {
+    // Focus the file input when the component mounts
+    if (!authToken) {
       navigate("/login");
     }
-  }, [navigate]);
+    else{
+      setEmail(authToken.email)
+    }
+    if (success){
+      navigate("/dashboard")
+    }
+    
+    
+   
+  }, [navigate,success]);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+
+   
+
+
+
+const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log(file)
       setSelectedFile(file);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+
   
-    if (!selectedFile) {
-      alert("Please select a file");
-      console.error("Please select a file");
-      return;
+const handleSubmit=(e) => {
+  e.preventDefault();
+     if (!selectedFile) {
+      setMessage("Please select a File")
     }
-  
-    try {
-      const { access, refresh } = authTokens;
-      const formData = new FormData();
-      formData.append('user', email);
-      formData.append('title', title);
-      formData.append('body', body);
-      formData.append('category', category);
-      formData.append('sub_category', subCategory);
-      formData.append('document', selectedFile);
-  
-      const response = await fetch("http://127.0.0.1:8000/api/posts/upload/", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${access}`
-        },
-        body: formData,
-      });
-  
-      if (response.ok) {
-        console.log("File successfully uploaded to the backend");
-        setTitle("");
-        setBody("");
-        setSelectedFile(null);
-        navigate("/");
-      } else {
-        console.error("Failed to upload file to the backend");
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
+    else{
+      dispatch(uploadPost(email,title,body,category,subCategory,selectedFile))
+      
     }
-  };
-  
+    
+}
+
+
+
 
   return (
     <div className="relative top-44 md:w-1/3 mx-auto w-full">
+      {loading && <Loader />}
       <form
         onSubmit={handleSubmit}
         className="mx-auto mt-16 bg-gradient-to-r from-red-600 to-red-800 p-8 rounded-md shadow-md"
       >
         <h1 className="block mb-2">Upload Documents</h1>
+        {message && <Message variant="danger">{message}</Message>}
         <label className="block mb-2">Title:</label>
         <input
           type="text"
