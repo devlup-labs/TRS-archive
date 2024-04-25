@@ -3,6 +3,9 @@ import {
 POST_UPLOAD_SUCCESS,
 POST_UPLOAD_REQUEST,
 POST_UPLOAD_FAIL,
+USER_POSTS_REQUEST,
+USER_POSTS_SUCCESS,
+USER_POSTS_FAIL
  
 
 } from "../constants/postConstants";
@@ -71,6 +74,40 @@ export const uploadPost = (email,title,body,category,subCategory,document) => as
       position: "top-right",
       timerProgressBar: true,
       showConfirmButton: false,
+    });
+  }
+};
+
+
+export const getuserPostDetails = (id: string) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_POSTS_REQUEST,
+    });
+
+    const {
+      userLogin: { authToken },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${authToken.access}`, //giving the token of the logged in user
+      },
+    };
+
+    const { data } = await axios.get(`/api/posts/${id}/posts/`, config);
+    dispatch({
+      type: USER_POSTS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_POSTS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message, //passing the error
     });
   }
 };

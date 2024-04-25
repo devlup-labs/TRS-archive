@@ -37,6 +37,9 @@ export default function Home() {
     }
   };
   // console.log(upload)
+
+
+  
   const getData = async () => {
     const token = localStorage.getItem("authTokens");
     try {
@@ -55,6 +58,11 @@ export default function Home() {
       // console.log(err);
     }
   };
+
+
+
+
+
   return (
     <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
       <Search />

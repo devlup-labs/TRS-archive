@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserDetails } from "../actions/userActions";
+import { getuserPostDetails } from "../actions/postActions";
+import { useSearch } from "../context/SearchContext";
 import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
 import Loader from "./Loader.tsx";
 
 export const Dashboard = () => {
+  const { searchQuery } = useSearch();
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [image, setImage] = useState("");
@@ -15,6 +18,9 @@ export const Dashboard = () => {
   const [cp, setCp] = useState("");
   const [roles, setRoles] = useState("");
   const [upload_verified, setUploadVerified] = useState(false);
+  const [data, setData] = useState([]);
+  const baseDir = import.meta.env.BACKEND_URL;
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -23,6 +29,11 @@ export const Dashboard = () => {
 
   const userDetails = useSelector((state) => state.userDetails);
   const { error, loading, user } = userDetails;
+
+  const userPosts=useSelector((state) => state.getuserPosts);
+  const {error:errorPosts,loading:loadingPosts,user_posts}=userPosts
+
+
   const handleOnClick = () => {
     navigate("/upload");
   };
@@ -44,6 +55,7 @@ export const Dashboard = () => {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
         console.log("Fetching user details...");
         dispatch(getUserDetails("profile")); //sending profile as parameter to complete the url for making get request(api/users/profile)
+        dispatch(getuserPostDetails(authToken.id))
       } else {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
         setUserName(user.username);
@@ -54,20 +66,36 @@ export const Dashboard = () => {
         setCp(user.current_position);
         setRoles(user.roles);
         setImage(import.meta.env.BACKEND_URL + user.image);
-        setUploadVerified(user.upload_verified);
+      setUploadVerified(user.upload_verified);
+    
+      setData(user_posts)
+      console.log(data)
       }
     }
-  }, [dispatch, authToken, user, navigate]); // Empty dependency array to run only once when component mounts
+  }, [dispatch, authToken,user_posts, user, navigate]); // Empty dependency array to run only once when component mounts
 
   const handleEditProfile = () => {
     navigate("/edit_profile"); // Redirect to edit_profile page
   };
 
+    const truncate = (s: string) => {
+    if (s.length > 200) {
+      return s.substring(0, 200) + "...";
+    } else {
+      return s;
+    }
+  };
+
+
+
   return (
-    <>
-      <div className="mt-24"></div>
-      <div className="flex flex-col items-center justify-center h-screen">
-        {loading && <Loader />}
+     <div className="flex flex-col h-screen">
+    <div className="flex-grow flex flex-row">
+      {/* Profile Section */}
+      <div className="w-1/2 p-4">
+      <div className="mt-80">
+      <div className="flex flex-col items-center justify-center">
+        {loading && loadingPosts && <Loader />}
         {upload_verified !== true ? (
           <div className="border border-black bg-gray-300">
             Your Account isnt verified.
@@ -127,7 +155,49 @@ export const Dashboard = () => {
         ) : (
           <div className="">Your Account isnt verified for Upload.</div>
         )}
+
+         </div>
+        </div>
       </div>
-    </>
+
+         {/* Posts Section */}
+      <div className="w-1/2 p-4 mt-80">
+          <ul className="w-full">
+          { data && data.length > 0 ?(
+          data.map((item, index) => (
+            <li
+              key={index}
+              className="flex flex-col w-[90%] border border-black shadow-md p-2 rounded-md mb-2 shadow-red-500"
+            >
+              <div className="mb-2 border-b border-b-black">
+                <strong>{item.title}</strong>
+              </div>
+              <div className="mb-2">
+                <p>{truncate(item.body)}</p>
+              </div>
+              <div className="flex flex-row justify-between">
+                <a
+                  href={baseDir + item.document}
+                  target="_blank"
+                  // onClick={() => console.log(`Clicked ${index} link`)}
+                >
+                  PDF
+                </a>
+                <p>{item.user.username}</p>
+                <p>{item.category}</p>
+              </div>
+            </li>
+          )))
+          :(
+            <li className="text-center">No data available</li>
+          )
+  } 
+          
+        </ul>
+
+        </div>
+      </div>        
+    </div>
+
   );
 };
