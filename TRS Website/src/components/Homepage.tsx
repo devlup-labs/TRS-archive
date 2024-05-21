@@ -3,20 +3,26 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useSearch } from "../context/SearchContext";
 import { useNavigate } from "react-router-dom";
-import Search from "./Search";
+import DropdownInput from "./DropInput";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategoriesAction } from "../actions/userActions";
 
 export default function Home() {
-  const { searchQuery } = useSearch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const baseDir = import.meta.env.BACKEND_URL;
-  // const data = mainPageData;
   const [data, setData] = useState([]);
-  const filtered = data.filter((item) => item.title.includes(searchQuery));
-  // const verified = localStorage.getItem("verified");
+  const dispatch = useDispatch();
+  const [cats, setCats] = useState([]);
+  const [cat, setCat] = useState("");
+  const getCategories = useSelector((state) => state.getCategories);
+  const filtered = data.filter((item) => item.category.includes(cat));
+  const { loadingCat, successCat, categoriesInfo } = getCategories;
   const token = localStorage.getItem("authTokens");
   const [upload, setUpload] = useState(false);
-
+  const handleOptionSelect = (option) => {
+    setCat(option);
+  };
   useEffect(() => {
     const token = localStorage.getItem("authTokens");
     getData();
@@ -25,10 +31,14 @@ export default function Home() {
       const decode = jwtDecode(token);
       setUpload(decode.upload_verified);
     }
-    // else {
-    //   navigate("/login");
-    // }
-  }, [navigate, token]);
+
+    if (!categoriesInfo) {
+      dispatch(getCategoriesAction());
+    } else {
+      console.log(categoriesInfo);
+      setCats(categoriesInfo.map((category) => category.name));
+    }
+  }, [navigate, token, dispatch, categoriesInfo]);
   const trunctate = (s: string) => {
     if (s.length > 200) {
       return s.substring(0, 200) + "...";
@@ -52,12 +62,17 @@ export default function Home() {
         setData(data1);
       }
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
   };
   return (
     <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
-      <Search />
+      <DropdownInput
+        options={cats}
+        style="bg-gray-900 w-[45%] mb-3 rounded-lg"
+        b_bar={false}
+        onOptionSelect={handleOptionSelect}
+      />
       <div className="flex flex-row">
         <ul className="w-1/2">
           {filtered.map((item, index) => (
@@ -66,7 +81,9 @@ export default function Home() {
               className="flex flex-col w-[90%] border border-black shadow-md p-2 rounded-md mb-2 shadow-red-500"
             >
               <div className="mb-2 border-b border-b-black">
-                <strong>{item.title}</strong>
+                <a href={"post/" + item.id}>
+                  <strong>{item.title}</strong>
+                </a>
               </div>
               <div className="mb-2">
                 <p>{trunctate(item.body)}</p>
