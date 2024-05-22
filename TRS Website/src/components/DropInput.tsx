@@ -8,14 +8,13 @@ const DropdownInput = ({ options, onOptionSelect, style, b_bar }) => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-  
+
   const handleOptionClick = (option) => {
     setSelectedOption(option);
     setIsOpen(false);
     onOptionSelect(option); // Callback to parent component
   };
-  const fin_style =
-    "relative inline-block text-left text-sky-950 z-10" + style;
+  const fin_style = "relative inline-block text-left text-sky-950 z-10" + style;
   return (
     <div className={fin_style}>
       <div className="flex h-full w-full bg-gray-800">

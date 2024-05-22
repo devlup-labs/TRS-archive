@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from "react";
 import {jwtDecode} from 'jwt-decode';
 
+import { PostPage } from "./components/postpage";
 
 function App() {
   const dispatch = useDispatch();
@@ -80,6 +81,7 @@ function App() {
               <Route element={<Register2 />} path="/register2" />
               <Route element={<ProfileSetup />} path="/profile_setup" />
               <Route element={<AdminPage />} path="/admin" />
+              <Route element={<PostPage />} path="/post/:id" />
             </Routes>
           </SearchProvider>
         </Router>
