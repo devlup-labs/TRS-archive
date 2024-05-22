@@ -430,6 +430,7 @@ export const getCategoriesAction = () => async (dispatch) => {
       type: CATEGORIES_GET_ALL_REQUEST_SUCCESS,
       payload: data,
     });
+    
   } catch (error) {
     dispatch({
       type: CATEGORIES_GET_ALL_REQUEST_FAIL,
