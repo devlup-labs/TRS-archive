@@ -46,7 +46,7 @@ const Navbar = () => {
       <a
         href="/"
       >
-        <img src="../public/image-removebg-preview (3).png" className="h-36 w-36"></img>
+        <img src="/image-removebg-preview (3).png" className="h-36 w-36"></img>
       </a>
 
       {!loadingCat && successCat && (
