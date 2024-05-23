@@ -9,6 +9,10 @@ import {
   POST_LIST_REQUEST,
   POST_LIST_SUCCESS,
   POST_LIST_FAIL,
+  SUBCAT_GET_ALL_REQUEST,
+  SUBCAT_GET_ALL_SUCCESS,
+  SUBCAT_GET_ALL_FAIL,
+  SUBCAT_GET_ALL_RESET,
 
  
 } from "../constants/postConstants";
@@ -73,3 +77,26 @@ export const userPostReducer = (state = {}, actions) => {
       return state;
   }
 }
+
+
+
+
+export const getSubCatReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case SUBCAT_GET_ALL_REQUEST:
+      return { ...state, loadingsubCat: true };
+    case SUBCAT_GET_ALL_SUCCESS:
+      return {
+        loadingSubCat: false,
+        successSubCat: true,
+        sub_categoriesInfo: actions.payload,
+      };
+    case SUBCAT_GET_ALL_FAIL:
+      return { loadingSubCat: false, error: actions.payload };
+    case SUBCAT_GET_ALL_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};

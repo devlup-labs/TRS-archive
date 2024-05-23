@@ -3,7 +3,6 @@ import Loader from "./Loader";
 import { useEffect, useState } from "react";
 import { getUsers } from "../actions/userActions";
 import { useNavigate } from "react-router-dom";
-import { News } from "./News";
 
 export const AdminPage = () => {
   const dispatch = useDispatch();
@@ -16,7 +15,7 @@ export const AdminPage = () => {
     if (!authToken) {
       navigate("/login");
     } else {
-      if (authToken.is_staff) {
+      if (authToken.roles=='admin') {  //added to check the if the role of user is admin or not
         dispatch(getUsers());
       } else {
         navigate("/");
@@ -41,7 +40,7 @@ export const AdminPage = () => {
             </ul>
           </div>
         )}
-        <News />
+        
       </div>
     </div>
   );
