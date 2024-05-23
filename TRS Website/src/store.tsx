@@ -19,6 +19,7 @@ import {
 } from "./reducers/userReducers";
 
 import{
+  postListReducers,
   postUploadReducer,
   userPostReducer
 }from "./reducers/postReducers";
@@ -26,6 +27,7 @@ import{
 import { getNewsReducer } from "./reducers/newsReducer";
 
 const reducer = combineReducers({
+  postlist:postListReducers,
   userVerify: userVerifyReducer,
   userRegister: userRegisterReducer,
   userProfile: userProfileReducer,
