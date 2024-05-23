@@ -21,10 +21,12 @@ import {
 import{
   postListReducers,
   postUploadReducer,
-  userPostReducer
+  userPostReducer,
+  getSubCatReducer,
 }from "./reducers/postReducers";
 
 import { getNewsReducer } from "./reducers/newsReducer";
+
 
 const reducer = combineReducers({
   postlist:postListReducers,
@@ -38,6 +40,7 @@ const reducer = combineReducers({
   getallUser: getAllUsersReducer,
   getNews: getNewsReducer,
   getCategories: getCategoriesReducer,
+  getSubCategories: getSubCatReducer,
   postUpload:postUploadReducer,
   getuserPosts:userPostReducer
 });

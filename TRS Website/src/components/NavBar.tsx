@@ -5,8 +5,13 @@ import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const dispatch = useDispatch();
+  
+  
   const [cats, setCats] = useState([]);
   const [cat, setCat] = useState("");
+
+
+  
   const handleClick = () => {
     console.log("Logged out");
     dispatch(logout());
@@ -14,10 +19,15 @@ const Navbar = () => {
   const handleOptionSelect = (option) => {
     setCat(option);
   };
+
+  
   const getCategories = useSelector((state) => state.getCategories);
   const { loadingCat, successCat, categoriesInfo } = getCategories;
   const userLogin = useSelector((state) => state.userLogin);
   const { authToken } = userLogin;
+
+
+
   useEffect(() => {
     if (!categoriesInfo) {
       dispatch(getCategoriesAction());
@@ -27,13 +37,16 @@ const Navbar = () => {
     }
   }, [dispatch, categoriesInfo]);
 
+
+
+
+
   return (
     <nav className="fixed top-24 left-0 w-full h-16 bg-blue-800  z-10 shadow-md flex items-center justify-between text-white p-4">
       <a
         href="/"
-        className="text-xl font-bold hover:text-white no-underline hover:no-underline"
       >
-        The Robotics Society
+        <img src="../public/image-removebg-preview (3).png" className="h-36 w-36"></img>
       </a>
 
       {!loadingCat && successCat && (

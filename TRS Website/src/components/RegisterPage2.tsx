@@ -5,6 +5,7 @@ import { register } from "../actions/userActions";
 import Message from "./Message";
 import Loader from "./Loader";
 
+
 export const Register2 = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
