@@ -47,17 +47,15 @@ class RetrieveCategoryViewSet(ListModelMixin, GenericAPIView):
     
 class RetrieveSubCategoryViewSet(ListModelMixin, GenericAPIView):
     serializer_class = SubCategorySerializer
+    queryset = SubCategory.objects.all()
     permission_classes = [AllowAny]
-
-    def get_queryset(self):
-        category_id = self.kwargs['category_id']
-        return SubCategory.objects.filter(category_id=category_id)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+        category = self.kwargs['category_id']
+        subcategories = SubCategory.objects.filter(category_id=category)
+        serializer = self.get_serializer(subcategories, many=True)
         return Response(serializer.data)
 
