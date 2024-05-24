@@ -19,6 +19,7 @@ import {
 } from "./reducers/userReducers";
 
 import{
+  postAssignedReducer,
   postListReducers,
   postUploadReducer,
   userPostReducer
@@ -27,19 +28,20 @@ import{
 import { getNewsReducer } from "./reducers/newsReducer";
 
 const reducer = combineReducers({
-  postlist:postListReducers,
+  postlist: postListReducers,
   userVerify: userVerifyReducer,
   userRegister: userRegisterReducer,
   userProfile: userProfileReducer,
   userLogin: UserLoginReducer,
   userDetails: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
-  userTokenRefresh:TokenRefreshReducer,
+  userTokenRefresh: TokenRefreshReducer,
   getallUser: getAllUsersReducer,
   getNews: getNewsReducer,
   getCategories: getCategoriesReducer,
-  postUpload:postUploadReducer,
-  getuserPosts:userPostReducer
+  postUpload: postUploadReducer,
+  getuserPosts: userPostReducer,
+  assignedPosts: postAssignedReducer,
 });
 
 const userInfofrom_locStorage = localStorage.getItem("authToken")
