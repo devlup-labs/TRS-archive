@@ -12,6 +12,8 @@ import {
   SUBCAT_GET_ALL_REQUEST,
   SUBCAT_GET_ALL_SUCCESS,
   SUBCAT_GET_ALL_FAIL,
+  POST_ASSIGNED_REQUEST_SUCCESS,
+  POST_ASSIGNED_REQUEST_FAILURE,
 } from "../constants/postConstants";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -172,12 +174,12 @@ export const getAssignedPosts = (id: string) => async (dispatch, getState) => {
     };
     const { data } = await axios.get(`/api/posts/${id}/posts/`, config); //route chnage is required
     dispatch({
-      type: USER_POSTS_SUCCESS,
+      type: POST_ASSIGNED_REQUEST_SUCCESS,
       payload: data,
     });
   } catch (error) {
     dispatch({
-      type: USER_POSTS_FAIL,
+      type: POST_ASSIGNED_REQUEST_FAILURE,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail
