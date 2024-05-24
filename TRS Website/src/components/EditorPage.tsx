@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { getAssignedPosts } from "../actions/postActions";
+import { getUnAssignedPosts } from "../actions/postActions";
 import { News } from "./News";
 import { useNavigate } from "react-router-dom";
 
-export const ReviewersPage = () => {
-  const assignedPosts = useSelector((state) => state.assignedPosts);
-  const { loading, success, posts, error } = assignedPosts;
+export const EditorPage = () => {
+  const unassignedPosts = useSelector((state) => state.unassignedPosts);
+  const { loading, success, posts, error } = unassignedPosts;
   const userLogin = useSelector((state) => state.userLogin);
   const { authToken } = userLogin; //the person who logged in
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ export const ReviewersPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("authTokens");
     if (authToken && authToken.user.is_staff) {
-      dispatch(getAssignedPosts());
+      dispatch(getUnAssignedPosts());
     } else if (authToken) {
       Swal.fire({
         title: "You are not allowed to use this page",

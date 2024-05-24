@@ -14,6 +14,9 @@ import {
   SUBCAT_GET_ALL_FAIL,
   POST_ASSIGNED_REQUEST_SUCCESS,
   POST_ASSIGNED_REQUEST_FAILURE,
+  POST_UNASSIGNED_REQUEST,
+  POST_UNASSIGNED_REQUEST_SUCCESS,
+  POST_UNASSIGNED_REQUEST_FAILURE,
 } from "../constants/postConstants";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -187,3 +190,33 @@ export const getAssignedPosts = (id: string) => async (dispatch, getState) => {
     });
   }
 };
+
+export const getUnAssignedPosts = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: POST_UNASSIGNED_REQUEST,
+    });
+    const {
+      userLogin: { authToken },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${authToken.access}`, //giving the token of the logged in user
+      },
+    };
+    const { data } = await axios.get(`/api/posts/${id}/posts/`, config); //route chnage is required
+    dispatch({
+      type: POST_UNASSIGNED_REQUEST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: POST_UNASSIGNED_REQUEST_FAILURE,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message, //passing the error
+    });
+  }
+}

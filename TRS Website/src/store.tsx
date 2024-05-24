@@ -18,16 +18,16 @@ import {
   getCategoriesReducer,
 } from "./reducers/userReducers";
 
-import{
+import {
   postAssignedReducer,
   postListReducers,
   postUploadReducer,
   userPostReducer,
   getSubCatReducer,
-}from "./reducers/postReducers";
+  postUnAssignedPosts,
+} from "./reducers/postReducers";
 
 import { getNewsReducer } from "./reducers/newsReducer";
-
 
 const reducer = combineReducers({
   postlist: postListReducers,
@@ -45,8 +45,7 @@ const reducer = combineReducers({
   getuserPosts: userPostReducer,
   assignedPosts: postAssignedReducer,
   getSubCategories: getSubCatReducer,
-  postUpload:postUploadReducer,
-  getuserPosts:userPostReducer
+  unassignedPosts: postUnAssignedPosts,
 });
 
 const userInfofrom_locStorage = localStorage.getItem("authToken")
