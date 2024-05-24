@@ -70,3 +70,6 @@ class ReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateModelMix
         serializer = self.serializer_class(review)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
+
+#TODO: Add file upload functionality in the post method
+#TODO: Some more functionalities need to be added.

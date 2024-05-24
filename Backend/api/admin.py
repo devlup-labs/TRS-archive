@@ -55,7 +55,7 @@ class NewsAdmin(admin.ModelAdmin):
     search_fields = ['title']
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['description', 'pdf_file_status', 'reviewer_id', 'post']
+    list_display = ['description', 'pdf_file_status', 'reviewer_id', 'post','reviewed_pdf']
     search_fields = ['description', 'pdf_file_status', 'reviewer_id', 'post']
     list_filter = ['pdf_file_status','post']
 
