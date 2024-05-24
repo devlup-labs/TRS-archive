@@ -10,21 +10,25 @@ export const PostPage = () => {
 
   const getPost = async () => {
     try {
-      const response = await fetch(`${baseDir}/api/posts/upload/`, {
+      console.log(id)
+      const response = await fetch(`http://127.0.0.1:8000/api/posts/getpost/${id}/`, {
         method: "GET",
       });
+      console.log(response)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data1 = await response.json();
-      const matchingPost = data1.find((item) => item.id === id);
-      if (matchingPost) {
-        setPost(matchingPost);
-        console.log(matchingPost);
-      } else {
+      if (data1) {
+        setPost(data1);
+        console.log(data1.created_at);
+      } 
+      
+      else {
         setError("Post not found");
         console.log(`Successfully`);
       }
+
     } catch (err) {
       setError(err.message);
     } finally {
@@ -58,12 +62,13 @@ export const PostPage = () => {
       </p>
       <p className="text-gray-700 mb-4">
         <strong>Created At:</strong>{" "}
-        {new Date(post.createdAt).toLocaleDateString()}
+        {new Date(post.created_at).toLocaleDateString()}
       </p>
       <p className="text-gray-700 mb-4">{post.body}</p>
-      {post.pdf && (
+      
+      {post.document && (
         <a
-          href={post.pdf}
+          href={post.document}
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-500 hover:underline"

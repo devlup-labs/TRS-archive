@@ -22,10 +22,12 @@ import{
   postAssignedReducer,
   postListReducers,
   postUploadReducer,
-  userPostReducer
+  userPostReducer,
+  getSubCatReducer,
 }from "./reducers/postReducers";
 
 import { getNewsReducer } from "./reducers/newsReducer";
+
 
 const reducer = combineReducers({
   postlist: postListReducers,
@@ -42,6 +44,9 @@ const reducer = combineReducers({
   postUpload: postUploadReducer,
   getuserPosts: userPostReducer,
   assignedPosts: postAssignedReducer,
+  getSubCategories: getSubCatReducer,
+  postUpload:postUploadReducer,
+  getuserPosts:userPostReducer
 });
 
 const userInfofrom_locStorage = localStorage.getItem("authToken")

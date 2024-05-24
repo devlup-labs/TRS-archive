@@ -6,6 +6,8 @@ urlpatterns=[
     path('<int:post_id>/comment/<int:comment_id>',views.DestroyCommentViewSet.as_view()),
     path('<int:post_id>/comment/',views.CreateCommentViewSet.as_view()),
     path('allpost/',views.PostViewSet.as_view()),
+    path('getpost/:<uuid:post_id>/',views.getParticularPost),
+
     path('<user_id>/posts/',views.ParticularUserPost.as_view()),
     path('<user_id>/posts/<post_id>',views.singlepostfromparticularuser.as_view()),
     path('<user_id>/posts/<post_id>/update/',views.ParticularUserPost.as_view()),

@@ -46,6 +46,11 @@ export const Dashboard = () => {
     navigate("/forgot-password");
   };
 
+
+
+
+
+
   useEffect(() => {
     if (!authToken) {
       navigate("/login");
@@ -183,8 +188,8 @@ export const Dashboard = () => {
                 >
                   PDF
                 </a>
-                <p>{item.user.username}</p>
-                <p>{item.category}</p>
+  
+                <p>{item.status}</p>
               </div>
             </li>
           )))

@@ -26,9 +26,13 @@ export const Login = () => {
 
   useEffect(() => {
     if (authToken) {
-      if (authToken.is_staff) {
+      if (authToken.roles=='admin') {
         navigate("/admin");
-      } else {
+      } 
+      else if(authToken.roles=='reviewer'){
+        navigate("/reviewer")
+      }
+      else {
         navigate(redirect);
       }
     }

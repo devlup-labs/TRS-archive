@@ -11,6 +11,10 @@ import {
   POST_ASSIGNED_REQUEST,
   POST_ASSIGNED_REQUEST_SUCCESS,
   POST_ASSIGNED_REQUEST_FAILURE,
+  SUBCAT_GET_ALL_REQUEST,
+  SUBCAT_GET_ALL_SUCCESS,
+  SUBCAT_GET_ALL_FAIL,
+  SUBCAT_GET_ALL_RESET
 } from "../constants/postConstants";
 
 export const postListReducers = (state = { posts: [] }, actions) => {
@@ -76,6 +80,26 @@ export const postAssignedReducer = (state = {}, actions) => {
     case POST_ASSIGNED_REQUEST_FAILURE:
       return { loading: false, success: false, error: actions.payload };
     // case USER_LOGOUT:
+    default:
+      return state;
+  }
+};
+
+export const getSubCatReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case SUBCAT_GET_ALL_REQUEST:
+      return { ...state, loadingsubCat: true };
+    case SUBCAT_GET_ALL_SUCCESS:
+      return {
+        loadingSubCat: false,
+        successSubCat: true,
+        sub_categoriesInfo: actions.payload
+      };
+    case SUBCAT_GET_ALL_FAIL:
+      return { loadingSubCat: false, error: actions.payload };
+    case SUBCAT_GET_ALL_RESET:
+      return {};
+
     default:
       return state;
   }

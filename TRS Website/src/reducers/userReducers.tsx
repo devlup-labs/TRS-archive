@@ -152,6 +152,9 @@ export const UserLoginReducer = (state = {}, actions) => {
   }
 };
 
+
+
+
 export const userDetailsReducer = (state = {}, actions) => {
   switch (actions.type) {
     case USER_DETAILS_REQUEST:

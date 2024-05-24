@@ -203,3 +203,14 @@ class singlepostfromparticularuser(GenericAPIView, mixins.RetrieveModelMixin):
         post = get_object_or_404(Post, id=post_id, user=user_id)
         serializer = self.serializer_class(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getParticularPost(request,post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return Response({"message": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = PostSerializer(post)
+    return Response(serializer.data, status=status.HTTP_200_OK)
