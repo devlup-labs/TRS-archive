@@ -45,7 +45,7 @@ class RetrieveCategoryViewSet(ListModelMixin, GenericAPIView):
             counter += 1
         return Response(data)
     
-class RetrieveSubCategoryViewSet(ListModelMixin, GenericAPIView):
+class RetrieveSubCategoryViewSet(GenericAPIView, ListModelMixin):
     serializer_class = SubCategorySerializer
     queryset = SubCategory.objects.all()
     permission_classes = [AllowAny]
@@ -54,8 +54,13 @@ class RetrieveSubCategoryViewSet(ListModelMixin, GenericAPIView):
         return self.list(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        category = self.kwargs['category_id']
-        subcategories = SubCategory.objects.filter(category_id=category)
+        category_name = request.data['category']
+        if category_name is None:
+            return Response("Category must be provided", status=400)
+        if not Category.objects.filter(name=category_name).exists():
+            return Response("Invalid category provided", status=400)
+        category = Category.objects.get(name=category_name)
+        subcategories = SubCategory.objects.filter(category_id=category.pk)
         serializer = self.get_serializer(subcategories, many=True)
         return Response(serializer.data)
 

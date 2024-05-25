@@ -7,5 +7,5 @@ urlpatterns=[
     path('create/category',PostCategoryViewSet.as_view()),
     path('retrieve/',RetrieveCategoryViewSet.as_view()),
     path('create/subcategory',PostSubCategoryViewSet.as_view()),
-    path('retrieve/<int:category_id>/subcategory',RetrieveSubCategoryViewSet.as_view())
+    path('retrieve/subcategory',RetrieveSubCategoryViewSet.as_view())
 ]
