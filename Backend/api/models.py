@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
-import uuid,random
+import uuid,random,datetime
 
 Roles_Choices = (
         ('admin', 'Admin'),
@@ -113,9 +113,9 @@ class Comment(models.Model):
 class Review(models.Model):
     description = models.TextField()
     pdf_file_status = models.CharField(max_length=20, choices=Status_Choices, default='Ongoing')  
-    reviewer_id = models.ManyToManyField(User, on_delete=models.CASCADE)
+    reviewer_id = models.ManyToManyField(User)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now=True)
     reviewed_pdf = models.FileField(upload_to='uploads/',null=True,blank=True)
 
 class New(models.Model):
