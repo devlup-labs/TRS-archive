@@ -26,13 +26,13 @@ export const Login = () => {
 
   useEffect(() => {
     if (authToken) {
-      if (authToken.roles=='admin') {
+      if (authToken.roles == "admin") {
         navigate("/admin");
-      } 
-      else if(authToken.roles=='reviewer'){
-        navigate("/reviewer")
-      }
-      else {
+      } else if (authToken.roles == "reviewer") {
+        navigate("/reviewer");
+      } else if (authToken.roles == "editor") {
+        navigate("/editor");
+      } else {
         navigate(redirect);
       }
     }
@@ -81,7 +81,10 @@ export const Login = () => {
           Submit
         </button>
         <p>
-          Do not Have an account? <a href="/register" className="hover:text-gray-400">Register</a>
+          Do not Have an account?{" "}
+          <a href="/register" className="hover:text-gray-400">
+            Register
+          </a>
         </p>
         <div className=" mb-4">
           <a href="/forgot-password" className="hover:text-gray-400">
