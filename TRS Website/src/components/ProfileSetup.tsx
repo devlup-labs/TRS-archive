@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, redirect, useNavigate, useLocation } from "react-router-dom";
 import Message from "./Message";
-import { getCategoriesAction, profile_Setup } from "../actions/userActions";
+import { profile_Setup } from "../actions/userActions";
+import { getCategoriesAction} from "../actions/postActions"
 import Loader from "./Loader";
 import DropdownInput from "./DropInput";
 

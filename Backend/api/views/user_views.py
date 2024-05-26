@@ -9,7 +9,6 @@ from rest_framework.response import Response
 from api.serializer import *
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, mixins, RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -309,13 +308,5 @@ def getUsers(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
-def getCategories(request):
-    try:
-        categories=Category.objects.all()
-        serializers=CategorySerializer(categories,many=True)
-        return Response(serializers.data)
-    except Exception as e:
-        message = {'detail': str(e)}  # Return specific error message
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
 # user_views
