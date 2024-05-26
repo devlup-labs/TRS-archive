@@ -55,9 +55,9 @@ class NewsAdmin(admin.ModelAdmin):
     search_fields = ['title']
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['description', 'pdf_file_status', 'post','reviewed_pdf']
-    search_fields = ['description', 'pdf_file_status', 'reviewer_id', 'post']
-    list_filter = ['pdf_file_status','post']
+    list_display = ['description', 'pdf_file_status', 'post','reviewed_pdf','reviewer','reviewer_id','editor','editor_id','is_reviewed']
+    search_fields = ['description', 'pdf_file_status', 'reviewer', 'post','is_reviewed']
+    list_filter = ['pdf_file_status','post','is_reviewed']
 
 class ActivationAdmin(admin.ModelAdmin):
     list_display=['email','activation_key','is_verified']
