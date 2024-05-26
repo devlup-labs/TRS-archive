@@ -80,7 +80,9 @@ class User(AbstractUser):
             except Institute.DoesNotExist:
                 pass  # Do nothing if the institute doesn't exist
         super().save(*args, **kwargs)
-            
+    
+    def __str__(self):
+        return self.username
 
 class Activation(models.Model):
     email=models.EmailField(unique=True,primary_key=True)
@@ -113,7 +115,9 @@ class Comment(models.Model):
 class Review(models.Model):
     description = models.TextField()
     pdf_file_status = models.CharField(max_length=20, choices=Status_Choices, default='Ongoing')  
-    reviewer_id = models.ManyToManyField(User)
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
+    editor = models.ForeignKey(User, on_delete=models.CASCADE,related_name='editor',null=True,blank=True)
+    is_reviewed = models.BooleanField(default=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now=True)
     reviewed_pdf = models.FileField(upload_to='uploads/',null=True,blank=True)

@@ -22,21 +22,26 @@ from django.views.decorators.csrf import csrf_exempt
 from ..models import *
 
 
-class ReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.CreateModelMixin):
+class EditorReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.CreateModelMixin):
+    '''
+    This class is used to create, update and list reviews for a post specified by post_id and for editor users only
+    '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request,post_id, *args, **kwargs):
-        post = Post.objects.get(id=post_id)
-        reviews = Review.objects.filter(post=post)
+    def get(self, request, *args, **kwargs):
+        if request.user.roles != 'editor' and request.user.roles != 'admin':
+            return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
+        editor = request.user
+        reviews = Review.objects.filter(editor_id=editor.id)
         serializer = self.serializer_class(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request,post_id, *args, **kwargs):
+    def put(self, request,post_id,reviewer_id, *args, **kwargs):
         post = Post.objects.get(id=post_id)
-        review = Review.objects.get(post=post)
-        if str(review.reviewer_id) != request.user.email:
+        review = Review.objects.get(post_id = post_id,reviewer_id=reviewer_id, editor_id=request.user.id)
+        if request.user.roles != 'editor' and request.user.roles != 'admin':
             return Response("You are not authorized to update this review", status=status.HTTP_401_UNAUTHORIZED)
         if 'description' in request.data:
             review.description = request.data['description']
@@ -46,10 +51,16 @@ class ReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateModelMix
                 review.pdf_file_status = new_status
             else:
                 return Response("Invalid PDF file status provided", status=status.HTTP_400_BAD_REQUEST)
+        if 'is_reviewed' in request.data:
+            review.is_reviewed = request.data['is_reviewed']
+
         review.save()
         return Response("Review updated successfully", status=status.HTTP_200_OK)
     
     def post(self, request, post_id, *args, **kwargs):
+        user = request.user
+        if user.roles != 'editor' and user.roles != 'admin':
+            return Response("You are not authorized to create a review", status=status.HTTP_401_UNAUTHORIZED)
         post = Post.objects.get(id=post_id)
         if 'description' not in request.data:
             return Response("Description must be provided", status=status.HTTP_400_BAD_REQUEST)
@@ -58,18 +69,62 @@ class ReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateModelMix
         if 'pdf_file_status' in request.data:
             new_status = request.data['pdf_file_status']
             if new_status in dict(Status_Choices).keys():
-                review = Review.objects.create(
-                    description = request.data['description'],
-                    pdf_file_status = request.data['pdf_file_status'],
-                    reviewer_id = request.user,
-                    post = post
-                    )   
+                try:
+                    review = Review.objects.create(
+                        description = request.data['description'],
+                        pdf_file_status = request.data['pdf_file_status'],
+                        reviewer_id = request.data['reviewer_id'],
+                        is_reviewed = False,
+                        post = post
+                        )
+                    review.save()
+
+                    #TODO: Add email functionality here
+
+                except IntegrityError as e:
+                    return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)   
             else:
                 return Response("Invalid PDF file status provided", status=status.HTTP_400_BAD_REQUEST)
         
         serializer = self.serializer_class(review)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
+class ReviewerReviewViewset(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
+    '''
+    This class is used to list and update reviews for a post specified by post_id and for reviewer users only
+    '''
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
 
-#TODO: Add file upload functionality in the post method
-#TODO: Some more functionalities need to be added.
+    def get(self, request, *args, **kwargs):
+        if request.user.roles != 'reviewer' and request.user.roles != 'admin':
+            return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
+        reviewer = request.user
+        reviews = Review.objects.filter(reviewer_id=reviewer.id)
+        serializer = self.serializer_class(reviews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, post_id, editor_id, *args, **kwargs):
+        post = Post.objects.get(id=post_id)
+        review = Review.objects.get(post_id=post_id, reviewer_id=request.user.id, editor_id=editor_id)
+        if request.user.roles != 'reviewer' and request.user.roles != 'admin':
+            return Response("You are not authorized to update this review", status=status.HTTP_401_UNAUTHORIZED)
+
+        if 'pdf_file_status' in request.data:
+            new_status = request.data['pdf_file_status']
+            if new_status in dict(Status_Choices).keys():
+                review.pdf_file_status = new_status
+            else:
+                return Response("Invalid PDF file status provided", status=status.HTTP_400_BAD_REQUEST)
+
+        if request.FILES.get('reviewed_pdf'):
+            review.reviewed_pdf = request.FILES.get('reviewed_pdf')
+            review.is_reviewed = True
+
+            # TODO: Add email functionality here
+
+        review.save()
+        return Response("Review updated successfully", status=status.HTTP_200_OK)
+    
+
