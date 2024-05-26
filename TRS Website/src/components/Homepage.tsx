@@ -3,14 +3,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DropdownInput from "./DropInput";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategoriesAction } from "../actions/userActions";
-<<<<<<< HEAD
-import { listPosts } from "../actions/postActions";
-=======
+import { getCategoriesAction } from "../actions/postActions";
 import {listPosts} from '../actions/postActions';
 import { News } from "./News";
 import { Link } from 'react-router-dom';
->>>>>>> ec6282023722e75b4f9f742b5cfa913945dea1f6
 
 export default function Home() {
   const navigate = useNavigate();
@@ -28,25 +24,12 @@ export default function Home() {
   const userLogin = useSelector((state) => state.userLogin);
   const { authToken } = userLogin; //the person who logged in
 
-<<<<<<< HEAD
-  const token = localStorage.getItem("authTokens");
-=======
 
->>>>>>> ec6282023722e75b4f9f742b5cfa913945dea1f6
   const [upload, setUpload] = useState(false);
 
   const handleOptionSelect = (option) => {
     setCat(option);
   };
-<<<<<<< HEAD
-
-  useEffect(() => {
-    // const token = localStorage.getItem("authTokens");
-    dispatch(listPosts());
-
-    if (authToken) {
-      setUpload(authToken.upload_verified);
-=======
   
 
 
@@ -55,7 +38,6 @@ export default function Home() {
     
     if (authToken) {
        setUpload(authToken.upload_verified);
->>>>>>> ec6282023722e75b4f9f742b5cfa913945dea1f6
     }
 
     if (!categoriesInfo) {
@@ -66,13 +48,9 @@ export default function Home() {
       console.log(categoriesInfo);
       setCats(categoriesInfo.map((category) => category.name));
     }
-<<<<<<< HEAD
-  }, [navigate, token, dispatch, categoriesInfo]);
-=======
   }, [dispatch, categoriesInfo]);
 
 
->>>>>>> ec6282023722e75b4f9f742b5cfa913945dea1f6
 
   const truncate = (s: string) => {
     if (s.length > 200) {
@@ -84,54 +62,6 @@ export default function Home() {
 
   return (
     <div>
-<<<<<<< HEAD
-      <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
-        <DropdownInput
-          options={cats}
-          style="bg-gray-900 w-[45%] mb-3 rounded-lg"
-          b_bar={false}
-          onOptionSelect={handleOptionSelect}
-        />
-
-        <div className="items-center">
-          {upload ? <a href="/Upload">Upload</a> : null}
-        </div>
-
-        <div className="flex flex-row">
-          <ul className="w-1/2">
-            {posts && posts.length > 0 ? (
-              posts.map((item, index) => (
-                <li
-                  key={index}
-                  className="flex flex-col w-[90%] border border-black shadow-md p-2 rounded-md mb-2 shadow-red-500"
-                >
-                  <div className="mb-2 border-b border-b-black">
-                    <strong>{item.title}</strong>
-                  </div>
-                  <div className="mb-2">
-                    <p>{truncate(item.body)}</p>
-                  </div>
-                  <div className="flex flex-row justify-between">
-                    <a
-                      href={baseDir + item.document}
-                      target="_blank"
-                      // onClick={() => console.log(`Clicked ${index} link`)}
-                    >
-                      PDF
-                    </a>
-                    <p>{item.user.username}</p>
-                    <p>{item.category}</p>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <li className="text-center">No posts available</li>
-            )}
-          </ul>
-        </div>
-      </div>
-    </div>
-=======
          <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
        {/* {/* <DropdownInput
        options={cats}
@@ -180,6 +110,5 @@ export default function Home() {
 
 
 
->>>>>>> ec6282023722e75b4f9f742b5cfa913945dea1f6
   );
 }

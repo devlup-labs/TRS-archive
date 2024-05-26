@@ -70,11 +70,11 @@ export const Dashboard = () => {
         setCatg(user.default_category);
         setCp(user.current_position);
         setRoles(user.roles);
-        setImage(import.meta.env.BACKEND_URL + user.image);
+        setImage("http://127.0.0.1:8000"+ user.image);
       setUploadVerified(user.upload_verified);
     
       setData(user_posts)
-      console.log(data)
+      console.log(image)
       }
     }
   }, [dispatch, authToken,user_posts, user, navigate]); // Empty dependency array to run only once when component mounts

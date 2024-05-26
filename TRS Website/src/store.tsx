@@ -15,14 +15,15 @@ import {
   userUpdateProfileReducer,
   TokenRefreshReducer,
   getAllUsersReducer,
-  getCategoriesReducer,
-} from "./reducers/userReducers";
+ 
+} from "./reducers/userReducers"; 
 
 import {
   postAssignedReducer,
   postListReducers,
   postUploadReducer,
   userPostReducer,
+  getCategoriesReducer,
   getSubCatReducer,
   postUnAssignedPosts,
 } from "./reducers/postReducers";

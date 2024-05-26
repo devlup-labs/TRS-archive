@@ -8,6 +8,10 @@ import {
   POST_LIST_REQUEST,
   POST_LIST_SUCCESS,
   POST_LIST_FAIL,
+  CATEGORIES_GET_ALL_REQUEST,
+  CATEGORIES_GET_ALL_REQUEST_SUCCESS,
+  CATEGORIES_GET_ALL_REQUEST_FAIL,
+  CATEGORIES_GET_ALL_REQUEST_RESET,
   POST_ASSIGNED_REQUEST,
   POST_ASSIGNED_REQUEST_SUCCESS,
   POST_ASSIGNED_REQUEST_FAILURE,
@@ -72,21 +76,31 @@ export const userPostReducer = (state = {}, actions) => {
     default:
       return state;
   }
-};
+}
 
-export const postAssignedReducer = (state = {}, actions) => {
+
+export const getCategoriesReducer = (state = {}, actions) => {
   switch (actions.type) {
-    case POST_ASSIGNED_REQUEST:
-      return { loading: true };
-    case POST_ASSIGNED_REQUEST_SUCCESS:
-      return { loading: false, success: true, assigned_posts: actions.payload };
-    case POST_ASSIGNED_REQUEST_FAILURE:
-      return { loading: false, success: false, error: actions.payload };
-    // case USER_LOGOUT:
+    case CATEGORIES_GET_ALL_REQUEST:
+      return { ...state, loadingCat: true };
+    case CATEGORIES_GET_ALL_REQUEST_SUCCESS:
+      return {
+        loadingCat: false,
+        successCat: true,
+        categoriesInfo: actions.payload,
+      };
+    case CATEGORIES_GET_ALL_REQUEST_FAIL:
+      return { loadingCat: false, error: actions.payload };
+    case CATEGORIES_GET_ALL_REQUEST_RESET:
+      return {};
+
     default:
       return state;
   }
 };
+
+
+
 
 export const getSubCatReducer = (state = {}, actions) => {
   switch (actions.type) {
@@ -115,6 +129,22 @@ export const postUnAssignedPosts = (state = {}, actions) => {
     case POST_UNASSIGNED_REQUEST_SUCCESS:
       return { loading: false, success: true, assigned_posts: actions.payload };
     case POST_UNASSIGNED_REQUEST_FAILURE:
+      return { loading: false, success: false, error: actions.payload };
+    // case USER_LOGOUT:
+    default:
+      return state;
+  }
+};
+
+
+
+export const postAssignedReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case POST_ASSIGNED_REQUEST:
+      return { loading: true };
+    case POST_ASSIGNED_REQUEST_SUCCESS:
+      return { loading: false, success: true, assigned_posts: actions.payload };
+    case POST_ASSIGNED_REQUEST_FAILURE:
       return { loading: false, success: false, error: actions.payload };
     // case USER_LOGOUT:
     default:
