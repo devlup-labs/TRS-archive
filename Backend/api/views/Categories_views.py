@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from ..models import Category, SubCategory
 from api.serializer import CategorySerializer, SubCategorySerializer
 from rest_framework.mixins import ListModelMixin
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status
+
 
 class PostCategoryViewSet(mixins.CreateModelMixin, GenericAPIView):
     queryset = Category.objects.all()
@@ -50,11 +53,12 @@ class RetrieveSubCategoryViewSet(GenericAPIView, ListModelMixin):
     queryset = SubCategory.objects.all()
     permission_classes = [AllowAny]
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
-        category_name = request.data['category']
+        category_name = request.data.get('cat')
+        print(category_name)
         if category_name is None:
             return Response("Category must be provided", status=400)
         if not Category.objects.filter(name=category_name).exists():
@@ -63,4 +67,16 @@ class RetrieveSubCategoryViewSet(GenericAPIView, ListModelMixin):
         subcategories = SubCategory.objects.filter(category_id=category.pk)
         serializer = self.get_serializer(subcategories, many=True)
         return Response(serializer.data)
+    
+
+@api_view(['GET'])
+def getCategories(request):
+    try:
+        categories=Category.objects.all()
+        serializers=CategorySerializer(categories,many=True)
+        return Response(serializers.data)
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
 

@@ -13,4 +13,7 @@ urlpatterns=[
     path('<user_id>/posts/<post_id>/update/',views.ParticularUserPost.as_view()),
     path('<user_id>/posts/<post_id>/delete/',views.ParticularUserPost.as_view()),
     path('upload/',views.PostViewSet.as_view()),
+    path('send_email_reviewer/',views.Send_Mail_Review),
+    
+
 ]

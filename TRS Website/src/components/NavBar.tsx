@@ -1,6 +1,7 @@
 import DropdownInput from "./DropInput";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, getCategoriesAction } from "../actions/userActions";
+import { logout } from "../actions/userActions";
+import {getCategoriesAction} from "../actions/postActions"
 import { useEffect, useState } from "react";
 
 const Navbar = () => {

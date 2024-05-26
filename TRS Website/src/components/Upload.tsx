@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { getSubCategoriesAction, uploadPost } from "../actions/postActions";
 import Message from "./Message";
 import Loader from "./Loader";
-import {getCategoriesAction } from "../actions/userActions";
+import {getCategoriesAction } from "../actions/postActions";
 
 
 
@@ -52,19 +52,20 @@ export const Upload = () => {
     } else {
       setCats(categoriesInfo.map((category) => category.name));
     }
-  }, [dispatch, categoriesInfo]);
+  }, [categoriesInfo]);
 
 
 
   useEffect(()=>{
-    if(category){
-      dispatch(getSubCategoriesAction(category))
+    if(category && !sub_categoriesInfo){
+      dispatch(getSubCategoriesAction(category));
     }
     if(sub_categoriesInfo){
+      console.log("getting the sub_cat in frontend")
       setSubCats(sub_categoriesInfo.map((sub_cat) => sub_cat.name))
     }
     
-  })
+  },[sub_categoriesInfo,category])
 
   
 
@@ -177,16 +178,15 @@ const handleSubmit=(e) => {
         
         <label className="block mb-2">SubCategory:</label>
         <select
-          value={category}
+          value={subCategory}
           onChange={(e) => setSubCategory(e.target.value)}
           required
           className="rounded-sm px-2 w-full"
         >
         <option value="">Select a Subcategory</option>
-        <option value="category1">Category 1</option>
-        <option value="category2">Category 2</option>
-        <option value="category3">Category 3</option>
-        {/* Add more options as needed */}
+        {subcats.map((sub_cat, index) => (
+        <option key={index} value={sub_cat}>{sub_cat}</option>
+        ))}
       </select>
 
 
