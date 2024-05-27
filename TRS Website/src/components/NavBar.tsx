@@ -2,16 +2,14 @@ import DropdownInput from "./DropInput";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, getCategoriesAction } from "../actions/userActions";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  
-  
+  const navigate = useNavigate();
   const [cats, setCats] = useState([]);
   const [cat, setCat] = useState("");
 
-
-  
   const handleClick = () => {
     console.log("Logged out");
     dispatch(logout());
@@ -20,13 +18,10 @@ const Navbar = () => {
     setCat(option);
   };
 
-  
   const getCategories = useSelector((state) => state.getCategories);
   const { loadingCat, successCat, categoriesInfo } = getCategories;
   const userLogin = useSelector((state) => state.userLogin);
   const { authToken } = userLogin;
-
-
 
   useEffect(() => {
     if (!categoriesInfo) {
@@ -36,18 +31,26 @@ const Navbar = () => {
       setCats(categoriesInfo.map((category) => category.name));
     }
   }, [dispatch, categoriesInfo]);
-
-
-
-
-
+  const handleNavigation = () => {
+    if (authToken) {
+      if (authToken.roles === "admin") {
+        navigate("/admin");
+      } else if (authToken.roles === "editor") {
+        navigate("/editor");
+      } else if (authToken.roles === "reviewer") {
+        navigate("/reviewer");
+      } else {
+        navigate("/");
+      }
+    } else {
+      navigate("/");
+    }
+  };
   return (
     <nav className="fixed top-24 left-0 w-full h-16 bg-blue-800  z-10 shadow-md flex items-center justify-between text-white p-4">
-      <a
-        href="/"
-      >
+      <div onClick={handleNavigation}>
         <img src="/image-removebg-preview (3).png" className="h-36 w-36"></img>
-      </a>
+      </div>
 
       {!loadingCat && successCat && (
         <div className="flex items-center flex-grow mx-4">

@@ -63,7 +63,7 @@ export const uploadPost =
           "Content-type": "multipart/form-data",
         },
       };
-      export const getSubCategoriesAction = (cat) => async (dispatch) => {
+      const getSubCategoriesAction = (cat) => async (dispatch) => {
         try {
           dispatch({
             type: SUBCAT_GET_ALL_REQUEST,
@@ -219,4 +219,32 @@ export const getUnAssignedPosts = () => async (dispatch, getState) => {
           : error.message, //passing the error
     });
   }
-}
+};
+
+export const getSubCategoriesAction = (cat) => async (dispatch) => {
+  try {
+    dispatch({
+      type: SUBCAT_GET_ALL_REQUEST,
+    });
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    const { data } = await axios.get(`/api/users/getSubCat/`, config);
+    dispatch({
+      type: SUBCAT_GET_ALL_SUCCESS,
+      cat,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: SUBCAT_GET_ALL_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message, //passing the error
+    });
+  }
+};

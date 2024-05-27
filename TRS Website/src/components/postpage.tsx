@@ -6,12 +6,13 @@ export const PostPage = () => {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const baseDir = import.meta.env.BACKEND_URL; // Ensure you are using VITE_BACKEND_URL
+  const baseDir = import.meta.env.BACKEND_URL; 
+  console.log(baseDir)
 
   const getPost = async () => {
     try {
       console.log(id)
-      const response = await fetch(`http://127.0.0.1:8000/api/posts/getpost/${id}/`, {
+      const response = await fetch(`${baseDir}/api/posts/getpost/${id}/`, {
         method: "GET",
       });
       console.log(response)
@@ -38,7 +39,7 @@ export const PostPage = () => {
 
   useEffect(() => {
     getPost();
-  }, []);
+  });
 
   if (loading) {
     return <div className="mt-48">Loading...</div>;
