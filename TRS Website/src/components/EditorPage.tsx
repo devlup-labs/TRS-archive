@@ -14,7 +14,7 @@ export const EditorPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("authTokens");
-    if (authToken && authToken.user.is_staff) {
+    if (authToken && authToken.is_staff) {
       dispatch(getUnAssignedPosts());
     } else if (authToken) {
       Swal.fire({

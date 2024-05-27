@@ -12,7 +12,7 @@ export const PostPage = () => {
   const getPost = async () => {
     try {
       console.log(id)
-      const response = await fetch(`${baseDir}/api/posts/getpost/${id}/`, {
+      const response = await fetch(`/api/posts/getpost/${id}/`, {
         method: "GET",
       });
       console.log(response)

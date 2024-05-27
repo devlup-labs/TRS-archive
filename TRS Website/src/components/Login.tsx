@@ -19,7 +19,7 @@ export const Login = () => {
     dispatch(login(email, password));
   };
 
-  const redirect = location.search ? location.search.split("=")[1] : "/";
+
 
   const userLogin = useSelector((state) => state.userLogin);
   const { error, loading, authToken } = userLogin;
@@ -33,7 +33,7 @@ export const Login = () => {
       } else if (authToken.roles == "editor") {
         navigate("/editor");
       } else {
-        navigate(redirect);
+        navigate("/");
       }
     }
   }, [authToken, redirect, navigate]);
