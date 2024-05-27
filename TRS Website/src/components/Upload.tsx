@@ -34,22 +34,29 @@ export const Upload = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!categoriesInfo) {
+  useEffect(()=>{
+if (!categoriesInfo) {
       dispatch(getCategoriesAction());
-    } else {
+      
+    }
+   else {
       setCats(categoriesInfo.map((category) => category.name));
     }
   }, [categoriesInfo]);
 
+
   useEffect(() => {
-    if (category) {
+    
+    if(category && !sub_categoriesInfo){
       dispatch(getSubCategoriesAction(category));
     }
-    if (sub_categoriesInfo) {
-      setSubCats(sub_categoriesInfo.map((sub_cat) => sub_cat.name));
+    if(sub_categoriesInfo){
+      console.log("getting the sub_cat in frontend")
+      setSubCats(sub_categoriesInfo.map((sub_cat) => sub_cat.name))
     }
-  });
+  }, [sub_categoriesInfo,category]);
+
+  
 
   useEffect(() => {
     // Focus the file input when the component mounts
@@ -137,11 +144,10 @@ export const Upload = () => {
           required
           className="rounded-sm px-2 w-full"
         >
-          <option value="">Select a Subcategory</option>
-          <option value="category1">Category 1</option>
-          <option value="category2">Category 2</option>
-          <option value="category3">Category 3</option>
-          {/* Add more options as needed */}
+          <option value="">Select a subCategory</option>
+          {subcats.map((sub_cat, index) => (
+        <option key={index} value={sub_cat}>{sub_cat}</option>
+        ))}
         </select>
 
         <label className="block mb-2">Document (PDF only):</label>

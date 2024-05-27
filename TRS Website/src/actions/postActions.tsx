@@ -142,10 +142,6 @@ export const getCategoriesAction = () => async (dispatch) => {
 
 
 
-
-
-
-
 export const getSubCategoriesAction = (cat) => async (dispatch) => {
   try {
     dispatch({
@@ -227,7 +223,6 @@ export const getAssignedPosts = (id: string) => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_POSTS_REQUEST,
-      type: POST_ASSIGNED_REQUEST,
     });
 
     const {
@@ -289,30 +284,3 @@ export const getUnAssignedPosts = () => async (dispatch, getState) => {
   }
 };
 
-export const getSubCategoriesAction = (cat) => async (dispatch) => {
-  try {
-    dispatch({
-      type: SUBCAT_GET_ALL_REQUEST,
-    });
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
-    const { data } = await axios.get(`/api/users/getSubCat/`, config);
-    dispatch({
-      type: SUBCAT_GET_ALL_SUCCESS,
-      cat,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: SUBCAT_GET_ALL_FAIL,
-      payload:
-        error.response && error.response.data.detail
-          ? error.response.data.detail
-          : error.message, //passing the error
-    });
-  }
-};
