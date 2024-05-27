@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import { mainPageData } from "../constants";
 import { useNavigate } from "react-router-dom";
 import DropdownInput from "./DropInput";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +23,7 @@ export default function Home() {
   const userLogin = useSelector((state) => state.userLogin);
   const { authToken } = userLogin; //the person who logged in
 
+  const token = localStorage.getItem("authTokens");
 
   const [upload, setUpload] = useState(false);
 
@@ -42,15 +42,12 @@ export default function Home() {
 
     if (!categoriesInfo) {
       dispatch(getCategoriesAction());
-      dispatch(listPosts())
+      dispatch(listPosts());
     } else {
-      
       console.log(categoriesInfo);
       setCats(categoriesInfo.map((category) => category.name));
     }
-  }, [dispatch, categoriesInfo]);
-
-
+  }, [navigate, token, dispatch, categoriesInfo]);
 
   const truncate = (s: string) => {
     if (s.length > 200) {
@@ -62,53 +59,51 @@ export default function Home() {
 
   return (
     <div>
-         <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
-       {/* {/* <DropdownInput
-       options={cats}
-         style="bg-gray-900 w-[45%] mb-3 rounded-lg"
-         b_bar={false}
-         onOptionSelect={handleOptionSelect}
-       /> */}
-      
-    <div className="items-center">
-      {upload ? <a href="/Upload">Upload</a> : null}
-    </div>
-  
-   <div className="flex flex-row">
-      <ul className="w-1/2">
-        {cats.map((cat, index) => (
-          <li key={index}>
-            <h1 className="text-[40px]">{cat}</h1>
-            <ul>
-             {posts && posts.length > 0 ? (
-                posts
-                  .filter(post => post.category === cat) // Filter posts by category
-                  .map((item, postIndex) => (
-                    <li
-                      key={postIndex}
-                      
+      <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
+        <DropdownInput
+          options={cats}
+          style="bg-gray-900 w-[45%] mb-3 rounded-lg"
+          b_bar={false}
+          onOptionSelect={handleOptionSelect}
+        />
+        <div className="flex flex-row">
+          <ul className="w-1/2">
+            {posts && posts.length > 0 ? (
+              posts.map((item, index) => (
+                <li
+                  key={index}
+                  className="flex flex-col w-[90%] border border-black shadow-md p-2 rounded-md mb-2 shadow-red-500"
+                >
+                  <div className="mb-2 border-b border-b-black">
+                    <a href={`/post/${item.id}`}>
+                      <strong>{item.title}</strong>
+                    </a>
+                  </div>
+                  <div className="mb-2">
+                    <p>{truncate(item.body)}</p>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <a
+                      href={baseDir + item.document}
+                      target="_blank"
+                      // onClick={() => console.log(`Clicked ${index} link`)}
                     >
-                         <Link to={`/post/:${item.id}`}>
-                      <p>{item.title}</p>
-                      </Link>
-                      
-                    </li>
-                  ))
-              ) : (
-                <li className="text-center">No posts available</li>
-              )}
-            </ul>
-          </li>
-        ))}
-
-        
-      </ul>
-      <News />
+                      PDF
+                    </a>
+                    <p>{item.user.username}</p>
+                    <p>{item.category}</p>
+                  </div>
+                </li>
+              ))
+            ) : (
+              <li className="text-center">No posts available</li>
+            )}
+          </ul>
+          <div className="w-1/2">
+            <News />
+          </div>
+        </div>
+      </div>
     </div>
-    </div>
-  </div>
-
-
-
   );
 }
