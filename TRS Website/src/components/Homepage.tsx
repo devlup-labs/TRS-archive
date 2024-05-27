@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DropdownInput from "./DropInput";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategoriesAction } from "../actions/userActions";
-import { listPosts } from "../actions/postActions";
+import { getCategoriesAction } from "../actions/postActions";
+import {listPosts} from '../actions/postActions';
 import { News } from "./News";
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -30,10 +30,14 @@ export default function Home() {
   const handleOptionSelect = (option) => {
     setCat(option);
   };
+  
+
+
 
   useEffect(() => {
+    
     if (authToken) {
-      setUpload(authToken.upload_verified);
+       setUpload(authToken.upload_verified);
     }
 
     if (!categoriesInfo) {

@@ -27,9 +27,6 @@ import {
   USERS_GET_ALL_REQUEST_SUCCESS,
   USERS_GET_ALL_REQUEST_FAIL,
   USERS_GET_ALL_REQUEST_RESET,
-  CATEGORIES_GET_ALL_REQUEST,
-  CATEGORIES_GET_ALL_REQUEST_SUCCESS,
-  CATEGORIES_GET_ALL_REQUEST_FAIL,
   TOKEN_REFRESH_REQUEST,
   TOKEN_REFRESH_SUCCESS,
   UPDATE_AUTH_TOKEN,
@@ -414,33 +411,6 @@ export const getUsers = () => async (dispatch, getState) => {
   }
 };
 
-export const getCategoriesAction = () => async (dispatch) => {
-  try {
-    dispatch({
-      type: CATEGORIES_GET_ALL_REQUEST,
-    });
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-      },
-    };
-    const { data } = await axios.get(`/api/users/getCategories/`, config);
-    dispatch({
-      type: CATEGORIES_GET_ALL_REQUEST_SUCCESS,
-      payload: data,
-    });
-    
-  } catch (error) {
-    dispatch({
-      type: CATEGORIES_GET_ALL_REQUEST_FAIL,
-      payload:
-        error.response && error.response.data.detail
-          ? error.response.data.detail
-          : error.message, //passing the error
-    });
-  }
-};
 
 
 

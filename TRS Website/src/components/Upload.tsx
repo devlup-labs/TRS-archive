@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { getSubCategoriesAction, uploadPost } from "../actions/postActions";
 import Message from "./Message";
 import Loader from "./Loader";
-import { getCategoriesAction } from "../actions/userActions";
+import { getCategoriesAction } from "../actions/postActions";
 
 export const Upload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -40,7 +40,7 @@ export const Upload = () => {
     } else {
       setCats(categoriesInfo.map((category) => category.name));
     }
-  }, [dispatch, categoriesInfo]);
+  }, [categoriesInfo]);
 
   useEffect(() => {
     if (category) {
@@ -132,7 +132,7 @@ export const Upload = () => {
 
         <label className="block mb-2">SubCategory:</label>
         <select
-          value={category}
+          value={subCategory}
           onChange={(e) => setSubCategory(e.target.value)}
           required
           className="rounded-sm px-2 w-full"

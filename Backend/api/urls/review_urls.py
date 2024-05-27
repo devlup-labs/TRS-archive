@@ -2,7 +2,10 @@ from django.urls import path
 from api.views import review_views as views
 
 urlpatterns=[
-    path('reviews/<post_id>/', views.ReviewListView.as_view()),
-    path('reviews/<post_id>/update/', views.ReviewListView.as_view()),
-    path('reviews/<post_id>/add/', views.ReviewListView.as_view()),
+    path('Editor/reviews/', views.EditorReviewListView.as_view()),
+    path('Editor/review/<post_id>/<reviewer_id>/update/', views.EditorReviewListView.as_view()),
+    path('Editor/review/<post_id>/create/', views.EditorReviewListView.as_view()),
+
+    path('Reviewer/reviews/', views.ReviewerReviewViewset.as_view()),
+    path('Reviewer/review/<post_id>/<editor_id>/update/', views.ReviewerReviewViewset.as_view()),
 ]

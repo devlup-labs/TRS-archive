@@ -128,7 +128,7 @@ class NewsSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ['description', 'pdf_file_status', 'reviewer_id', 'post']
+        fields = ['description', 'pdf_file_status', 'reviewer_id', 'post', 'created_at', 'reviewed_pdf', 'is_reviewed']
 
 
 class SubCategorySerializer(serializers.ModelSerializer):

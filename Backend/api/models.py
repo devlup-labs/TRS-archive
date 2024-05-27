@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
-import uuid,random
+import uuid,random,datetime
 
 Roles_Choices = (
         ('admin', 'Admin'),
@@ -57,7 +57,7 @@ class User(AbstractUser):
     affiliation = models.CharField(max_length=100, null=True, blank=True)
     default_category=models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,blank=True)
     current_position=models.CharField(max_length=100,blank=True,null=True)
-    roles=models.CharField(max_length=20, choices=Roles_Choices,blank=True,null=True)
+    roles=models.CharField(max_length=20, choices=Roles_Choices,blank=True,null=True,default='normal_user')
     otp=models.CharField(max_length=4,null=True,blank=True)
     full_name = models.CharField(max_length=1000,null=True,blank=True)
     bio = models.CharField(max_length=100,null=True,blank=True)
@@ -80,7 +80,9 @@ class User(AbstractUser):
             except Institute.DoesNotExist:
                 pass  # Do nothing if the institute doesn't exist
         super().save(*args, **kwargs)
-            
+    
+    def __str__(self):
+        return self.username
 
 class Activation(models.Model):
     email=models.EmailField(unique=True,primary_key=True)
@@ -113,8 +115,12 @@ class Comment(models.Model):
 class Review(models.Model):
     description = models.TextField()
     pdf_file_status = models.CharField(max_length=20, choices=Status_Choices, default='Ongoing')  
-    reviewer_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)
+    editor = models.ForeignKey(User, on_delete=models.CASCADE,related_name='editor',null=True,blank=True)
+    is_reviewed = models.BooleanField(default=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now=True)
+    reviewed_pdf = models.FileField(upload_to='uploads/',null=True,blank=True)
 
 class New(models.Model):
     title = models.CharField(max_length=100)
