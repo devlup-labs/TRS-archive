@@ -39,7 +39,6 @@ export const AdminPage = () => {
       if (authToken.roles === "admin") {
         if (activeTab === "users") {
           dispatch(getUsers());
-          console.log(usersInfo);
         } else if (activeTab === "posts") {
           dispatch(listPosts());
         } // else if (activeTab === "editors") {
