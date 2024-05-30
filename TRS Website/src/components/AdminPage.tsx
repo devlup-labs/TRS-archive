@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getUsers } from "../actions/userActions"; // Assume you have these actions
 import { useNavigate } from "react-router-dom";
 import { listPosts } from "../actions/postActions";
+import {getEditors} from "../actions/userActions"
 import { News } from "./News";
 
 export const AdminPage = () => {
@@ -25,12 +26,12 @@ export const AdminPage = () => {
   const getallPosts = useSelector((state) => state.postlist);
   const { loading, posts, error } = getallPosts;
 
-  // const getallEditors = useSelector((state) => state.getallEditors);
-  // const {
-  //   loading: loadingEditors,
-  //   editorsInfo,
-  //   success: successEditors,
-  // } = getallEditors;
+  const getallEditors = useSelector((state) => state.getallEditors);
+  const {
+    loading: loadingEditors,
+      editorsInfo,
+    success: successEditors,
+  } = getallEditors;
 
   useEffect(() => {
     if (!authToken) {
@@ -41,9 +42,9 @@ export const AdminPage = () => {
           dispatch(getUsers());
         } else if (activeTab === "posts") {
           dispatch(listPosts());
-        } // else if (activeTab === "editors") {
-        //   dispatch(getEditors());
-        // }
+        }  else if (activeTab === "editors") {
+           dispatch(getEditors());
+       }
       } else {
         navigate("/");
       }
@@ -138,14 +139,35 @@ export const AdminPage = () => {
   };
 
   const renderEditors = () => (
-    <div className="w-[60%] overflow-y-auto p-2 mx-auto">
+    <div className="w-full max-w-4xl mx-auto p-4">
       {successEditors && (
-        <ul className="flex flex-col gap-2 border border-transparent">
+        <ul className="flex flex-col gap-4 border border-gray-300 rounded-lg shadow-md p-4 bg-white">
           {editorsInfo.map((editor, index) => (
-            <li key={index} className="border bg-gray-500 p-2">
-              <p>Editor Name: {editor.name}</p>
-              <p>Email: {editor.email}</p>
-              <p>Affiliation: {editor.affiliation || "N/A"}</p>
+            <li key={index} className="border-b border-gray-200 last:border-none pb-4 mb-4 last:pb-0 last:mb-0">
+
+               <div className="flex flex-col gap-2">
+                  <p className="text-lg font-semibold text-gray-800">
+                    Editor Name:{" "}
+                    <span className="font-normal">{editor.name}</span>
+                  </p>
+                  <p className="text-lg font-semibold text-gray-800">
+                    Email: <span className="font-normal">{editor.email}</span>
+                  </p>
+                  <p className="text-lg font-semibold text-gray-800">
+                    Affiliation:{" "}
+                    <span className="font-normal">
+                      {editor.affiliation|| "N/A"}
+                    </span>
+                  </p>
+                  <p className="text-lg font-semibold text-gray-800">
+                    Is Staff:{" "}
+                    <span className="font-normal">
+                      {editor.is_staff ? "Yes" : "No"}
+                    </span>
+                  </p>
+                </div>
+
+    
             </li>
           ))}
         </ul>
@@ -155,7 +177,7 @@ export const AdminPage = () => {
 
   return (
     <div className="mt-44">
-      {(loadingUsers || loading) && <Loader />}
+      {(loadingUsers || loadingEditors || loading) && <Loader />}
       <div className="flex flex-row">
         <div className="w-2/3">
           <div className="flex flex-col">
@@ -196,9 +218,7 @@ export const AdminPage = () => {
             {activeTab === "editors" && renderEditors()}
           </div>
         </div>
-        <div className="w-1/3">
-          <News />
-        </div>
+
       </div>
     </div>
   );

@@ -31,6 +31,10 @@ import {
   TOKEN_REFRESH_SUCCESS,
   UPDATE_AUTH_TOKEN,
   TOKEN_REFRESH_FAIL,
+  EDITORS_GET_ALL_REQUEST,
+  EDITORS_GET_ALL_SUCCESS,
+  EDITORS_GET_ALL_FAIL,
+  EDITORS_GET_ALL_RESET,
 } from "../constants/userConstants";
 
 export const userVerifyReducer = (state = { email: null }, actions) => {
@@ -219,6 +223,25 @@ export const getCategoriesReducer = (state = {}, actions) => {
     case CATEGORIES_GET_ALL_REQUEST_FAIL:
       return { loadingCat: false, error: actions.payload };
     case CATEGORIES_GET_ALL_REQUEST_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+
+
+
+
+export const getAllEditorReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case EDITORS_GET_ALL_REQUEST:
+      return { ...state, loading: true };
+    case EDITORS_GET_ALL_SUCCESS:
+      return { loading: false, success: true, editorsInfo: actions.payload };
+    case EDITORS_GET_ALL_FAIL:
+      return { loading: false, error: actions.payload };
+    case EDITORS_GET_ALL_RESET:
       return {};
 
     default:

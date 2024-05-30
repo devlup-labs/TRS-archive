@@ -113,6 +113,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Review(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     description = models.TextField()
     pdf_file_status = models.CharField(max_length=20, choices=Status_Choices, default='Ongoing')  
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE)

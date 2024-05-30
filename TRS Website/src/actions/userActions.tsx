@@ -31,6 +31,10 @@ import {
   TOKEN_REFRESH_SUCCESS,
   UPDATE_AUTH_TOKEN,
   TOKEN_REFRESH_FAIL,
+  EDITORS_GET_ALL_REQUEST,
+  EDITORS_GET_ALL_SUCCESS,
+  EDITORS_GET_ALL_FAIL,
+  
 } from "../constants/userConstants";
 
 import axios from "axios";
@@ -463,3 +467,35 @@ export const refreshAccessToken=(refreshToken)=> async (dispatch,getState) => {
   }
 }
 
+
+
+export const getEditors = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: EDITORS_GET_ALL_REQUEST,
+    });
+    const {
+      userLogin: { authToken },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${authToken.access}`, //giving the token of the logged in user
+      },
+    };
+    const { data } = await axios.get(`/api/users/getEditors`, config);
+    dispatch({
+      type: EDITORS_GET_ALL_SUCCESS,
+      payload: data,
+    });
+    console.log(data)
+  } catch (error) {
+    dispatch({
+      type: EDITORS_GET_ALL_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message, //passing the error
+    });
+  }
+};
