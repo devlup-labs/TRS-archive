@@ -17,6 +17,7 @@ from django.conf import settings
 import datetime
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail, EmailMultiAlternatives
 
 
 from ..models import *
@@ -128,3 +129,45 @@ class ReviewerReviewViewset(GenericAPIView, mixins.ListModelMixin, mixins.Update
         return Response("Review updated successfully", status=status.HTTP_200_OK)
     
 
+
+@api_view(['GET'])
+def Send_Mail_Editor(request,review_id):
+     #this function gets input of the email_id and post
+    try:
+        review=Review.objects.get(id=review_id)
+        editor_email=review.editor.email
+        post_id=review.post.id
+        
+        try:
+            post = Post.objects.get(id=post_id) 
+        except Post.DoesNotExist:
+            return Response(message,status=status.HTTP_400_BAD_REQUEST)
+        
+        subject = f'Regarding response of the review of Post:{post.title}'
+        message = f'Here is the content of the post:\n\n{review.description}.'
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [editor_email]
+
+        email_message = EmailMultiAlternatives(
+                subject=subject,
+                body=message,
+                from_email=from_email,
+                to=recipient_list
+            )
+        
+        file_path=review.reviewed_pdf.path
+        
+        # Send the email
+        file_name = os.path.basename(file_path)
+        with open(file_path, 'rb') as f:
+            email_message.attach(file_name, f.read(), 'application/pdf')  # Adjust content type as needed
+
+        email_message.send()
+        
+        return Response("Email sended to reviewers successfully", status=status.HTTP_201_CREATED)
+
+
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        print(message)
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)

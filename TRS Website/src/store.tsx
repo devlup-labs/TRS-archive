@@ -1,4 +1,4 @@
-import {
+import {  
   legacy_createStore as createStore,
   combineReducers,
   applyMiddleware,
@@ -15,7 +15,7 @@ import {
   userUpdateProfileReducer,
   TokenRefreshReducer,
   getAllUsersReducer,
- 
+  getAllEditorReducer,
 } from "./reducers/userReducers"; 
 
 import {
@@ -47,6 +47,7 @@ const reducer = combineReducers({
   assignedPosts: postAssignedReducer,
   getSubCategories: getSubCatReducer,
   unassignedPosts: postUnAssignedPosts,
+  getallEditors: getAllEditorReducer,
 });
 
 const userInfofrom_locStorage = localStorage.getItem("authToken")
