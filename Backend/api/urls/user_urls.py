@@ -18,7 +18,7 @@ urlpatterns=[
     path('change_password/<int:u_id>/', views.change_password.as_view()),
     path('password_reset/',views.send_email_pass.as_view()),
     path('getUsers/',views.getUsers),
-    path('getEditors/',views.getEditors),
+    path('getUsers/<str:role>/',views.getUsers),
 
 
 

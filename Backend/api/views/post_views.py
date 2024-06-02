@@ -77,8 +77,11 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
     serializer_class = PostSerializer
     # permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        posts = Post.objects.all()
+    def get(self,request,curr_status=None, *args, **kwargs):
+        if curr_status:
+            posts = Post.objects.filter(status=curr_status)
+        else:
+            posts=Post.objects.all()
         serializer = self.serializer_class(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK) 
 
@@ -216,50 +219,6 @@ def getParticularPost(request,post_id):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-
-@api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-def Send_Mail_Review(request):
-
-    #this function gets input of the email_id and post
-    try:
-        email=request.data.get('email_id')
-        post_id=request.data.get('post_id')
-        
-        try:
-            post = Post.objects.get(id=post_id) 
-        except Post.DoesNotExist:
-            return Response(message,status=status.HTTP_400_BAD_REQUEST)
-        
-        subject = f'Regarding review of Post:{post.title}'
-        message = f'Here is the content of the post:\n\n{post.body}.'
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [email]
-
-        email_message = EmailMultiAlternatives(
-                subject=subject,
-                body=message,
-                from_email=from_email,
-                to=recipient_list
-            )
-        
-        file_path=post.document.path
-        
-        # Send the email
-        file_name = os.path.basename(file_path)
-        with open(file_path, 'rb') as f:
-            email_message.attach(file_name, f.read(), 'application/pdf')  # Adjust content type as needed
-
-        email_message.send()
-        
-        return Response("Email sended to reviewers successfully", status=status.HTTP_201_CREATED)
-
-
-    except Exception as e:
-        message = {'detail': str(e)}  # Return specific error message
-        print(message)
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 

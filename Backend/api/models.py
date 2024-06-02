@@ -23,6 +23,7 @@ Categories_Choices=(
 Status_Choices=(
 
     ('Ongoing','Ongoing'),
+    ('Under_Review','Under_Review'),
     ('Need_changes','Need_changes'),
     ('Reviewed','Reviewed'),
 )
