@@ -35,6 +35,9 @@ import {
   EDITORS_GET_ALL_SUCCESS,
   EDITORS_GET_ALL_FAIL,
   EDITORS_GET_ALL_RESET,
+  REVIEWERS_GET_ALL_REQUEST,
+  REVIEWERS_GET_ALL_SUCCESS,
+  REVIEWERS_GET_ALL_FAIL,
 } from "../constants/userConstants";
 
 export const userVerifyReducer = (state = { email: null }, actions) => {
@@ -242,6 +245,24 @@ export const getAllEditorReducer = (state = {}, actions) => {
     case EDITORS_GET_ALL_FAIL:
       return { loading: false, error: actions.payload };
     case EDITORS_GET_ALL_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+
+
+
+export const getAllReviewerReducer = (state = {}, actions) => {
+  switch (actions.type) {
+    case REVIEWERS_GET_ALL_REQUEST:
+      return { ...state, loading: true };
+    case REVIEWERS_GET_ALL_SUCCESS:
+      return { loading: false, success: true, reviewersInfo: actions.payload };
+    case REVIEWERS_GET_ALL_SUCCESS:
+      return { loading: false, error: actions.payload };
+    case REVIEWERS_GET_ALL_FAIL:
       return {};
 
     default:

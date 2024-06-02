@@ -60,32 +60,37 @@ class EditorReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateMo
     
     def post(self, request, post_id, *args, **kwargs):
         user = request.user
-        if user.roles != 'editor' and user.roles != 'admin':
+        if user.roles != "editor":
+            # print(user.roles)
             return Response("You are not authorized to create a review", status=status.HTTP_401_UNAUTHORIZED)
         post = Post.objects.get(id=post_id)
-        if 'description' not in request.data:
-            return Response("Description must be provided", status=status.HTTP_400_BAD_REQUEST)
-        if 'pdf_file_status' not in request.data:
-            return Response("pdf_file_status must be provided", status=status.HTTP_400_BAD_REQUEST)
-        if 'pdf_file_status' in request.data:
-            new_status = request.data['pdf_file_status']
-            if new_status in dict(Status_Choices).keys():
-                try:
-                    review = Review.objects.create(
-                        description = request.data['description'],
-                        pdf_file_status = request.data['pdf_file_status'],
-                        reviewer_id = request.data['reviewer_id'],
-                        is_reviewed = False,
-                        post = post
-                        )
-                    review.save()
+        reviewer= User.objects.get(username=request.data.get('reviewer'))
 
-                    #TODO: Add email functionality here
+        # if 'description' not n request.data:
+        #     return Response("Description must be provided", status=status.HTTP_400_BAD_REQUEST)
+        # if 'pdf_file_status' not in request.data:
+        #     return Response("pdf_file_status must be provided", status=status.HTTP_400_BAD_REQUEST)
+      
+        try:
+            review = Review.objects.create(
+                # description = request.data['description'],
+                # pdf_file_status = request.data['pdf_file_status'],
+                reviewer =reviewer,
+                editor=user,
+                is_reviewed = False,
+                post = post
+                )
+            review.save()
+            post.status='Under_Review'
+            post.save()
+            print(post.status)
+            Send_Mail_to_Reviewer(review.id)
 
-                except IntegrityError as e:
-                    return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)   
-            else:
-                return Response("Invalid PDF file status provided", status=status.HTTP_400_BAD_REQUEST)
+                #TODO: Add email functionality here
+
+        except IntegrityError as e:
+            return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)   
+
         
         serializer = self.serializer_class(review)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -130,12 +135,11 @@ class ReviewerReviewViewset(GenericAPIView, mixins.ListModelMixin, mixins.Update
     
 
 
-@api_view(['GET'])
-def Send_Mail_Editor(request,review_id):
-     #this function gets input of the email_id and post
+
+def Send_Mail_to_Editor(review_id):
     try:
         review=Review.objects.get(id=review_id)
-        editor_email=review.editor.email
+        reviewer_email=review.reviewer.email
         post_id=review.post.id
         
         try:
@@ -146,7 +150,7 @@ def Send_Mail_Editor(request,review_id):
         subject = f'Regarding response of the review of Post:{post.title}'
         message = f'Here is the content of the post:\n\n{review.description}.'
         from_email = settings.EMAIL_HOST_USER
-        recipient_list = [editor_email]
+        recipient_list = [reviewer_email]
 
         email_message = EmailMultiAlternatives(
                 subject=subject,
@@ -155,7 +159,67 @@ def Send_Mail_Editor(request,review_id):
                 to=recipient_list
             )
         
-        file_path=review.reviewed_pdf.path
+        # file_path=review.reviewed_pdf.path
+        
+        # Send the email
+        # file_name = os.path.basename(file_path)
+        # with open(file_path, 'rb') as f:
+        #     email_message.attach(file_name, f.read(), 'application/pdf')  # Adjust content type as needed
+
+        email_message.send()
+        
+        return Response("Email sended to reviewers successfully", status=status.HTTP_201_CREATED)
+
+
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        print(message)
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+
+def Send_Mail_to_Reviewer(review_id):
+
+    #this function gets input of the email_id and post
+    try:
+        review=Review.objects.get(id=review_id)
+        reviewer_email=review.reviewer.email
+        post_id=review.post.id
+        
+        
+        try:
+            post = Post.objects.get(id=post_id) 
+        except Post.DoesNotExist:
+            return Response(message,status=status.HTTP_400_BAD_REQUEST)
+        
+        subject = f'Assignment of Review: {post.title}'
+        message = f'''
+Dear {review.reviewer.username},
+
+You have been assigned to review the following research paper:
+
+Title: {post.title}
+Content: {post.body}
+
+Please complete your review for above research.
+
+Best regards,
+{review.editor.username}
+Editor
+
+Note: This email contains the confidential content of the research paper. Please do not share it with anyone outside the review process.'''
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [reviewer_email]
+
+        email_message = EmailMultiAlternatives(
+                subject=subject,
+                body=message,
+                from_email=from_email,
+                to=recipient_list
+            )
+        
+        file_path=post.document.path
         
         # Send the email
         file_name = os.path.basename(file_path)
@@ -171,3 +235,5 @@ def Send_Mail_Editor(request,review_id):
         message = {'detail': str(e)}  # Return specific error message
         print(message)
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+

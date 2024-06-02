@@ -298,11 +298,15 @@ def TokenRefreshView(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getUsers(request):
-    user = request.user
-    if user.is_verified:
+def getUsers(request,role=None):
+    user = request.user  #to check if the user who is sending request is verified or not
+    if user.is_verified:  
         try:
-            users=User.objects.all()
+            if(role):
+                users=User.objects.filter(roles=role)
+            else:
+                users=User.objects.all()
+
             serializer=AllUserSerializer(users,many=True)
             return Response(serializer.data)    
         except Exception as e:
@@ -312,20 +316,20 @@ def getUsers(request):
         return Response("You are not Authorizied to Access this Resource",status=status.HTTP_401_UNAUTHORIZED)
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def getEditors(request):
-    user = request.user
-    if user.is_verified:
-        try:
-            users=User.objects.filter(roles='editor')
-            serializer=AllUserSerializer(users,many=True)
-            return Response(serializer.data)    
-        except Exception as e:
-            message = {'detail': str(e)}  # Return specific error message
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    else:
-        return Response("You are not Authorizied to Access this Resource",status=status.HTTP_401_UNAUTHORIZED)
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def getEditors(request):
+#     user = request.user
+#     if user.is_verified:
+#         try:
+#             users=User.objects.filter(roles='editor')
+#             serializer=AllUserSerializer(users,many=True)
+#             return Response(serializer.data)    
+#         except Exception as e:
+#             message = {'detail': str(e)}  # Return specific error message
+#             return Response(message, status=status.HTTP_400_BAD_REQUEST)
+#     else:
+#         return Response("You are not Authorizied to Access this Resource",status=status.HTTP_401_UNAUTHORIZED)
 
 
 
