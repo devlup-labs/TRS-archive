@@ -103,7 +103,7 @@ export const AdminPage = () => {
             >
               <div className="mb-2 border-b border-gray-300 pb-2">
                 <a
-                  href={`/post/${item.id}`}
+                  href={`/post/:${item.id}`}
                   className="text-xl font-bold text-blue-600 hover:no-underline"
                 >
                   {item.title}
@@ -113,13 +113,7 @@ export const AdminPage = () => {
                 <p>{truncate(item.body)}</p>
               </div>
               <div className="flex flex-row justify-between items-center text-gray-600">
-                <a
-                  href={baseDir + item.document}
-                  target="_blank"
-                  className="text-blue-500"
-                >
-                  PDF
-                </a>
+                <p>{item.status}</p>
                 <p>{item.user.username}</p>
                 <p>{item.category}</p>
               </div>
@@ -148,7 +142,7 @@ export const AdminPage = () => {
                <div className="flex flex-col gap-2">
                   <p className="text-lg font-semibold text-gray-800">
                     Editor Name:{" "}
-                    <span className="font-normal">{editor.name}</span>
+                    <span className="font-normal">{editor.username}</span>
                   </p>
                   <p className="text-lg font-semibold text-gray-800">
                     Email: <span className="font-normal">{editor.email}</span>

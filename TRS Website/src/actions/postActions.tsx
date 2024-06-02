@@ -14,7 +14,11 @@ CATEGORIES_GET_ALL_REQUEST_SUCCESS,
 CATEGORIES_GET_ALL_REQUEST_FAIL,
 SUBCAT_GET_ALL_REQUEST,
 SUBCAT_GET_ALL_SUCCESS,
-SUBCAT_GET_ALL_FAIL
+SUBCAT_GET_ALL_FAIL,
+UNDER_PROCEES_POST_LIST_REQUEST,
+UNDER_PROCEES_POST_LIST_FAIL,
+UNDER_PROCEES_POST_LIST_SUCCESS,
+ 
  
 
 } from "../constants/postConstants";
@@ -22,10 +26,12 @@ SUBCAT_GET_ALL_FAIL
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export const listPosts = () => async (dispatch) => {
+export const listPosts = (status) => async (dispatch) => {
   try {
+    const url = status ? `/api/posts/allpost/${status}/` : `/api/posts/allpost/`;
+
     dispatch({ type: POST_LIST_REQUEST });
-    const { data } = await axios.get(`/api/posts/allpost/`);
+    const {data}=await axios.get(url)
     console.log(data);
 
     dispatch({
@@ -42,6 +48,34 @@ export const listPosts = () => async (dispatch) => {
     });
   }
 };
+
+export const list_underprocess_Posts=(status)=>async(dispatch)=>{
+  try{
+    console.log(status)
+    dispatch({type:UNDER_PROCEES_POST_LIST_REQUEST})
+    const {data}=await axios.get(`/api/posts/allpost/${status}/`)
+    console.log(data)
+
+    dispatch({
+      type: UNDER_PROCEES_POST_LIST_SUCCESS,
+      payload:data
+    })
+  }
+  catch(error){
+    dispatch({
+      type: UNDER_PROCEES_POST_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message, //passing the error
+    });
+  }
+}
+
+
+
+
+
 
 export const uploadPost =
   (email, title, body, category, subCategory, document) => async (dispatch) => {

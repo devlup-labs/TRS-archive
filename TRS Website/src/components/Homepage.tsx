@@ -36,7 +36,7 @@ export default function Home() {
   useEffect(() => {
     
     
-    dispatch(listPosts());
+    dispatch(listPosts("Reviewed"));
 
     
     if (authToken) {

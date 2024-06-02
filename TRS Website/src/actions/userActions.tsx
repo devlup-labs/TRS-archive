@@ -34,6 +34,9 @@ import {
   EDITORS_GET_ALL_REQUEST,
   EDITORS_GET_ALL_SUCCESS,
   EDITORS_GET_ALL_FAIL,
+  REVIEWERS_GET_ALL_REQUEST,
+  REVIEWERS_GET_ALL_SUCCESS,
+  REVIEWERS_GET_ALL_FAIL,
   
 } from "../constants/userConstants";
 
@@ -399,7 +402,7 @@ export const getUsers = () => async (dispatch, getState) => {
         Authorization: `Bearer ${authToken.access}`, //giving the token of the logged in user
       },
     };
-    const { data } = await axios.get(`/api/users/getUsers`, config);
+    const { data } = await axios.get(`/api/users/getUsers/`, config);
     dispatch({
       type: USERS_GET_ALL_REQUEST_SUCCESS,
       payload: data,
@@ -483,7 +486,7 @@ export const getEditors = () => async (dispatch, getState) => {
         Authorization: `Bearer ${authToken.access}`, //giving the token of the logged in user
       },
     };
-    const { data } = await axios.get(`/api/users/getEditors`, config);
+    const { data } = await axios.get(`/api/users/getUsers/editor/`, config);
     dispatch({
       type: EDITORS_GET_ALL_SUCCESS,
       payload: data,
@@ -492,6 +495,38 @@ export const getEditors = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: EDITORS_GET_ALL_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message, //passing the error
+    });
+  }
+};
+
+
+export const getReviewers = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: REVIEWERS_GET_ALL_REQUEST,
+    });
+    const {
+      userLogin: { authToken },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${authToken.access}`, //giving the token of the logged in user
+      },
+    };
+    const { data } = await axios.get(`/api/users/getUsers/reviewer/`, config);
+    dispatch({
+      type: REVIEWERS_GET_ALL_SUCCESS,
+      payload: data,
+    });
+    console.log(data)
+  } catch (error) {
+    dispatch({
+      type: REVIEWERS_GET_ALL_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

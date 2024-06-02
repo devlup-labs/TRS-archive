@@ -16,6 +16,7 @@ import {
   TokenRefreshReducer,
   getAllUsersReducer,
   getAllEditorReducer,
+  getAllReviewerReducer,
 } from "./reducers/userReducers"; 
 
 import {
@@ -26,6 +27,7 @@ import {
   getCategoriesReducer,
   getSubCatReducer,
   postUnAssignedPosts,
+  post_Upload_ListReducers,
 } from "./reducers/postReducers";
 
 import { getNewsReducer } from "./reducers/newsReducer";
@@ -48,6 +50,8 @@ const reducer = combineReducers({
   getSubCategories: getSubCatReducer,
   unassignedPosts: postUnAssignedPosts,
   getallEditors: getAllEditorReducer,
+  getallReviewers:getAllReviewerReducer,
+  getallUnderProcessPosts:post_Upload_ListReducers,
 });
 
 const userInfofrom_locStorage = localStorage.getItem("authToken")
