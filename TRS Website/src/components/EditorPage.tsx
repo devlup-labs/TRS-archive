@@ -59,12 +59,14 @@ const {
     dispatch(list_underprocess_Posts("Under Review"))
 
     
-  
+    
 
     if(!authToken){
       navigate('/login')
     }
-
+    if(authToken.roles!='editor'){
+      navigate('/')
+    }
    if(!reviewersInfo){
       dispatch(getReviewers());
     }
