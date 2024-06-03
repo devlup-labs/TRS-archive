@@ -169,12 +169,12 @@ export const postUnAssignedPosts = (state = {}, actions) => {
 
 
 
-export const postAssignedReducer = (state = {}, actions) => {
+export const postAssignedReducer = (state = {posts:[]}, actions) => {
   switch (actions.type) {
     case POST_ASSIGNED_REQUEST:
       return { loading: true };
     case POST_ASSIGNED_REQUEST_SUCCESS:
-      return { loading: false, success: true, assigned_posts: actions.payload };
+      return { loading: false, success: true, posts: actions.payload };
     case POST_ASSIGNED_REQUEST_FAILURE:
       return { loading: false, success: false, error: actions.payload };
     // case USER_LOGOUT:

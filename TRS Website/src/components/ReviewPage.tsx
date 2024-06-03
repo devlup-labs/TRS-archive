@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import {useSelector } from "react-redux";
+import Loader from './Loader.tsx'
 
-export const PostPage = () => {
+
+export const ReviewPage = () => {
   const { id } = useParams();
     const navigate = useNavigate();
-  const [post, setPost] = useState(null);
+  const [review, setReview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+
   const baseDir = import.meta.env.BACKEND_URL; 
 
   const userLogin = useSelector((state) => state.userLogin);
-  console.log(userLogin)
   const { authToken } = userLogin;
-  console.log(authToken)
 
-  const getPost = async (authToken) => {
+
+  const getReview = async (authToken) => {
     try {
       console.log(id)
       
@@ -27,7 +30,7 @@ export const PostPage = () => {
       },
     };
 
-      const response = await fetch(`/api/posts/getpost/${id}/`, {
+      const response = await fetch(`/api/reviews/review/${id}/`, {
         method: "GET",
         headers: config.headers,
       });
@@ -36,29 +39,29 @@ export const PostPage = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data1 = await response.json();
+      
       if (data1) {
-        setPost(data1);
-        console.log(data1.created_at);
+        setReview(data1);
+        console.log(data1);
       } 
       
-      // else {
-      //   setError("Post not found");
-      //   console.log(`error`);
-      // }
+      else {
+        setError("Review not found");
+        console.log(`error`);
+      }
 
     } 
     
     catch (err) {
-       if (err.message.includes("403")) {
-      setError("Post under review. You are not allowed to view it.");
-    }else{
        setError(err.message);
-    }
-     
-    } finally {
+  } finally {
       setLoading(false);
     }
   };
+
+
+
+
 
   useEffect(() => { 
     if(!authToken){
@@ -66,40 +69,64 @@ export const PostPage = () => {
     }
 
     else{
-      getPost(authToken);
+      getReview(authToken);
     }
     
   },[]);
 
+
+
+
   if (loading) {
-    return <div className="mt-48">Loading...</div>;
+    // return <div className="mt-48">Loading...</div>;
+    return <Loader></Loader>
   }
 
-  if (!post) {
+  if (!review) {
     return <div className="mt-48">{error}</div>;
   }
 
+
+
+
+
   return (
     <div className="p-4 w-full max-w-2xl mx-auto bg-white shadow-md rounded-lg mt-48">
-      <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
+      <h1 className="text-2xl font-bold mb-4">{review.post.title}</h1>
       <p className="text-gray-700 mb-2">
-        <strong>Author:</strong> {post.user.username}
+        <strong>Reviewer:</strong> {review.reviewer.username}
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>Category:</strong> {post.category}
+        <strong>Editor:</strong> {review.editor.username}
       </p>
-      <p className="text-gray-700 mb-2">
-        <strong>SubCategory:</strong> {post.subCategory}
-      </p>
+
+  
+
       <p className="text-gray-700 mb-4">
-        <strong>Created At:</strong>{" "}
-        {new Date(post.created_at).toLocaleDateString()}
+        <strong>Review Instance Created At:</strong>{" "}
+        {new Date(review.created_at).toLocaleDateString()}
       </p>
-      <p className="text-gray-700 mb-4">{post.body}</p>
+
+      <p className="text-gray-700 mb-4">
+        <strong>Review Description: </strong>{review.description}</p>
+
       
-      {post.document && (
+         <div className="mb-2">
+        <label className="flex items-center">
+          <input
+            type="checkbox"
+            checked={review.is_reviewed}
+            readOnly
+            className="form-checkbox"
+          />
+          <span className="ml-2 text-gray-700">Reviewed</span>
+        </label>
+    </div>
+    
+      
+      {review.reviewed_pdf && (
         <a
-          href={import.meta.env.BACKEND_URL+post.document}
+          href={import.meta.env.BACKEND_URL + review.reviewed_pdf}
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-500 hover:underline"
@@ -111,4 +138,4 @@ export const PostPage = () => {
   );
 };
 
-export default PostPage;
+export default ReviewPage;

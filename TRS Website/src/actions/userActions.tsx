@@ -42,6 +42,8 @@ import {
 
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+
 
 export const verify = (id) => async (dispatch) => {
   try {
@@ -305,10 +307,13 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
+
+
   localStorage.removeItem("authToken"); //removing from the local storage
   dispatch({ type: USER_LOGOUT }); //changing state of the userLogin to null
   dispatch({ type: USER_DETAILS_RESET }); //changing state of the userDetails to null
   dispatch({ type: USERS_GET_ALL_REQUEST_RESET }); //changing state of the users Details to null
+
 };
 
 export const getUserDetails = (id: string) => async (dispatch, getState) => {
