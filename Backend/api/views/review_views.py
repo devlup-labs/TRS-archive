@@ -32,13 +32,14 @@ class EditorReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateMo
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        if request.user.roles != 'editor' and request.user.roles != 'admin':
+        # print("the role is ",request.user.roles)
+        if request.user.roles != 'editor':
             return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
         editor = request.user
         reviews = Review.objects.filter(editor_id=editor.id)
         serializer = self.serializer_class(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
     def put(self, request,post_id,reviewer_id, *args, **kwargs):
         post = Post.objects.get(id=post_id)
         review = Review.objects.get(post_id = post_id,reviewer_id=reviewer_id, editor_id=request.user.id)

@@ -31,7 +31,7 @@ import {
 export const postListReducers = (state = { posts: [] }, actions) => {
   switch (actions.type) {
     case POST_LIST_REQUEST:
-      return { loading: true, posts: [] };
+      return { loading: true, posts: [] };  
 
     case POST_LIST_SUCCESS:
       return { loading: false, posts: actions.payload };
