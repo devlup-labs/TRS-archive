@@ -22,6 +22,7 @@ import { jwtDecode } from "jwt-decode";
 import { PostPage } from "./components/postpage";
 import { ReviewersPage } from "./components/ReviewersPage";
 import { EditorPage } from "./components/EditorPage";
+import {EditorDashboard} from "./components/Editor_dashboard"
 
 function App() {
   const dispatch = useDispatch();
@@ -84,6 +85,8 @@ function App() {
               <Route element={<PostPage />} path="/post/:id" />
               <Route element={<ReviewersPage />} path="/reviewer" />
               <Route element={<EditorPage />} path="/editor" />
+              <Route element={< EditorDashboard/>} path="/editor/dashboard" />
+              
             </Routes>
           </SearchProvider>
         </Router>

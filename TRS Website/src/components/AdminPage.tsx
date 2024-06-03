@@ -5,7 +5,6 @@ import { getUsers } from "../actions/userActions"; // Assume you have these acti
 import { useNavigate } from "react-router-dom";
 import { listPosts } from "../actions/postActions";
 import {getEditors} from "../actions/userActions"
-import { News } from "./News";
 
 export const AdminPage = () => {
   const dispatch = useDispatch();
