@@ -30,6 +30,11 @@ import {
   post_Upload_ListReducers,
 } from "./reducers/postReducers";
 
+import{
+editorReviewsReducer,
+} from "./reducers/reviewReducer"
+
+
 import { getNewsReducer } from "./reducers/newsReducer";
 
 const reducer = combineReducers({
@@ -52,6 +57,7 @@ const reducer = combineReducers({
   getallEditors: getAllEditorReducer,
   getallReviewers:getAllReviewerReducer,
   getallUnderProcessPosts:post_Upload_ListReducers,
+  getallReviewsAssignedByEditor:editorReviewsReducer
 });
 
 const userInfofrom_locStorage = localStorage.getItem("authToken")

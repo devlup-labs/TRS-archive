@@ -4,10 +4,9 @@ import DropdownInput from "./DropInput";
 import { useDispatch, useSelector } from "react-redux";
 import {listPosts} from '../actions/postActions';
 import {getReviewers} from "../actions/userActions" 
-import { News } from "./News";
 import { Link } from 'react-router-dom';
 import {assignReviewer} from '../actions/reviewActions';
-import {list_underprocess_Posts} from '../actions/postActions';
+// import {list_underprocess_Posts} from '../actions/postActions';
 
 export const EditorPage = () => {
   const navigate = useNavigate();
@@ -56,7 +55,7 @@ const {
     
     
     dispatch(listPosts("Ongoing")); 
-    dispatch(list_underprocess_Posts("Under Review"))
+    // dispatch(list_underprocess_Posts("Under Review"))
 
     
     
@@ -173,54 +172,11 @@ const {
 
        </div>
   
-      {/* <div className="w-1/2">
-      <div className="-m-1.5 overflow-x-auto"> */}
-    {/* <div className="p-1.5 min-w-full inline-block align-middle">
-      <div className="overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-          <thead>
-            <tr>
-              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Post</th>
-              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase ">Reviewer</th>
-
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-           
-              {under_process_posts && under_process_posts.length > 0 ? (
-                under_process_posts.map((item, postIndex) => (
-                   
-                       <tr>
-                          <Link to={`/post/:${item.id}`}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.title}</td>
-                      </Link>
-                      
-                      
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.editor}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.user.username}</td>
-                    
-                        
-                   
-                     </tr>
-               
-                  ))
-                  ) : (
-                <li className="text-center">No posts available</li>
-              )}
-            
+     <div className="w-1/2">
               
-          </tbody>
-          </table>
-          </div>
-       
-
-
-
-        
-        </div>
-        </div>
-        </div> */}
       </div>
+      
+    </div>
     </div>
     </div>
     </div>

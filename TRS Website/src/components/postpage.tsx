@@ -1,19 +1,35 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
+import {useSelector } from "react-redux";
 
 export const PostPage = () => {
   const { id } = useParams();
+    const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const baseDir = import.meta.env.BACKEND_URL; 
-  console.log(baseDir)
 
-  const getPost = async () => {
+  const userLogin = useSelector((state) => state.userLogin);
+  console.log(userLogin)
+  const { authToken } = userLogin;
+  console.log(authToken)
+
+  const getPost = async (authToken) => {
     try {
       console.log(id)
+      
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${authToken.access}`,
+      },
+    };
+
       const response = await fetch(`/api/posts/getpost/${id}/`, {
         method: "GET",
+        headers: config.headers,
       });
       console.log(response)
       if (!response.ok) {
@@ -25,28 +41,42 @@ export const PostPage = () => {
         console.log(data1.created_at);
       } 
       
-      else {
-        setError("Post not found");
-        console.log(`Successfully`);
-      }
+      // else {
+      //   setError("Post not found");
+      //   console.log(`error`);
+      // }
 
-    } catch (err) {
-      setError(err.message);
+    } 
+    
+    catch (err) {
+       if (err.message.includes("403")) {
+      setError("Post under review. You are not allowed to view it.");
+    }else{
+       setError(err.message);
+    }
+     
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    getPost();
-  });
+  useEffect(() => { 
+    if(!authToken){
+      navigate('/login')
+    }
+
+    else{
+      getPost(authToken);
+    }
+    
+  },[]);
 
   if (loading) {
     return <div className="mt-48">Loading...</div>;
   }
 
   if (!post) {
-    return <div className="mt-48">Post not found</div>;
+    return <div className="mt-48">{error}</div>;
   }
 
   return (
