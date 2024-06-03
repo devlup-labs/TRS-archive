@@ -95,10 +95,21 @@ class EditorReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateMo
         
         serializer = self.serializer_class(review)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class ParticularReviewviewSet(GenericAPIView, mixins.RetrieveModelMixin):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, review_id, *args, **kwargs):
+        print(review_id)
+        review = Review.objects.get(id=review_id)
+        serializer = self.serializer_class(review)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
 class ReviewerReviewViewset(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
     '''
-    This class is used to list and update reviews for a post specified by post_id and for reviewer users only
+This class is used to list and update reviews for a post specified by post_id and for reviewer users only
     '''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
