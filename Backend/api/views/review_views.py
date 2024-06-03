@@ -99,7 +99,7 @@ class EditorReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateMo
 class ParticularReviewviewSet(GenericAPIView, mixins.RetrieveModelMixin):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, review_id, *args, **kwargs):
         print(review_id)
@@ -116,7 +116,7 @@ This class is used to list and update reviews for a post specified by post_id an
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        if request.user.roles != 'reviewer' and request.user.roles != 'admin':
+        if request.user.roles != 'reviewer':
             return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
         reviewer = request.user
         reviews = Review.objects.filter(reviewer_id=reviewer.id)

@@ -14,6 +14,7 @@ const Navbar = () => {
   const handleClick = () => {
     console.log("Logged out");
     dispatch(logout());
+    
   };
   const handleOptionSelect = (option) => {
     setCat(option);

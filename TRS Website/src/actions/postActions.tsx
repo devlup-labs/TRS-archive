@@ -18,6 +18,10 @@ SUBCAT_GET_ALL_FAIL,
 UNDER_PROCEES_POST_LIST_REQUEST,
 UNDER_PROCEES_POST_LIST_FAIL,
 UNDER_PROCEES_POST_LIST_SUCCESS,
+POST_ASSIGNED_REQUEST,
+POST_ASSIGNED_REQUEST_SUCCESS,
+POST_ASSIGNED_REQUEST_FAILURE,
+
  
  
 
@@ -256,7 +260,7 @@ export const getuserPostDetails = (id: string) => async (dispatch, getState) => 
 export const getAssignedPosts = (id: string) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: USER_POSTS_REQUEST,
+      type: POST_ASSIGNED_REQUEST,
     });
 
     const {
@@ -270,14 +274,15 @@ export const getAssignedPosts = (id: string) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/posts/${id}/posts/`, config);
+    const { data } = await axios.get(`/api/reviews/Reviewer/reviews/`, config);
+    console.log(data)
     dispatch({
-      type: USER_POSTS_SUCCESS,
+      type: POST_ASSIGNED_REQUEST_SUCCESS,
       payload: data,
     });
   } catch (error) {
     dispatch({
-      type: USER_POSTS_FAIL,
+      type: POST_ASSIGNED_REQUEST_FAILURE,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

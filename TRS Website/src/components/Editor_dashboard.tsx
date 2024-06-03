@@ -44,15 +44,11 @@ export const EditorDashboard=() =>{
   return (
     <div>
         <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
-      
-
-  
-   <div className="flex flex-row">
-     
-          <div className="w-3/4">
-             <div className="-m-1.5 overflow-x-auto">
-    <div className="p-1.5 min-w-full inline-block align-middle">
-      <div className="overflow-hidden">
+        <div className="flex flex-row">
+        <div className="w-3/4">
+        <div className="-m-1.5 overflow-x-auto">
+              <div className="p-1.5 min-w-full inline-block align-middle">
+              <div className="overflow-hidden">
 
         <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
           <thead>
@@ -81,7 +77,7 @@ export const EditorDashboard=() =>{
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.post.status}</td>
                       
                       {/* here link to the review page information will come  */}
-                      <Link to={`/post/:${item.post.id}`}>   
+                      <Link to={`/editor/review/:${item.id}`}>   
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 "><i className="fa-solid fa-arrow-up-right-from-square"></i></td>
                     </Link>
                     
