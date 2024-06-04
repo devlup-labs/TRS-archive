@@ -93,7 +93,7 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
             # print("hello")
             return Response("FILE is missing", status=status.HTTP_400_BAD_REQUEST)
     
-        # print("hello")
+        # print("hello")    
     
         # user = request.user 
         email=request.data.get('user')

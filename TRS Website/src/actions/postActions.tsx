@@ -257,7 +257,7 @@ export const getuserPostDetails = (id: string) => async (dispatch, getState) => 
 
 
 
-export const getAssignedPosts = (id: string) => async (dispatch, getState) => {
+export const getAssignedPosts = () => async (dispatch, getState) => {
   try {
     dispatch({
       type: POST_ASSIGNED_REQUEST,

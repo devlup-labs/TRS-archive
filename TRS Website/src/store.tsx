@@ -32,6 +32,8 @@ import {
 
 import{
 editorReviewsReducer,
+reviewReviewedReducer,
+editReviewReducer,
 } from "./reducers/reviewReducer"
 
 
@@ -57,7 +59,9 @@ const reducer = combineReducers({
   getallEditors: getAllEditorReducer,
   getallReviewers:getAllReviewerReducer,
   getallUnderProcessPosts:post_Upload_ListReducers,
-  getallReviewsAssignedByEditor:editorReviewsReducer
+  getallReviewsAssignedByEditor:editorReviewsReducer,
+  getallReviewedReviews:reviewReviewedReducer,
+  editReview:editReviewReducer,
 });
 
 const userInfofrom_locStorage = localStorage.getItem("authToken")
