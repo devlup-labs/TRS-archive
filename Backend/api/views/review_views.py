@@ -96,17 +96,69 @@ class EditorReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateMo
         serializer = self.serializer_class(review)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+
 class ParticularReviewviewSet(GenericAPIView, mixins.RetrieveModelMixin):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
 
     def get(self, request, review_id, *args, **kwargs):
+        if request.user.roles != 'reviewer':
+            return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
         print(review_id)
         review = Review.objects.get(id=review_id)
         serializer = self.serializer_class(review)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+
+    def put(self,request,review_id,*args,**kwargs):
+        
+        if request.user.roles != 'reviewer':
+            return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
+
+        review=Review.objects.get(id=review_id)
+        data=request.data
+
+        
+        review.description=data['desc']
+        # print(data['reviewed_pdf'])
+        if 'reviewed_pdf' in data :
+            review.reviewed_pdf= data['reviewed_pdf']
+        
+        if(data['is_reviewed']=="false"):
+            bool_output=False
+        else:
+            bool_output=True
+        
+        if 'pdf_file_status' in data and data['pdf_file_status']:
+            print(data['pdf_file_status'])
+            review.pdf_file_status=data['pdf_file_status']
+        
+
+        if(review.is_reviewed!=bool_output and review.is_reviewed==False):  #is reviwed changed from false to true
+            review.is_reviewed=bool_output
+            review.save()
+            Send_Mail_to_Editor(review_id)
+        else:
+            review.is_reviewed=bool_output
+            review.save()
+        
+        
+
+        
+        serializer = self.serializer_class(review)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        
+
+#  id: review.id,
+#         desc: desc,
+#         is_reviewed:isDone,
+#         reviewed_pdf:selectedFile,  
+
+
+
 class ReviewerReviewViewset(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
     '''
 This class is used to list and update reviews for a post specified by post_id and for reviewer users only
@@ -119,12 +171,17 @@ This class is used to list and update reviews for a post specified by post_id an
         if request.user.roles != 'reviewer':
             return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
         reviewer = request.user
-        reviews = Review.objects.filter(reviewer_id=reviewer.id)
+        reviews = Review.objects.filter(reviewer_id=reviewer.id,is_reviewed=False)
         serializer = self.serializer_class(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, post_id, editor_id, *args, **kwargs):
+        
+        if request.user.roles != 'reviewer':
+            return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
+        
         post = Post.objects.get(id=post_id)
+
         review = Review.objects.get(post_id=post_id, reviewer_id=request.user.id, editor_id=editor_id)
         if request.user.roles != 'reviewer' and request.user.roles != 'admin':
             return Response("You are not authorized to update this review", status=status.HTTP_401_UNAUTHORIZED)
@@ -147,11 +204,47 @@ This class is used to list and update reviews for a post specified by post_id an
     
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetReviewedReviews(request):
+    user=request.user
+    if user.roles != 'reviewer':
+            return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
+    
+    reviews = Review.objects.filter(reviewer_id=user.id,is_reviewed=True)
+    serializer=ReviewSerializer(reviews,many=True) 
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def Send_Mail_to_Editor(review_id):
     try:
         review=Review.objects.get(id=review_id)
-        reviewer_email=review.reviewer.email
+        editor_email=review.editor.email
         post_id=review.post.id
         
         try:
@@ -160,9 +253,18 @@ def Send_Mail_to_Editor(review_id):
             return Response(message,status=status.HTTP_400_BAD_REQUEST)
         
         subject = f'Regarding response of the review of Post:{post.title}'
-        message = f'Here is the content of the post:\n\n{review.description}.'
+        message = (f'Dear Editor,\n\n'
+            f'I hope this message finds you well. I am writing to provide my review of the post titled "{post.title}". '
+            f'Below, you will find my detailed review:\n\n'
+            f'{review.description}\n\n'
+            f'My feedback on this review is: {review.pdf_file_status}\n\n'
+            f'Please let me know if there are any further actions required on my part.\n\n'
+            f'Thank you for the opportunity to review this post.\n\n'
+            f'Best regards,\n'
+            f'{review.reviewer.username}'
+        )
         from_email = settings.EMAIL_HOST_USER
-        recipient_list = [reviewer_email]
+        recipient_list = [editor_email]
 
         email_message = EmailMultiAlternatives(
                 subject=subject,

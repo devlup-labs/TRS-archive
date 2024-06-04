@@ -52,7 +52,6 @@ export default function Edit_p() {
         name: userName,
         email: email,
         aor: aor,
-        // 'category':catg,
         current_postn: cp,
         roles: roles,
       })
@@ -173,7 +172,7 @@ export default function Edit_p() {
           />
           <div className="absolute w-full left-0 bottom-0 h-1 bg-gray-900 transition-colors"></div>
         </div>
-        <button
+      <button
           type="submit"
           className="w-full bg-yellow-400 hover:bg-yellow-500 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900"
         >
