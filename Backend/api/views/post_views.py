@@ -19,6 +19,7 @@ from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail, EmailMultiAlternatives
 import os
+import json
 
 from ..models import *
 
@@ -223,10 +224,72 @@ def getParticularPost(request,post_id):
     serializer = PostSerializer(post)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateParticularPost(request,post_id):
+    user=request.user
+    try:
+        post = Post.objects.get(id=post_id)
+        if(user.roles =="normal_user"):
+            return Response({"message:You are not allowed to access as post under reviewing process"},status=status.HTTP_403_FORBIDDEN)
+        
+    except Post.DoesNotExist:
+        return Response({"message": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    post_status = request.data.get('status')
+    print(post_status)
+    # Update post status
+    post.status = post_status
+
+    # Save the updated post
+    post.save()
+    sendMailtoUserFromEditor(post.id)
+    serializer = PostSerializer(post)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
 
+def sendMailtoUserFromEditor(post_id):
+    try:
+        post=Post.objects.get(id=post_id)
+        user_email=post.user.email
+        status=post.status
+        subject = f"Status Update on Your Post: {post.title} "
+        if status == 'Reviewed':
+            message = (f'Dear {post.user.username},\n\n'
+                f'I hope this message finds you well. Congratulations! Your post has been reviewed and approved.It will be displayed on the homepage.\n\n '
+                f'Thank you for making your contribution in this field\n\n'
+                f'Best regards,\n'
+                f'Editor')
+        elif status=='Need_changes':
+             message = (f'Dear {post.user.username},\n\n'
+                f'I hope this message finds you well.Your submission requires some changes before it can be approved. Please make the following necessary revisions. \n\n'
+                
+                f'Thank you\n\n'
+                f'Best regards,\n'
+                f'Editor')
 
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [user_email]
+        file_path = post.document.path
 
+        # Create the email message
+        email_message = EmailMultiAlternatives(
+            subject=subject,
+            body=message,
+            from_email=from_email,
+            to=recipient_list
+        )
+
+        file_name = os.path.basename(file_path)
+        with open(file_path, 'rb') as f:
+            email_message.attach(file_name, f.read(), 'application/pdf')  # Adjust content type as needed
+
+        email_message.send()
+
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        print(message)
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 

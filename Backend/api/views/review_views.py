@@ -36,7 +36,7 @@ class EditorReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateMo
         if request.user.roles != 'editor':
             return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
         editor = request.user
-        reviews = Review.objects.filter(editor_id=editor.id)
+        reviews = Review.objects.filter(editor_id=editor.id,is_reviewed=False)
         serializer = self.serializer_class(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -104,7 +104,7 @@ class ParticularReviewviewSet(GenericAPIView, mixins.RetrieveModelMixin):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, review_id, *args, **kwargs):
-        if request.user.roles != 'reviewer':
+        if request.user.roles != 'editor':
             return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
         print(review_id)
         review = Review.objects.get(id=review_id)
@@ -159,6 +159,8 @@ class ParticularReviewviewSet(GenericAPIView, mixins.RetrieveModelMixin):
 
 
 
+
+# to get all reviews assigned to a reviewer
 class ReviewerReviewViewset(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
     '''
 This class is used to list and update reviews for a post specified by post_id and for reviewer users only
@@ -208,10 +210,16 @@ This class is used to list and update reviews for a post specified by post_id an
 @permission_classes([IsAuthenticated])
 def GetReviewedReviews(request):
     user=request.user
-    if user.roles != 'reviewer':
+    print(user.roles)
+    if user.roles not in ['reviewer', 'editor']:
             return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
     
-    reviews = Review.objects.filter(reviewer_id=user.id,is_reviewed=True)
+
+    if user.roles=='reviewer':
+        reviews = Review.objects.filter(reviewer_id=user.id,is_reviewed=True)
+    else:
+        reviews = Review.objects.filter(editor_id=user.id,is_reviewed=True)
+
     serializer=ReviewSerializer(reviews,many=True) 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
