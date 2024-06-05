@@ -3,23 +3,27 @@ import Loader from "./Loader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {listEditorReviewAction} from "../actions/reviewActions";
+import { getReviewedReviews } from "../actions/reviewActions.tsx";
 import { Link } from 'react-router-dom';
 
 export const EditorDashboard=() =>{
     const dispatch = useDispatch();
     const navigate = useNavigate();   
 
-    const [reviews, setReviews] = useState([]);
+
+    const [activeTab, setActiveTab] = useState("unreviewedReviews");
 
 
     const userLogin = useSelector((state) => state.userLogin);
     const { authToken } = userLogin; //the person who logged in
 
 
-    const getallReviews = useSelector((state) => state.getallReviewsAssignedByEditor);
-    const {loading: loadingReviews,reviewsInfo,success: successReviews} = getallReviews;
+    const getReviewsUnderProcess = useSelector((state) => state.getallReviewsAssignedByEditor);
+    const {loading: loadingReviews,reviewsInfo,success: successReviews} = getReviewsUnderProcess;
 
 
+  const reviewedReviews = useSelector((state)=>state.getallReviewedReviews)
+  const {loading:loadingReviewedReviews,success:successReviewedReviews,reviews,error:errReviewedReviews }=reviewedReviews
 
 
 
@@ -27,25 +31,34 @@ export const EditorDashboard=() =>{
             if (!authToken) {
             navigate("/login");
             }
+            else{
             if(authToken.roles!='editor'){
                 navigate('/')
                 window.location.reload();
             }
-            if(reviewsInfo.length==0){
+            else{
+              if(activeTab==="unreviewedReviews"){
                 dispatch(listEditorReviewAction())
             }
-            }, [navigate,dispatch]);
+            else if(activeTab==="reviewedReviews"){
+              dispatch(getReviewedReviews())
+            }
+            }
+            
+
+            }
+            
+            }, [navigate,dispatch,activeTab]);
 
 
             
 
-
-
-  return (
-    <div>
-        <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
+    const renderPendingReviews=()=>{
+      return (
+      
+        <div className="relative flex flex-col overflow-y-visible p-4 w-full">
         <div className="flex flex-row">
-        <div className="w-3/4">
+        <div className="w-full">
         <div className="-m-1.5 overflow-x-auto">
               <div className="p-1.5 min-w-full inline-block align-middle">
               <div className="overflow-hidden">
@@ -57,6 +70,7 @@ export const EditorDashboard=() =>{
               <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Reviewer</th>
               <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Editor</th>
               <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Post_Status</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Review_Status</th>
               <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">More Details</th>
 
 
@@ -75,6 +89,7 @@ export const EditorDashboard=() =>{
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.reviewer.username}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.editor.username}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.post.status}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.pdf_file_status}</td>
                       
                       {/* here link to the review page information will come  */}
                       <Link to={`/editor/review/:${item.id}`}>   
@@ -95,14 +110,119 @@ export const EditorDashboard=() =>{
     </div>
 
        </div>
-  
-     <div className="w-1/2">
-              
-      </div>
+
       
     </div>
     </div>
     </div>
+
+      )
+    }
+
+    const renderReviewedReviews=()=>{
+      return (
+   <div className="relative flex flex-col overflow-y-visible p-4 w-full">
+        <div className="flex flex-row">
+        <div className="w-full">
+        <div className="-m-1.5 overflow-x-auto">
+              <div className="p-1.5 min-w-full inline-block align-middle">
+              <div className="overflow-hidden">
+
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+          <thead>
+            <tr>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Post</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Reviewer</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Editor</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Post_Status</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Review_Status</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Review Overview</th>
+
+
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+           
+              {reviews && reviews.length > 0 ? (
+                reviews.map((item, postIndex) => (
+                   
+                       <tr>
+                      <Link to={`/post/:${item.post.id}`}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.post.title}</td>
+                      </Link>
+                      
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.reviewer.username}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.editor.username}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.post.status}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.pdf_file_status}</td>
+                      
+                      {/* here link to the review page information will come  */}
+                     <Link to={`/editor/review/:${item.id}`}>   
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 "><i className="fa-solid fa-arrow-up-right-from-square"></i></td>
+                    </Link>
+                    
+                     </tr>
+               
+                  ))
+                  ) : (
+                <li className="text-center">No posts available</li>
+              )}
+            
+              
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+       </div>
+  
+
+      </div>
+    
+    </div>
+    </div>
+  )
+    }
+
+
+
+
+  return (
+    <div className="mt-44">
+      {(loadingReviews || loadingReviewedReviews) && <Loader />}
+      <div className="flex flex-row">
+        <div className="w-3/4">
+          <div className="flex flex-col">
+            <div className="flex justify-evenly my-3">
+              <button
+                onClick={() => setActiveTab("unreviewedReviews")}
+                className={`px-4 py-2 rounded-md transition duration-300 ${
+                  activeTab === "unreviewedReviews"
+                    ? "bg-blue-500 text-white shadow-lg"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                Unreviewed
+              </button>
+              <button
+                onClick={() => setActiveTab("reviewedReviews")}
+                className={`px-4 py-2 rounded-md transition duration-300 ${
+                  activeTab === "reviewedReviews"
+                    ? "bg-blue-500 text-white shadow-lg"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                Reviewed
+              </button>
+
+            </div>
+            {activeTab === "unreviewedReviews" && renderPendingReviews()}
+            {activeTab === "reviewedReviews" && renderReviewedReviews()}
+
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }

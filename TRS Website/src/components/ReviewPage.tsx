@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import {useSelector } from "react-redux";
 import Loader from './Loader.tsx'
+import Swal from "sweetalert2";
 
 
 export const ReviewPage = () => {
@@ -10,6 +11,9 @@ export const ReviewPage = () => {
   const [review, setReview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [post_status,setPost_Status]=useState("");
+
 
 
   const baseDir = import.meta.env.BACKEND_URL; 
@@ -30,7 +34,7 @@ export const ReviewPage = () => {
       },
     };
 
-      const response = await fetch(`/api/reviews/review/${id}/`, {
+     const response = await fetch(`/api/reviews/review/${id}/`, {
         method: "GET",
         headers: config.headers,
       });
@@ -87,10 +91,64 @@ export const ReviewPage = () => {
   }
 
 
+  const statusOptions = ["Under_Review", "Need_changes", "Reviewed"];
+  const filteredStatusOptions = statusOptions.filter(status => status !== review.post.status);
+
+
+  const updatePostStatus=async(authToken)=>{
+    setLoading(true);
+
+    const config = {
+    headers:{
+      "Content-type": "application/json",
+      Authorization: `Bearer ${authToken.access}`,
+    }}
+    try {
+    const response = await fetch(`/api/posts/updatepost/${review.post.id}/`, {
+        method: "PUT",
+        headers: config.headers,
+        body: JSON.stringify({ status: post_status })
+
+      });
+    
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data=await response.json();
+      
+      Swal.fire({
+      title: "Post status updated successfully and user is notified ",
+      icon: "success",
+      toast: true,
+      timer: 3000,
+      position: "top-right",
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
+    
+    navigate('/editor/dashboard')
+    }
+    catch (error) {
+      console.error('Error updating post:', error);
+    }
+    finally{
+      setLoading(false); 
+    }
+  }
+
+  const handleSubmit=(e)=>{
+   e.preventDefault();
+    updatePostStatus(authToken);
+
+   
+  }
 
 
 
   return (
+    <>
+    {loading && <Loader />} 
     <div className="p-4 w-full max-w-2xl mx-auto bg-white shadow-md rounded-lg mt-48">
       <h1 className="text-2xl font-bold mb-4">{review.post.title}</h1>
       <p className="text-gray-700 mb-2">
@@ -110,8 +168,11 @@ export const ReviewPage = () => {
       <p className="text-gray-700 mb-4">
         <strong>Review Description: </strong>{review.description}</p>
 
-      
-         <div className="mb-2">
+
+      <form onSubmit={handleSubmit}>
+      <div className="flex justify-between items-start">
+      <div className="w-1/2 pr-4">
+    <div className="mb-2">
         <label className="flex items-center">
           <input
             type="checkbox"
@@ -134,7 +195,40 @@ export const ReviewPage = () => {
           View PDF
         </a>
       )}
+
+      </div>
+
+      <div className="w-1/2 pr-4">
+
+    
+    {review.is_reviewed && (
+  <>
+    <p className="text-gray-700 mb-1"><strong>Update Post Status:</strong></p>
+    <div className="mb-4">
+      <select
+        onChange={(e) => setPost_Status(e.target.value)}>
+        <option value={review.post.status}>{review.post.status}</option>
+              {filteredStatusOptions.map(status => (
+                <option key={status} value={status}>{status}</option>
+              ))}
+      </select>
     </div>
+  </>
+    )}  
+  
+     </div>
+ 
+
+      </div>
+          <button
+            type="submit"
+            className="w-1/4 mt-4 bg-blue-400 hover:bg-blue-500 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 "
+          >
+            Submit
+          </button>
+          </form>
+    </div>
+    </>
   );
 };
 
