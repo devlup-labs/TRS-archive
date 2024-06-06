@@ -162,8 +162,6 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
 
 
 
-
-
 class ParticularUserPost(GenericAPIView, mixins.ListModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer

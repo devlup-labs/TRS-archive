@@ -123,6 +123,7 @@ class Review(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now=True)
     reviewed_pdf = models.FileField(upload_to='uploads/',null=True,blank=True)
+    for_user = models.BooleanField(default=False)
 
 class New(models.Model):
     title = models.CharField(max_length=100)
