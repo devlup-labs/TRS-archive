@@ -180,8 +180,8 @@ class send_email_pass(APIView):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getUserProfile(request):
-    user=request.user
+def getUserProfile(request,name):
+    user = User.objects.get(username=name)
     serializer=UserSerializer(user,many=False) #as one user request
     return Response(serializer.data)
 

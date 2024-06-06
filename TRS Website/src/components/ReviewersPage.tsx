@@ -94,12 +94,17 @@ const renderUnreviewedReviews=()=>{
                 posts.map((item, postIndex) => (
                    
                        <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
                       <Link to={`/post/:${item.post.id}`}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.post.title}</td>
+                        {item.post.title}
                       </Link>
+                      </td>
                       
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.reviewer.username}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.editor.username}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                        <Link to={`/profile/:${item.reviewer.username}`}>{item.reviewer.username}</Link></td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                        <Link to={`/profile/:${item.editor.username}`}>{item.editor.username}</Link></td>
+                     
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.post.status}</td>
                       
                       {/* here link to the review page information will come  */}

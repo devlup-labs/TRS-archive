@@ -104,7 +104,7 @@ class ParticularReviewviewSet(GenericAPIView, mixins.RetrieveModelMixin):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, review_id, *args, **kwargs):
-        if request.user.roles != 'editor':
+        if request.user.roles not in ['reviewer', 'editor']:
             return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
         print(review_id)
         review = Review.objects.get(id=review_id)

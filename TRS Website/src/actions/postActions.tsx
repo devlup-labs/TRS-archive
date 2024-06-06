@@ -221,7 +221,7 @@ export const getSubCategoriesAction = (cat) => async (dispatch) => {
 
 
 
-// for getting info for a particular post
+// for getting info for all users post
 export const getuserPostDetails = (id: string) => async (dispatch, getState) => {
   try {
     dispatch({
