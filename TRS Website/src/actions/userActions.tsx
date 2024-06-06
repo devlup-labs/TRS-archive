@@ -316,7 +316,8 @@ export const logout = () => (dispatch) => {
 
 };
 
-export const getUserDetails = (id: string) => async (dispatch, getState) => {
+export const getUserDetails = (username) => async (dispatch, getState) => {
+  console.log()
   try {
     dispatch({
       type: USER_DETAILS_REQUEST,
@@ -333,7 +334,7 @@ export const getUserDetails = (id: string) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/users/${id}`, config);
+    const { data } = await axios.get(`/api/users/getUser/:${username}/`, config);
     dispatch({
       type: USER_DETAILS_SUCCESS,
       payload: data,

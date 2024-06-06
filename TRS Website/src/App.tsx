@@ -25,6 +25,7 @@ import { EditorPage } from "./components/EditorPage";
 import {EditorDashboard} from "./components/Editor_dashboard"
 import {ReviewPage} from "./components/ReviewPage"
 import {EditReview} from "./components/EditReview"
+import {ProfileView} from "./components/ProfileDisplay"
 
 function App() {
   const dispatch = useDispatch();
@@ -90,6 +91,7 @@ function App() {
               <Route element={< EditorDashboard/>} path="/editor/dashboard" />
               <Route element={<ReviewPage />} path="/editor/review/:id" />
               <Route element={<EditReview />} path="/reviewer/ereview/:id" />
+              <Route element={<ProfileView />} path="/profile/:user_name" />
               
             </Routes>
           </SearchProvider>

@@ -53,7 +53,7 @@ export const Dashboard = () => {
         //to check whether the user information has been loaded or not
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
         console.log("Fetching user details...");
-        dispatch(getUserDetails("profile")); //sending profile as parameter to complete the url for making get request(api/users/profile)
+        dispatch(getUserDetails(authToken.username)); //sending profile as parameter to complete the url for making get request(api/users/profile)
         dispatch(getuserPostDetails(authToken.id));
       } else {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });

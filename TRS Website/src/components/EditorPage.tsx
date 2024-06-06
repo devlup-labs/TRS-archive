@@ -139,7 +139,12 @@ const {
                       
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.category}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.sub_category}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.user.username}</td>
+                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                      <Link to={`/profile/:${item.user.username}`}>
+                     {item.user.username}
+                      </Link>
+                      </td>
+
                       <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
                          <select
                          onChange={(e) => handleOptionSelect(item.id, e.target.value)} value={selectedReviewers[item.id] || ""}>
