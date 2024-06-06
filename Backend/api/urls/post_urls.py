@@ -16,6 +16,7 @@ urlpatterns=[
     path('<user_id>/posts/<post_id>/delete/',views.ParticularUserPost.as_view()),
     path('upload/',views.PostViewSet.as_view()),
 
-    
+    path('userpost/',views.PostForUser.as_view()),
+    path('userpost/<current_status>',views.PostForUser.as_view()),
 
 ]

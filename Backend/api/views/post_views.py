@@ -160,7 +160,22 @@ class PostViewSet(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
 
         email_message.send()
 
+class PostForUser(GenericAPIView, mixins.ListModelMixin):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request,current_status = None, *args, **kwargs):
+        user = request.user
+        if current_status:
+            if current_status in dict(Status_Choices).keys():
+                posts = Post.objects.filter(user=user).filter(status=current_status)
+            else:
+                return Response("Invalid status", status=status.HTTP_400_BAD_REQUEST)
+        else:
+            posts = Post.objects.filter(user=user)
+        serializer = self.serializer_class(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ParticularUserPost(GenericAPIView, mixins.ListModelMixin, mixins.DestroyModelMixin, mixins.UpdateModelMixin):
     queryset = Post.objects.all()
