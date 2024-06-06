@@ -12,4 +12,6 @@ urlpatterns=[
     path('Reviewer/reviews/reviewed/',views.GetReviewedReviews),
 
     # path('reviewSendToEditor/<uuid:review_id>/',views.Send_Mail_Editor),
+
+    path('User/reviews/', views.EditorToUserReviewView.as_view()),
 ]

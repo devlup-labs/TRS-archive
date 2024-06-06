@@ -22,6 +22,44 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 
 from ..models import *
 
+class EditorToUserReviewView(GenericAPIView, mixins.CreateModelMixin):
+    '''This Class is used to post review to user by Editor'''
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        # print(user, user.roles)
+        if user.roles != 'editor':
+            return Response("You are not authorized to create a review", status=status.HTTP_401_UNAUTHORIZED)
+        
+        post = Post.objects.get(id=request.data.get('post_id'))
+        
+        if 'description' not in request.data:
+            return Response("Description must be provided", status=status.HTTP_400_BAD_REQUEST)
+        
+        if request.FILES.get('reviewed_pdf'):
+            reviewed_pdf = request.FILES.get('reviewed_pdf')
+        try:
+            review = Review.objects.create(
+                description = request.data['description'],
+                pdf_file_status = 'Reviewed',
+                reviewer = user,
+                editor = user,
+                reviewed_pdf = reviewed_pdf,
+                is_reviewed = True,
+                post = post,
+                for_user = True
+            )
+            review.save()
+            post.status='Reviewed'
+            Send_Mail_to_User(review.id)
+            post.save()
+            return Response("Review created successfully", status=status.HTTP_201_CREATED)
+
+        except IntegrityError as e:
+            return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)
 
 class EditorReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.CreateModelMixin):
     '''
@@ -87,8 +125,6 @@ class EditorReviewListView(GenericAPIView,mixins.ListModelMixin, mixins.UpdateMo
             print(post.status)
             Send_Mail_to_Reviewer(review.id)
 
-                #TODO: Add email functionality here
-
         except IntegrityError as e:
             return Response("IntegrityError: {}".format(str(e)), status=status.HTTP_400_BAD_REQUEST)   
 
@@ -151,16 +187,6 @@ class ParticularReviewviewSet(GenericAPIView, mixins.RetrieveModelMixin):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
         
-
-#  id: review.id,
-#         desc: desc,
-#         is_reviewed:isDone,
-#         reviewed_pdf:selectedFile,  
-
-
-
-
-# to get all reviews assigned to a reviewer
 class ReviewerReviewViewset(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
     '''
 This class is used to list and update reviews for a post specified by post_id and for reviewer users only
@@ -199,7 +225,7 @@ This class is used to list and update reviews for a post specified by post_id an
             review.reviewed_pdf = request.FILES.get('reviewed_pdf')
             review.is_reviewed = True
 
-            # TODO: Add email functionality here
+            
 
         review.save()
         return Response("Review updated successfully", status=status.HTTP_200_OK)
@@ -226,7 +252,53 @@ def GetReviewedReviews(request):
 
 
 
+def Send_Mail_to_User(review_id):
+    try:
+        review=Review.objects.get(id=review_id)
+        post_id=review.post.id
+        user_email=review.post.user.email
 
+        try:
+            post = Post.objects.get(id=post_id) 
+        except Post.DoesNotExist:
+            return Response(message,status=status.HTTP_400_BAD_REQUEST)
+        
+        subject = f'Regarding response of the review of Post:{post.title}'
+        message = (f'Dear User,\n\n'
+            f'I hope this message finds you well. I am writing to provide my review of the post titled "{post.title}". '
+            f'Below, you will find my detailed review:\n\n'
+            f'{review.description}\n\n'
+            f'My feedback on this review is: {review.pdf_file_status}\n\n'
+            f'Thank you and Best regards.\n\n'
+            f'{review.editor.username}'
+        )
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [user_email]
+
+        email_message = EmailMultiAlternatives(
+                subject=subject,
+                body=message,
+                from_email=from_email,
+                to=recipient_list
+            )
+        
+        # file_path=review.reviewed_pdf.path
+        
+        # Send the email
+        # file_name = os.path.basename(file_path)
+        # with open(file_path, 'rb') as f:
+        #     email_message.attach(file_name, f.read(), 'application/pdf')  # Adjust content type as needed
+
+        email_message.send()
+        
+        return Response("Email sended to reviewers successfully", status=status.HTTP_201_CREATED)
+
+
+    except Exception as e:
+        message = {'detail': str(e)}  # Return specific error message
+        print(message)
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
 
 
 
