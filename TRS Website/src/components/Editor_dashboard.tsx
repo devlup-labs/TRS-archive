@@ -12,8 +12,9 @@ export const EditorDashboard=() =>{
 
 
     const [activeTab, setActiveTab] = useState("unreviewedReviews");
-
-
+    const [loading,setLoading]=useState(false)
+    const [myreviews,setMyReviews]=useState(null)
+    
     const userLogin = useSelector((state) => state.userLogin);
     const { authToken } = userLogin; //the person who logged in
 
@@ -26,8 +27,44 @@ export const EditorDashboard=() =>{
   const {loading:loadingReviewedReviews,success:successReviewedReviews,reviews,error:errReviewedReviews }=reviewedReviews
 
 
+  const myReviews=async()=>{
+    setLoading(true);
 
-         useEffect(() => {
+    const config = {
+    headers:{
+      "Content-type": "application/json",
+      Authorization: `Bearer ${authToken.access}`,
+    }}
+    try {
+    const response = await fetch(`/api/reviews/Editor/reviews/reviewed/`, {
+        method: "GET",
+        headers: config.headers,
+
+      });
+    
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+    const data=await response.json();
+
+    if (data) {
+        setMyReviews(data);
+        console.log(data);
+      } 
+
+    }
+    catch (error) {
+      console.error('Error updating post:', error);
+    }
+    finally{
+      setLoading(false); 
+    }
+  }
+  
+
+
+ useEffect(() => {
             if (!authToken) {
             navigate("/login");
             }
@@ -43,6 +80,10 @@ export const EditorDashboard=() =>{
             else if(activeTab==="reviewedReviews"){
               dispatch(getReviewedReviews())
             }
+            else if(activeTab==="myReviews"){
+              myReviews()
+            }
+
             }
             
 
@@ -119,7 +160,7 @@ export const EditorDashboard=() =>{
       )
     }
 
-    const renderReviewedReviews=()=>{
+  const renderReviewedReviews=()=>{
       return (
    <div className="relative flex flex-col overflow-y-visible p-4 w-full">
         <div className="flex flex-row">
@@ -184,12 +225,77 @@ export const EditorDashboard=() =>{
   )
     }
 
+  const renderEditorsReviews=()=>{
+      return (
+   <div className="relative flex flex-col overflow-y-visible p-4 w-full">
+        <div className="flex flex-row">
+        <div className="w-full">
+        <div className="-m-1.5 overflow-x-auto">
+              <div className="p-1.5 min-w-full inline-block align-middle">
+              <div className="overflow-hidden">
+
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+          <thead>
+            <tr>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Post</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Reviewer</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Editor</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Post_Status</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Review_Status</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Review Overview</th>
+
+
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+           
+              {myreviews && myreviews.length > 0 ? (
+                myreviews.map((item, postIndex) => (
+                   
+                       <tr>
+                      <Link to={`/post/:${item.post.id}`}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.post.title}</td>
+                      </Link>
+                      
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.reviewer.username}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.editor.username}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.post.status}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.pdf_file_status}</td>
+                      
+                      {/* here link to the review page information will come  */}
+                     <Link to={`/editor/review/:${item.id}`}>   
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 "><i className="fa-solid fa-arrow-up-right-from-square"></i></td>
+                    </Link>
+                    
+                     </tr>
+               
+                  ))
+                  ) : (
+                <li className="text-center">No posts available</li>
+              )}
+            
+              
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+       </div>
+  
+
+      </div>
+    
+    </div>
+    </div>
+  )
+    }
+
 
 
 
   return (
     <div className="mt-44">
-      {(loadingReviews || loadingReviewedReviews) && <Loader />}
+      {(loadingReviews || loadingReviewedReviews || loading ) && <Loader />}
       <div className="flex flex-row">
         <div className="w-3/4">
           <div className="flex flex-col">
@@ -214,10 +320,21 @@ export const EditorDashboard=() =>{
               >
                 Reviewed
               </button>
+              <button
+                onClick={() => setActiveTab("myReviews")}
+                className={`px-4 py-2 rounded-md transition duration-300 ${
+                  activeTab === "myReviews"
+                    ? "bg-blue-500 text-white shadow-lg"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                MyReviews
+              </button>
 
             </div>
             {activeTab === "unreviewedReviews" && renderPendingReviews()}
             {activeTab === "reviewedReviews" && renderReviewedReviews()}
+            {activeTab === "myReviews" && renderEditorsReviews()}
 
           </div>
         </div>

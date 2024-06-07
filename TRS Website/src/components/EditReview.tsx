@@ -286,19 +286,22 @@ const [review_summ,setReview_Summ]=useState("");
 
 
         </div>
+        {!isDone && (
         <div className="w-1/2 pl-2">
              <label className="flex items-center">
+              
               <input
                 type="checkbox"
-                onChange={(e)=>setIsDone(e.target.checked)}
+                onChange={(e) => setIsDone(e.target.checked)}
                 checked={isDone}
                 className="form-checkbox"
               />
+            
               <span className="ml-2 text-gray-700">Reviewed</span>
+             
             </label>
-
-          
-        </div>
+            </div>
+             )}
  
         </div>
           <button

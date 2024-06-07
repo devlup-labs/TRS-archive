@@ -9,7 +9,7 @@ export const ReviewPage = () => {
   const { id } = useParams();
     const navigate = useNavigate();
   const [review, setReview] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [post_status,setPost_Status]=useState("");
@@ -91,8 +91,7 @@ export const ReviewPage = () => {
   }
 
 
-  const statusOptions = ["Under_Review", "Need_changes", "Reviewed"];
-  const filteredStatusOptions = statusOptions.filter(status => status !== review.post.status);
+
 
 
   const updatePostStatus=async(authToken)=>{
@@ -148,7 +147,7 @@ export const ReviewPage = () => {
 
   return (
     <>
-    {loading && <Loader />} 
+    {loading && <Loader />}   
     <div className="p-4 w-full max-w-2xl mx-auto bg-white shadow-md rounded-lg mt-48">
       <h1 className="text-2xl font-bold mb-4">{review.post.title}</h1>
       <p className="text-gray-700 mb-2">
@@ -201,20 +200,7 @@ export const ReviewPage = () => {
       <div className="w-1/2 pr-4">
 
     
-    {review.is_reviewed && (
-  <>
-    <p className="text-gray-700 mb-1"><strong>Update Post Status:</strong></p>
-    <div className="mb-4">
-      <select
-        onChange={(e) => setPost_Status(e.target.value)}>
-        <option value={review.post.status}>{review.post.status}</option>
-              {filteredStatusOptions.map(status => (
-                <option key={status} value={status}>{status}</option>
-              ))}
-      </select>
-    </div>
-  </>
-    )}  
+
   
      </div>
  
