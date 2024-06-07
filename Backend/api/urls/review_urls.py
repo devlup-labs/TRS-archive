@@ -10,6 +10,8 @@ urlpatterns=[
     path('Reviewer/review/<post_id>/<editor_id>/update/', views.ReviewerReviewViewset.as_view()),
     path('review/:<review_id>/', views.ParticularReviewviewSet.as_view()),
     path('Reviewer/reviews/reviewed/',views.GetReviewedReviews),
+    path('Editor/reviews/reviewed/',views.GetEditorReviews),
+
 
     # path('reviewSendToEditor/<uuid:review_id>/',views.Send_Mail_Editor),
 

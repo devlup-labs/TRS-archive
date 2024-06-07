@@ -39,21 +39,26 @@ class EditorToUserReviewView(GenericAPIView, mixins.CreateModelMixin):
         if 'description' not in request.data:
             return Response("Description must be provided", status=status.HTTP_400_BAD_REQUEST)
         
-        if request.FILES.get('reviewed_pdf'):
-            reviewed_pdf = request.FILES.get('reviewed_pdf')
+        print(request.data.get('description'))
+        reviewed_pdf = request.FILES.get('reviewed_pdf')
+        print(reviewed_pdf)
         try:
-            review = Review.objects.create(
-                description = request.data['description'],
-                pdf_file_status = 'Reviewed',
-                reviewer = user,
-                editor = user,
-                reviewed_pdf = reviewed_pdf,
-                is_reviewed = True,
-                post = post,
-                for_user = True
-            )
+            review_data={
+                'description': request.data.get('description'),
+                'pdf_file_status' : 'Reviewed',
+                'reviewer' : user,
+                'editor' : user, 
+                'is_reviewed' : True,
+                'post' : post,
+                'for_user' : True
+            }
+            if reviewed_pdf:
+                print(reviewed_pdf)
+                review_data['reviewed_pdf'] = reviewed_pdf
+
+            review = Review.objects.create(**review_data)
             review.save()
-            post.status='Reviewed'
+            post.status=request.data.get('status')
             Send_Mail_to_User(review.id)
             post.save()
             return Response("Review created successfully", status=status.HTTP_201_CREATED)
@@ -244,11 +249,27 @@ def GetReviewedReviews(request):
     if user.roles=='reviewer':
         reviews = Review.objects.filter(reviewer_id=user.id,is_reviewed=True)
     else:
-        reviews = Review.objects.filter(editor_id=user.id,is_reviewed=True)
+        reviews = Review.objects.filter(editor_id=user.id,is_reviewed=True,for_user=False)
 
     serializer=ReviewSerializer(reviews,many=True) 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def GetEditorReviews(request):
+    user=request.user
+    print(user.roles)
+    if user.roles not in ['reviewer', 'editor']:
+            return Response("You are not authorized to Fetch this review", status=status.HTTP_401_UNAUTHORIZED)
+    
+
+    if user.roles=='editor':
+        reviews = Review.objects.filter(reviewer_id=user.id,is_reviewed=True,for_user=True)
+
+
+    serializer=ReviewSerializer(reviews,many=True) 
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
