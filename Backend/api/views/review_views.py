@@ -21,6 +21,16 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 
 
 from ..models import *
+class ReviewsParticularPost(GenericAPIView, mixins.ListModelMixin):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, post_id, *args, **kwargs):
+        post = Post.objects.get(id=post_id)
+        reviews = Review.objects.filter(post_id=post_id)
+        serializer = self.serializer_class(reviews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class EditorToUserReviewView(GenericAPIView, mixins.CreateModelMixin):
     '''This Class is used to post review to user by Editor'''
