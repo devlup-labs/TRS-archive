@@ -12,7 +12,7 @@ urlpatterns=[
     path('Reviewer/reviews/reviewed/',views.GetReviewedReviews),
     path('Editor/reviews/reviewed/',views.GetEditorReviews),
 
-
+    path('Reviews/<post_id>/',views.ReviewsParticularPost.as_view()),
     # path('reviewSendToEditor/<uuid:review_id>/',views.Send_Mail_Editor),
 
     path('User/reviews/', views.EditorToUserReviewView.as_view()),
