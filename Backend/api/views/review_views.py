@@ -24,7 +24,7 @@ from ..models import *
 class ReviewsParticularPost(GenericAPIView, mixins.ListModelMixin):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, post_id, *args, **kwargs):
         post = Post.objects.get(id=post_id)
