@@ -123,7 +123,7 @@ export const EditorDashboard=() =>{
                 reviewsInfo.map((item, postIndex) => (
                    
                        <tr>
-                      <Link to={`/post/:${item.post.id}`}>
+                      <Link to={`/post/editorReview/:${item.post.id}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.post.title}</td>
                       </Link>
                       
@@ -172,7 +172,7 @@ export const EditorDashboard=() =>{
         <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
           <thead>
             <tr>
-              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Post</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Add_Your_Review</th>
               <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Reviewer</th>
               <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Editor</th>
               <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Post_Status</th>
@@ -188,7 +188,7 @@ export const EditorDashboard=() =>{
                 reviews.map((item, postIndex) => (
                    
                        <tr>
-                      <Link to={`/post/:${item.post.id}`}>
+                      <Link to={`/post/editorReview/:${item.post.id}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.post.title}</td>
                       </Link>
                       
@@ -253,7 +253,7 @@ export const EditorDashboard=() =>{
                 myreviews.map((item, postIndex) => (
                    
                        <tr>
-                      <Link to={`/post/:${item.post.id}`}>
+                      <Link to={`/post/editorReview/:${item.post.id}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.post.title}</td>
                       </Link>
                       

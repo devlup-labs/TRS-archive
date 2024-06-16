@@ -74,6 +74,8 @@ const Navbar = () => {
             Login
           </a>
         ) : (
+          
+
           <div className="flex flex-row-reverse items-start justify-between">
             <button
               className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white ml-2"
@@ -81,7 +83,9 @@ const Navbar = () => {
             >
               Logout
             </button>
+
             {location.pathname !== "/dashboard" ? (
+              
               <a
                 href="/dashboard"
                 className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline"
@@ -91,7 +95,47 @@ const Navbar = () => {
             ) : (
               <></>
             )}
+
+            {location.pathname !== "/editor/dashboard" && authToken.roles=='editor' ? (
+              <a
+                href="/editor/dashboard"
+                className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline mr-2"
+              >
+                Assigned Posts
+              </a>
+            ) : (
+              <></>
+            )}
+
+            {location.pathname !== "/editor" && authToken.roles=='editor' ? (
+              <a
+                href="/editor"
+                className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline mr-2"
+              >
+                Assign Post
+              </a>
+            ) : (
+              <></>
+            )}
+
+            {location.pathname !== "/reviewer" && location.pathname.startsWith("/reviewer/") && authToken.roles=='reviewer' ? (
+              <a
+                href="/reviewer"
+                className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline mr-2"
+              >
+                My Reviews
+              </a>
+            ) : (
+              <></>
+            )}
+
+            
+
+            
+
+
           </div>
+
         )}
       </div>
     </nav>

@@ -3,7 +3,12 @@ import { useParams,useNavigate } from "react-router-dom";
 import {useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import axios from "axios";
-export const PostPage = () => {
+
+
+
+export const EditorReviewPage = () => {
+
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
@@ -12,9 +17,10 @@ export const PostPage = () => {
   const [desc,setDesc]=useState("");
   const [selectedFile, setSelectedFile] =  useState<File | null>(null);
   const [post_status,setPost_Status]=useState("");
+  const [reviews,setReviews]=useState(null);
+
 
   const baseDir = import.meta.env.BACKEND_URL; 
-
   const userLogin = useSelector((state) => state.userLogin);
   // console.log(userLogin)
   const { authToken } = userLogin;
@@ -65,6 +71,48 @@ export const PostPage = () => {
     }
   };
 
+  
+  // to getReviews
+  const getReviews = async (authToken) => {
+
+    try {
+      
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${authToken.access}`,
+      },
+    };
+
+      const response = await fetch(`/api/reviews/Reviews/${id}/`, {
+        method: "GET",
+        headers: config.headers,
+      });
+      console.log(response)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (data) {
+        setReviews(data);
+        console.log(data)
+      } 
+    
+
+    } 
+    
+    catch (err) {
+
+       setError(err.message);
+    }
+     
+   finally {
+      setLoading(false);
+    }
+  }
+
+
   useEffect(() => { 
     if(!authToken){
       navigate('/login')
@@ -72,7 +120,12 @@ export const PostPage = () => {
 
     else{
       getPost(authToken);
+      getReviews(authToken)
+      
     }
+
+
+
     
   },[]);
 
@@ -132,7 +185,7 @@ export const PostPage = () => {
 
     console.log("button is clicked")
     sendReviewToUser();
-    navigate('/editor')
+    navigate('/editor/dashboard')
     
   
   };
@@ -161,9 +214,11 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 
 
 
+
   return (
+    <>
     <div className="p-4 w-full max-w-6xl mx-auto bg-white shadow-md rounded-lg mt-48">
-      <div className="flex justify-between items-start">
+    <div className="flex justify-between items-start">
       <div className="w-1/2 pr-4">
       <h1 className="text-2xl font-bold mb-4 text-center">Post Details</h1>
       <h1 className="text-xl font-bold mb-4">{post.title}</h1>
@@ -264,9 +319,50 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
           </form>
         </div>
     </div>
+     </div>
+   
+  
+
+  <h1 className="text-4xl font-bold mb-4 mt-20 text-center">Reviews from other reviewer</h1>
+  <div className="flex flex-row">
+  {reviews && reviews.length > 0 ? (
+    reviews.map((review, reviewIndex) => (
+      
+      <div key={reviewIndex} className="p-4 w-full max-w-2xl mx-auto bg-white shadow-md rounded-lg mt-20">
+        
+        <h1 className="text-2xl font-bold mb-4">{review.post.title}</h1>
+        <p className="text-gray-700 mb-2">
+          <strong>Reviewer:</strong> {review.reviewer.username}
+        </p>
+        <p className="text-gray-700 mb-4">
+          <strong>Review Instance Created At:</strong>{" "}
+          {new Date(review.created_at).toLocaleDateString()}
+        </p>
+        <p className="text-gray-700 mb-4">
+          <strong>Review Description: </strong>{review.description}
+        </p>
+
+      {review.reviewed_pdf && (
+        <a
+          href={import.meta.env.BACKEND_URL+review.reviewed_pdf}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:underline"
+        >
+          View Review PDF
+        </a>
+      )}
+
+
+      </div>
+    ))
+  ) : (
+    <li className="text-center">No reviews available</li>
+  )}
+
+</div>
+</>
     
-    </div>
+   
   );
 };
-
-export default PostPage;

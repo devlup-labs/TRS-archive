@@ -6,6 +6,7 @@ import { getuserPostDetails } from "../actions/postActions";
 import { useSearch } from "../context/SearchContext";
 import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
 import Loader from "./Loader.tsx";
+import { Link } from 'react-router-dom';
 
 export const Dashboard = () => {
   const { searchQuery } = useSearch();
@@ -18,7 +19,7 @@ export const Dashboard = () => {
   const [cp, setCp] = useState("");
   const [roles, setRoles] = useState("");
   const [upload_verified, setUploadVerified] = useState(false);
-  const [data, setData] = useState([]);
+  const [posts, setPosts] = useState([]);
   const baseDir = import.meta.env.BACKEND_URL;
 
   const navigate = useNavigate();
@@ -67,8 +68,8 @@ export const Dashboard = () => {
         setImage(import.meta.env.BACKEND_URL + user.image);
         setUploadVerified(user.upload_verified);
 
-        setData(user_posts);
-        console.log(data);
+        setPosts(user_posts);
+        console.log(posts);
       }
     }
   }, [dispatch, authToken, user_posts, user, navigate]); // Empty dependency array to run only once when component mounts
@@ -89,7 +90,7 @@ export const Dashboard = () => {
     <div className="flex flex-col h-screen">
       <div className="flex-grow flex flex-row">
         {/* Profile Section */}
-        <div className="w-1/2 p-4">
+        <div className="w-1/3 p-4">
           <div className="mt-44">
             <div className="flex flex-col items-center justify-center">
               {loading && loadingPosts && <Loader />}
@@ -157,37 +158,52 @@ export const Dashboard = () => {
         </div>
 
         {/* Posts Section */}
-        <div className="w-1/2 p-4 mt-44 overflow-y-scroll">
-          <ul className="w-full">
-            {data && data.length > 0 ? (
-              data.map((item, index) => (
-                <li
-                  key={index}
-                  className="flex flex-col w-[90%] border border-black shadow-md p-2 rounded-md mb-2 shadow-red-500"
-                >
-                  <div className="mb-2 border-b border-b-black">
-                    <strong>{item.title}</strong>
-                  </div>
-                  <div className="mb-2">
-                    <p>{truncate(item.body)}</p>
-                  </div>
-                  <div className="flex flex-row justify-between">
-                    <a
-                      href={baseDir + item.document}
-                      target="_blank"
-                      // onClick={() => console.log(`Clicked ${index} link`)}
-                    >
-                      PDF
-                    </a>
+        <div className="w-2/3 p-4 mt-44 overflow-y-scroll">
+          <div className="w-full">
+           <div className="-m-1.5 overflow-x-auto">
+              <div className="p-1.5 min-w-full inline-block align-middle">
+              <div className="overflow-hidden">
 
-                    <p>{item.status}</p>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <li className="text-center">No data available</li>
-            )}
-          </ul>
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+          <thead>
+            <tr>
+              <th scope="col" className="px-6 py-3 text-start text-xl  text-black uppercase ">Post</th>
+          
+              <th scope="col" className="px-6 py-3 text-start text-xl  text-black uppercase ">Post_Status</th>
+              <th scope="col" className="px-6 py-3 text-start text-xl  text-black uppercase ">Created At</th>
+              <th scope="col" className="px-6 py-3 text-start text-xl text-black uppercase ">Check Submission</th>
+
+
+
+            </tr>
+          </thead>
+          <tbody className="">
+            {posts && posts.length > 0 ? (
+                posts.map((item, index) => (
+                   
+                       <tr>
+                      <Link to={`/post/:${item.id}`}>
+                        <td className="px-6 py-4 whitespace-nowrap text-lg font-medium text-gray-800 ">{item.title}</td>
+                      </Link>
+                    
+                      <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800 ">{item.status}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800 ">{item.created_at}</td>
+                      <Link to={`/userPostPage/:${item.id}`}>   
+                        <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800 "><i className="fa-solid fa-arrow-up-right-from-square"></i></td>
+                     </Link>
+                     </tr>
+               
+                  ))
+                  ) : (
+                <li className="text-center">No posts available</li>
+              )}
+          </tbody>
+          </table>
+          </div>
+          </div>
+          </div>
+             
+          </div>
         </div>
       </div>
     </div>
