@@ -228,8 +228,8 @@ def getParticularPost(request,post_id):
     
     try:
         post = Post.objects.get(id=post_id)
-        if(post.status!="Reviewed" and request.user.roles =="normal_user"):
-            return Response({"message:You are not allowed to access as post under reviewing process"},status=status.HTTP_403_FORBIDDEN)
+        # if(post.status!="Reviewed" and request.user.roles =="normal_user"):
+        #     return Response({"message:You are not allowed to access as post under reviewing process"},status=status.HTTP_403_FORBIDDEN)
         
     except Post.DoesNotExist:
         return Response({"message": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
