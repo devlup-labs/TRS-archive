@@ -1,7 +1,7 @@
 import DropdownInput from "./DropInput";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../actions/userActions";
-import {getCategoriesAction} from "../actions/postActions"
+import { getCategoriesAction } from "../actions/postActions";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +14,6 @@ const Navbar = () => {
   const handleClick = () => {
     console.log("Logged out");
     dispatch(logout());
-    
   };
   const handleOptionSelect = (option) => {
     setCat(option);
@@ -74,8 +73,6 @@ const Navbar = () => {
             Login
           </a>
         ) : (
-          
-
           <div className="flex flex-row-reverse items-start justify-between">
             <button
               className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white ml-2"
@@ -85,7 +82,6 @@ const Navbar = () => {
             </button>
 
             {location.pathname !== "/dashboard" ? (
-              
               <a
                 href="/dashboard"
                 className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline"
@@ -96,7 +92,8 @@ const Navbar = () => {
               <></>
             )}
 
-            {location.pathname !== "/editor/dashboard" && authToken.roles=='editor' ? (
+            {location.pathname !== "/editor/dashboard" &&
+            authToken.roles == "editor" ? (
               <a
                 href="/editor/dashboard"
                 className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline mr-2"
@@ -107,7 +104,7 @@ const Navbar = () => {
               <></>
             )}
 
-            {location.pathname !== "/editor" && authToken.roles=='editor' ? (
+            {location.pathname !== "/editor" && authToken.roles == "editor" ? (
               <a
                 href="/editor"
                 className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline mr-2"
@@ -118,7 +115,9 @@ const Navbar = () => {
               <></>
             )}
 
-            {location.pathname !== "/reviewer" && location.pathname.startsWith("/reviewer/") && authToken.roles=='reviewer' ? (
+            {location.pathname !== "/reviewer" &&
+            location.pathname.startsWith("/reviewer/") &&
+            authToken.roles == "reviewer" ? (
               <a
                 href="/reviewer"
                 className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white hover:no-underline mr-2"
@@ -128,14 +127,7 @@ const Navbar = () => {
             ) : (
               <></>
             )}
-
-            
-
-            
-
-
           </div>
-
         )}
       </div>
     </nav>

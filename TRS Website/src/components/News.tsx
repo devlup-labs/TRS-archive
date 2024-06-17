@@ -26,22 +26,22 @@ const RotateItems = ({ items }) => {
   }, [currentItemIndex, items]);
 
   return (
-    <div className="bg-black text-white border border-black p-2">
+    <div className="w-full h-full flex items-center justify-center bg-black text-white border border-black p-2">
       {displayedItem && (
-        <>
-          <div>
-            <h2>Title: {displayedItem.title}</h2>
-            <p>Description: {displayedItem.description}</p>
+        <div className="w-full h-full flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center w-[3/4] p-4 ">
+            <h2 className="text-xl mb-2">Title: {displayedItem.title}</h2>
+            <p className="mb-4">Description: {displayedItem.description}</p>
             <img
               src={displayedItem.image}
               alt={displayedItem.title}
-              style={{ maxWidth: "40%", height: "auto" }}
+              className="w-92 h-auto object-cover"
             />
           </div>
-          <div className="text-right text-white text-sm">
+          <div className="text-right text-white text-sm mt-2">
             {currentItemIndex + 1}/{items.length}
           </div>
-        </>
+        </div>
       )}
     </div>
   );
@@ -57,15 +57,12 @@ export const News = () => {
   }, [dispatch]);
 
   return (
-    <div className="w-[40%]">
-      <h1 className="text-2xl">News:</h1>
-      {loading && <Loader />}
-      {success && (
-        <>
-          <RotateItems items={newsInfo} />
-          {/* You can also display the newsInfo as JSON below the rotating items if needed */}
-        </>
-      )}
+    <div className="w-1/2 h-1/2 flex items-center justify-center max-w-[375px]">
+      <div className="w-full h-full border border-gray-300">
+        <h1 className="text-2xl my-2 text-center font-semibold">News</h1>
+        {loading && <Loader />}
+        {success && <RotateItems items={newsInfo} />}
+      </div>
     </div>
   );
 };
