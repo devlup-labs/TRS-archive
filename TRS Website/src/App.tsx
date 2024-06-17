@@ -19,13 +19,15 @@ import { refreshAccessToken, logout } from "./actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { PostPage } from "./components/postpage";
+import { EditorReviewPage } from "./components/EditorReviewPage";
 import { ReviewersPage } from "./components/ReviewersPage";
 import { EditorPage } from "./components/EditorPage";
 import {EditorDashboard} from "./components/Editor_dashboard"
 import {ReviewPage} from "./components/ReviewPage"
 import {EditReview} from "./components/EditReview"
 import {ProfileView} from "./components/ProfileDisplay"
+import {PostPage} from "./components/PostPage"
+import { UserPostPage } from "./components/userPostPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -85,13 +87,15 @@ function App() {
               <Route element={<Register2 />} path="/register2" />
               <Route element={<ProfileSetup />} path="/profile_setup" />
               <Route element={<AdminPage />} path="/admin" />
-              <Route element={<PostPage />} path="/post/:id" />
+              <Route element={<EditorReviewPage />} path="/post/editorReview/:id" />
               <Route element={<ReviewersPage />} path="/reviewer" />
               <Route element={<EditorPage />} path="/editor" />
               <Route element={< EditorDashboard/>} path="/editor/dashboard" />
               <Route element={<ReviewPage />} path="/editor/review/:id" />
               <Route element={<EditReview />} path="/reviewer/ereview/:id" />
               <Route element={<ProfileView />} path="/profile/:user_name" />
+              <Route element={<PostPage />} path="/post/:id" />
+              <Route element={<UserPostPage />} path="/userPostPage/:id" />
               
             </Routes>
           </SearchProvider>

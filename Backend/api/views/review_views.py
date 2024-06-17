@@ -21,6 +21,18 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 
 
 from ..models import *
+
+
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def UserReviewsParticularPost(request,post_id):
+    reviews = Review.objects.filter(post_id=post_id,for_user=True).order_by('-created_at')
+    serializer=ReviewSerializer(reviews,many=True) 
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 class ReviewsParticularPost(GenericAPIView, mixins.ListModelMixin):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
@@ -37,6 +49,7 @@ class EditorToUserReviewView(GenericAPIView, mixins.CreateModelMixin):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
+
 
     def post(self, request, *args, **kwargs):
         user = request.user

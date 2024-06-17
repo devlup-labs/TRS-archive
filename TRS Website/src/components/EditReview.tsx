@@ -18,7 +18,7 @@ export const EditReview = () => {
 
 const [desc,setDesc]=useState("")
 const [selectedFile, setSelectedFile] = useState(null); 
-const [isDone,setIsDone]=useState(false )
+const [isDone,setIsDone]=useState(false)
 const [message, setMessage] = useState("");
 const [review_summ,setReview_Summ]=useState("");
 
@@ -286,7 +286,7 @@ const [review_summ,setReview_Summ]=useState("");
 
 
         </div>
-        {!isDone && (
+        {!review.is_reviewed && (
         <div className="w-1/2 pl-2">
              <label className="flex items-center">
               

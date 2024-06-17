@@ -4,7 +4,7 @@ import {useSelector } from "react-redux";
 import Loader from './Loader.tsx'
 import Swal from "sweetalert2";
 
-
+// here the editor will read reviews
 export const ReviewPage = () => {
   const { id } = useParams();
     const navigate = useNavigate();
@@ -168,7 +168,7 @@ export const ReviewPage = () => {
         <strong>Review Description: </strong>{review.description}</p>
 
 
-      <form onSubmit={handleSubmit}>
+  
       <div className="flex justify-between items-start">
       <div className="w-1/2 pr-4">
     <div className="mb-2">
@@ -206,13 +206,7 @@ export const ReviewPage = () => {
  
 
       </div>
-          <button
-            type="submit"
-            className="w-1/4 mt-4 bg-blue-400 hover:bg-blue-500 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 "
-          >
-            Submit
-          </button>
-          </form>
+         
     </div>
     </>
   );
