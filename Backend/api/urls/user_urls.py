@@ -19,8 +19,9 @@ urlpatterns=[
     path('password_reset/',views.send_email_pass.as_view()),
     path('getUsers/',views.getUsers),
     path('getUsers/<str:role>/',views.getUsers),
-    path('getUser/:<str:name>/',views.getUserProfile)
+    path('getUser/:<str:name>/',views.getUserProfile),
 
+    path('Admin/UpdateUser/<user_id>/',views.UpdateUserView.as_view()),
 
 
 ]

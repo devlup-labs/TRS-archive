@@ -25,7 +25,24 @@ from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 
 
+class UpdateUserView(GenericAPIView, mixins.UpdateModelMixin):
+    ''' Update User Profile Accessible only to Admin'''
 
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
+    def put(self, request, user_id, *args, **kwargs):
+        data=request.data
+        user=User.objects.get(id=user_id)
+        user.roles = data.get('roles', user.roles)
+        user.is_verified = data.get('is_verified', user.is_verified)
+        user.affiliation = data.get('Affiliation', user.affiliation)
+        user.upload_verified = data.get('upload_verified', user.upload_verified)
+        user.save()
+        serializer=UserSerializer(user,many=False)
+        return Response(serializer.data)
+        
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -189,8 +206,6 @@ def getUserProfile(request,name):
 @permission_classes([IsAuthenticated])
 def updateUserProfile(request):
     user=request.user
-   
-    
     data=request.data
     user.username=data['name']
     user.email=data['email']
