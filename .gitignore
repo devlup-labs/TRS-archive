@@ -23,5 +23,5 @@
 /Backend/myenv
 /myenv
 .env
-/Backend/db.sqlite3
+# /Backend/db.sqlite3 <for the time being>
 # this is for not making incompatible chnages
