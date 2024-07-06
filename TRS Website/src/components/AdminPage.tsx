@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { getUsers, getEditors } from "../actions/userActions";
 import { useNavigate } from "react-router-dom";
 import { getCategoriesAction, listPosts } from "../actions/postActions";
-import { News } from "./News";
 
 export const AdminPage = () => {
   const dispatch = useDispatch();
@@ -14,6 +13,7 @@ export const AdminPage = () => {
   const [filterRole, setFilterRole] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [cats, setCats] = useState([]);
+  const [changeRole, setChangeRole] = useState({});
 
   const userLogin = useSelector((state) => state.userLogin);
   const { authToken } = userLogin; // the person who logged in
@@ -77,8 +77,36 @@ export const AdminPage = () => {
     setFilterCategory(e.target.value);
   };
 
+  const handleChangeRoleSubmit = async (userId, role) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.BACKEND_URL}/api/users/Admin/UpdateUser/${userId}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken.access}`,
+          },
+          body: JSON.stringify({
+            roles: role,
+          }),
+        }
+      );
+
+      if (response.status == 200) {
+        alert("Role updated successfully");
+        window.location.reload();
+      } else {
+        alert("Something went wrong");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const renderUsers = () => {
     let filteredUsers = usersInfo;
+    console.log(usersInfo);
 
     if (searchTerm) {
       filteredUsers = filteredUsers.filter((user) =>
@@ -97,7 +125,7 @@ export const AdminPage = () => {
         {successUsers && (
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-2">
-              <p className="text-xl font-semibold">Non Staff Users</p>
+              <p className="text-xl font-semibold">All Users</p>
               <div className="flex flex-row items-center gap-4 mb-4">
                 <input
                   type="text"
@@ -112,9 +140,11 @@ export const AdminPage = () => {
                   className="px-4 py-2 border border-gray-300 rounded-md"
                 >
                   <option value="">All Roles</option>
-                  <option value="role1">Role 1</option>
-                  <option value="role2">Role 2</option>
-                  <option value="role3">Role 3</option>
+                  <option value="admin">Admin</option>
+                  <option value="editor">Editor</option>
+                  <option value="normal_user">Normal User</option>
+                  <option value="reviewer">Reviewer</option>
+                  <option value="web_developer">Web Developer</option>
                 </select>
               </div>
               <ul className="flex flex-col gap-4 border border-gray-300 rounded-lg shadow-md p-4 bg-white">
@@ -132,11 +162,57 @@ export const AdminPage = () => {
                         Email: <span className="font-normal">{user.email}</span>
                       </p>
                       <p className="text-lg font-semibold text-gray-800">
+                        Current Role:{" "}
+                        <span className="font-normal">
+                          {user.roles || "N/A"}
+                        </span>
+                      </p>
+                      <p className="text-lg font-semibold text-gray-800">
                         Affiliation:{" "}
                         <span className="font-normal">
                           {user.affiliation || "N/A"}
                         </span>
                       </p>
+                      <p className="text-lg font-semibold text-gray-800">
+                        Area of Reasearch:{" "}
+                        <span className="font-normal">
+                          {user.area_of_research || "N/A"}
+                        </span>
+                      </p>
+                      <p className="text-lg font-semibold text-gray-800">
+                        Default Category:{" "}
+                        <span className="font-normal">
+                          {user.default_category || "N/A"}
+                        </span>
+                      </p>
+                      <div className="flex flex-row gap-6 justify-around w-[80%] mx-auto">
+                        <select
+                          value={changeRole[user.id] || ""}
+                          onChange={(e) =>
+                            setChangeRole((prev) => ({
+                              ...prev,
+                              [user.id]: e.target.value,
+                            }))
+                          }
+                          className="px-4 py-2 border border-gray-300 rounded-md w-[70%]"
+                        >
+                          <option value="">Change Role</option>
+                          <option value="admin">Admin</option>
+                          <option value="editor">Editor</option>
+                          <option value="normal_user">Normal User</option>
+                          <option value="reviewer">Reviewer</option>
+                          <option value="web_developer">Web Developer</option>
+                        </select>
+                        <button
+                          type="submit"
+                          onClick={() =>
+                            handleChangeRoleSubmit(user.id, changeRole[user.id])
+                          }
+                          className="bg-blue-500 rounded-md p-2 border border-black text-white"
+                        >
+                          Change Role
+                        </button>
+                      </div>
                     </div>
                   </li>
                 ))}
@@ -277,48 +353,43 @@ export const AdminPage = () => {
   return (
     <div className="mt-44">
       {(loadingUsers || loadingEditors || loading) && <Loader />}
-      <div className="flex flex-row justify-between mx-auto items-center">
-        <div className="w-3/4">
-          <div className="flex flex-col">
-            <div className="flex justify-evenly my-3">
-              <button
-                onClick={() => setActiveTab("users")}
-                className={`px-4 py-2 rounded-md transition duration-300 ${
-                  activeTab === "users"
-                    ? "bg-blue-500 text-white shadow-lg"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
-              >
-                Users
-              </button>
-              <button
-                onClick={() => setActiveTab("posts")}
-                className={`px-4 py-2 rounded-md transition duration-300 ${
-                  activeTab === "posts"
-                    ? "bg-blue-500 text-white shadow-lg"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
-              >
-                Posts
-              </button>
-              <button
-                onClick={() => setActiveTab("editors")}
-                className={`px-4 py-2 rounded-md transition duration-300 ${
-                  activeTab === "editors"
-                    ? "bg-blue-500 text-white shadow-lg"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
-              >
-                Editors
-              </button>
-            </div>
-            {activeTab === "users" && renderUsers()}
-            {activeTab === "posts" && renderPosts()}
-            {activeTab === "editors" && renderEditors()}
+      <div className="w-[90%] mx-auto">
+        <div className="flex flex-col">
+          <div className="flex justify-evenly my-3">
+            <button
+              onClick={() => setActiveTab("users")}
+              className={`px-4 py-2 rounded-md transition duration-300 ${
+                activeTab === "users"
+                  ? "bg-blue-500 text-white shadow-lg"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              Users
+            </button>
+            <button
+              onClick={() => setActiveTab("posts")}
+              className={`px-4 py-2 rounded-md transition duration-300 ${
+                activeTab === "posts"
+                  ? "bg-blue-500 text-white shadow-lg"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              Posts
+            </button>
+            <button
+              onClick={() => setActiveTab("editors")}
+              className={`px-4 py-2 rounded-md transition duration-300 ${
+                activeTab === "editors"
+                  ? "bg-blue-500 text-white shadow-lg"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              Editors
+            </button>
           </div>
-        </div>
-        <div className="w-[3/10] mx-auto">
-          <News />
+          {activeTab === "users" && renderUsers()}
+          {activeTab === "posts" && renderPosts()}
+          {activeTab === "editors" && renderEditors()}
         </div>
       </div>
     </div>

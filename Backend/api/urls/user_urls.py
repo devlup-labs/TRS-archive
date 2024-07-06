@@ -21,7 +21,7 @@ urlpatterns=[
     path('getUsers/<str:role>/',views.getUsers),
     path('getUser/:<str:name>/',views.getUserProfile),
 
-    path('Admin/UpdateUser/<user_id>/',views.UpdateUserView.as_view()),
+    path('Admin/UpdateUser/<uuid:user_id>/',views.UpdateUserView.as_view()),
 
 
 ]

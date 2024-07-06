@@ -322,7 +322,7 @@ def getUsers(request,role=None):
             else:
                 users=User.objects.all()
 
-            serializer=AllUserSerializer(users,many=True)
+            serializer=UserSerializer(users,many=True)
             return Response(serializer.data)    
         except Exception as e:
             message = {'detail': str(e)}  # Return specific error message
