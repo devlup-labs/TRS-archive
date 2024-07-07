@@ -91,80 +91,99 @@ if (!categoriesInfo) {
     }
   };
 
-  return (
-    <div className="relative top-44 md:w-1/3 mx-auto w-full">
+    return (
+    <div className="relative md:w-1/2 mx-auto w-full">
       {loading && <Loader />}
-
-      <form
-        onSubmit={handleSubmit}
-        className="mx-auto mt-16 bg-gradient-to-r from-blue-600 to-blue-700 p-8 rounded-md shadow-md"
-      >
-        <h1 className="block mb-2">Upload Documents</h1>
+      <div className="flex justify-between items-start">
+        
         {message && <Message variant="danger">{message}</Message>}
-        <label className="block mb-2">Title:</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Title"
-          required
-          className="rounded-sm px-2 w-full"
-        />
 
-        <label className="block mb-2">Body:</label>
-        <input
-          type="textarea"
-          value={body}
-          onChange={(e) => {
-            setBody(e.target.value);
-          }}
-          placeholder="Body"
-          required
-          className="resize-y rounded-sm px-2 w-full h-40"
-        />
-
-        <label className="block mb-2">Category:</label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-          className="rounded-sm px-2 w-full"
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 w-full mx-auto bg-gradient-to-r from-blue-600 to-blue-700 shadow-md rounded-lg mt-48 flex flex-col space-y-4"
         >
-          <option value="">Select a category</option>
-          {cats.map((cat, index) => (
-            <option key={index} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
+          <h1 className="text-3xl font-bold text-white mb-6 text-center">Upload Documents</h1>
+          <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0">
+            <div className="w-full md:w-1/2 pr-4">
+              <div className="mb-4">
+                <label className="block mb-2 text-white">Title:</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Title"
+                  required
+                  className="rounded-sm px-4 py-2 w-full"
+                />
+              </div>
 
-        <label className="block mb-2">SubCategory:</label>
-        <select
-          value={subCategory}
-          onChange={(e) => setSubCategory(e.target.value)}
-          required
-          className="rounded-sm px-2 w-full"
-        >
-          <option value="">Select a subCategory</option>
-          {subcats.map((sub_cat, index) => (
-        <option key={index} value={sub_cat}>{sub_cat}</option>
-        ))}
-        </select>
+              <div className="mb-4">
+                <label className="block mb-2 text-white">Body:</label>
+                <textarea
+                  value={body}
+                  onChange={(e) => setBody(e.target.value)}
+                  placeholder="Write your response here..."
+                  required
+                  className="w-full p-2 border border-gray-300 rounded-md resize-y h-40"
+                />
+              </div>
+            </div>
 
-        <label className="block mb-2">Document (PDF only):</label>
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={handleFileChange}
-          className="mb-2"
-        />
-        <button
-          type="submit"
-          className="w-full bg-green-500 hover:bg-green-600 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          Upload
-        </button>
-      </form>
+            <div className="w-full md:w-1/2">
+              <div className="mb-4">
+                <label className="block mb-2 text-white">Category:</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  required
+                  className="rounded-sm px-4 py-2 w-full"
+                >
+                  <option value="">Select a category</option>
+                  {cats.map((cat, index) => (
+                    <option key={index} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-2 text-white">SubCategory:</label>
+                <select
+                  value={subCategory}
+                  onChange={(e) => setSubCategory(e.target.value)}
+                  required
+                  className="rounded-sm px-4 py-2 w-full"
+                >
+                  <option value="">Select a subCategory</option>
+                  {subcats.map((sub_cat, index) => (
+                    <option key={index} value={sub_cat}>
+                      {sub_cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label className="block mb-2 text-white">Document (PDF only):</label>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={handleFileChange}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-green-500 hover:bg-green-600 text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            Upload
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

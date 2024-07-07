@@ -112,7 +112,6 @@ const {
   
    <div className="flex flex-row">
      
-          <div className="w-3/4">
              <div className="-m-1.5 overflow-x-auto">
     <div className="p-1.5 min-w-full inline-block align-middle">
       <div className="overflow-hidden">
@@ -121,7 +120,7 @@ const {
           <thead>
             <tr>
               <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-black uppercase ">Post</th>
-              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase ">Reviewer</th>
+              <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase ">Category</th>
               <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase ">Sub_Category</th>
               <th scope="col" className="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase ">Uploaded By</th>
               <th scope="col" className="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase ">Chosse Reviewer</th>
@@ -133,7 +132,7 @@ const {
                 posts.map((item, postIndex) => (
                    
                        <tr>
-                          <Link to={`/post/:${item.id}`}>
+                          <Link to={`/post/${item.id}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.title}</td>
                       </Link>
                       
@@ -176,12 +175,8 @@ const {
     </div>
 
        </div>
+
   
-     <div className="w-1/2">
-              
-      </div>
-      
-    </div>
     </div>
     </div>
     </div>

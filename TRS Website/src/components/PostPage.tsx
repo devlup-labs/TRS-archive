@@ -102,7 +102,7 @@ if (loading) {
         <strong>Category:</strong> {post.category}
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>SubCategory:</strong> {post.subCategory}
+        <strong>SubCategory:</strong> {post.sub_category}
       </p>
       <p className="text-gray-700 mb-4">
         <strong>Created At:</strong>{" "}

@@ -53,53 +53,43 @@ export default function Home() {
     }
   }, [navigate, dispatch, categoriesInfo]);
 
-
-  return (
-    <div>
-        <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
-       {/* {/* <DropdownInput
-       options={cats}
-         style="bg-gray-900 w-[45%] mb-3 rounded-lg"
-         b_bar={false}
-         onOptionSelect={handleOptionSelect}
-       /> */}
-      
+return (
+  <div className="relative flex flex-col top-40 overflow-y-visible p-4 w-full">
     <div className="items-center">
       {upload ? <a href="/Upload">Upload</a> : null}
     </div>
-  
-   <div className="flex flex-row">
+
+    <div className="flex flex-row">
       <ul className="w-1/2">
-        {cats.map((cat, index) => (
-          <li key={index}>
-            <h1 className="text-[40px]">{cat}</h1>
-            <ul>
-             {posts && posts.length > 0 ? (
-                posts
-                  .filter(post => post.category === cat) // Filter posts by category
-                  .map((item, postIndex) => (
-                    <li
-                      key={postIndex}
-                      
-                    >
-                         <Link to={`/post/:${item.id}`}>
-                      <p>{item.title}</p>
+        {cats.map((cat, index) => {
+          // Filter posts by category
+          const filteredPosts = posts.filter(post => post.category === cat);
+          // Only render if there are posts in this category
+          if (filteredPosts.length > 0) {
+            return (
+              <li key={index} className="mb-6">
+                <h1 className="text-2xl font-bold mb-2">{cat}</h1>
+                <ul>
+                  {filteredPosts.map((item, postIndex) => (
+                    <li key={postIndex} className="mb-2">
+                      <Link to={`/post/${item.id}`} className="text-blue-600 hover:underline">
+                        {item.title}
                       </Link>
-                      
                     </li>
-                  ))
-              ) : (
-                <li className="text-center">No posts available</li>
-              )}
-            </ul>
-          </li>
-        ))}
-          </ul>
-          <div className="w-1/2">
-            <News />
-          </div>
-        </div>
+                  ))} 
+                </ul>
+              </li>
+            );
+          } else {
+            return null; // Skip rendering if there are no posts in this category
+          }
+        })}
+      </ul>
+      <div className="w-1/2">
+        <News />
       </div>
     </div>
-  );
+  </div>
+);
+
 }

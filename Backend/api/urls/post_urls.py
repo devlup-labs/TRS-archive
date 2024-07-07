@@ -7,7 +7,7 @@ urlpatterns=[
     path('<int:post_id>/comment/',views.CreateCommentViewSet.as_view()),
     path('allpost/', views.PostViewSet.as_view(), name='post-list'),  # For all posts
     path('allpost/<str:curr_status>/',views.PostViewSet.as_view()),
-    path('getpost/:<uuid:post_id>/',views.getParticularPost),
+    path('getpost/<uuid:post_id>/',views.getParticularPost),
     path('updatepost/<uuid:post_id>/',views.updateParticularPost),
 
     path('<user_id>/posts/',views.ParticularUserPost.as_view()),

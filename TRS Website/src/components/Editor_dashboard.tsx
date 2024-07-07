@@ -123,7 +123,7 @@ export const EditorDashboard=() =>{
                 reviewsInfo.map((item, postIndex) => (
                    
                        <tr>
-                      <Link to={`/post/editorReview/:${item.post.id}`}>
+                      <Link to={`/post/editorReview/${item.post.id}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.post.title}</td>
                       </Link>
                       
@@ -188,7 +188,7 @@ export const EditorDashboard=() =>{
                 reviews.map((item, postIndex) => (
                    
                        <tr>
-                      <Link to={`/post/editorReview/:${item.post.id}`}>
+                      <Link to={`/post/editorReview/${item.post.id}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.post.title}</td>
                       </Link>
                       
@@ -198,7 +198,7 @@ export const EditorDashboard=() =>{
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.pdf_file_status}</td>
                       
                       {/* here link to the review page information will come  */}
-                     <Link to={`/editor/review/:${item.id}`}>   
+                     <Link to={`/editor/review/${item.id}`}>   
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 "><i className="fa-solid fa-arrow-up-right-from-square"></i></td>
                     </Link>
                     
@@ -253,7 +253,7 @@ export const EditorDashboard=() =>{
                 myreviews.map((item, postIndex) => (
                    
                        <tr>
-                      <Link to={`/post/editorReview/:${item.post.id}`}>
+                      <Link to={`/post/editorReview/${item.post.id}`}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">{item.post.title}</td>
                       </Link>
                       
@@ -263,7 +263,7 @@ export const EditorDashboard=() =>{
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">{item.pdf_file_status}</td>
                       
                       {/* here link to the review page information will come  */}
-                     <Link to={`/editor/review/:${item.id}`}>   
+                     <Link to={`/editor/review/${item.id}`}>   
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 "><i className="fa-solid fa-arrow-up-right-from-square"></i></td>
                     </Link>
                     

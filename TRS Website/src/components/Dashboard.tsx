@@ -6,6 +6,7 @@ import { getuserPostDetails } from "../actions/postActions";
 import { useSearch } from "../context/SearchContext";
 import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
 import Loader from "./Loader.tsx";
+import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 
 export const Dashboard = () => {
@@ -178,25 +179,30 @@ export const Dashboard = () => {
             </tr>
           </thead>
           <tbody className="">
-            {posts && posts.length > 0 ? (
-                posts.map((item, index) => (
-                   
-                       <tr>
-                      <Link to={`/post/:${item.id}`}>
-                        <td className="px-6 py-4 whitespace-nowrap text-lg font-medium text-gray-800 ">{item.title}</td>
-                      </Link>
-                    
-                      <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800 ">{item.status}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800 ">{item.created_at}</td>
-                      <Link to={`/userPostPage/:${item.id}`}>   
-                        <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800 "><i className="fa-solid fa-arrow-up-right-from-square"></i></td>
-                     </Link>
-                     </tr>
-               
-                  ))
-                  ) : (
-                <li className="text-center">No posts available</li>
-              )}
+           {posts && posts.length > 0 ? (
+    posts.map((item, index) => {
+      const formattedDate = format(new Date(item.created_at), 'MM/dd/yyyy');
+      
+      return (
+        <tr key={index}>
+          <Link to={`/post/${item.id}`}>
+            <td className="px-6 py-4 whitespace-nowrap text-lg font-medium text-gray-800">{item.title}</td>
+          </Link>
+          <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800">{item.status}</td>
+          <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800">{formattedDate}</td>
+          <Link to={`/userPostPage/${item.id}`}>
+            <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800">
+              <i className="fa-solid fa-arrow-up-right-from-square"></i>
+            </td>
+          </Link>
+        </tr>
+      );
+    })
+  ) : (
+    <tr>
+      <td colSpan="4" className="px-6 py-4 text-center text-gray-800">No posts available</td>
+    </tr>
+  )}
           </tbody>
           </table>
           </div>
