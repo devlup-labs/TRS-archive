@@ -25,17 +25,31 @@ const RotateItems = ({ items }) => {
     return () => clearTimeout(timeoutId); // Clear timeout on component unmount
   }, [currentItemIndex, items]);
 
+
+
   return (
-    <div className="w-full h-full flex items-center justify-center bg-black text-white border border-black p-2">
+    <div className="w-full h-full flex items-center justify-center bg-gray-800 text-white border border-gray-700 p-4 rounded-md shadow-md">
       {displayedItem && (
         <div className="w-full h-full flex flex-col items-center justify-center">
-          <div className="flex flex-col items-center w-[3/4] p-4 ">
-            <h2 className="text-xl mb-2">Title: {displayedItem.title}</h2>
-            <p className="mb-4">Description: {displayedItem.description}</p>
+          <div className="flex flex-col items-center w-full p-4 space-y-4">
+            <h2 className="text-2xl font-bold">{displayedItem.title}</h2>
+            <p className="text-lg">{displayedItem.description}
+              {displayedItem.url && (
+                <a
+                  href={displayedItem.url}
+                  className="text-blue-500 underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Read More...
+                </a>
+              )}
+            </p>
+           
             <img
               src={displayedItem.image}
               alt={displayedItem.title}
-              className="w-92 h-auto object-cover"
+              className="w-full h-auto max-h-64 object-cover rounded-md"
             />
           </div>
           <div className="text-right text-white text-sm mt-2">
@@ -57,9 +71,9 @@ export const News = () => {
   }, [dispatch]);
 
   return (
-    <div className="w-1/2 h-1/2 flex items-center justify-center max-w-[375px]">
-      <div className="w-full h-full border border-gray-300">
-        <h1 className="text-2xl my-2 text-center font-semibold">News</h1>
+    <div className="w-full max-w-lg mx-auto my-8">
+      <div className="w-full h-full border border-gray-300 p-4 rounded-md shadow-md bg-white">
+        <h1 className="text-3xl mb-4 text-center font-semibold">News</h1>
         {loading && <Loader />}
         {success && <RotateItems items={newsInfo} />}
       </div>

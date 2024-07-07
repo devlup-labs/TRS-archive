@@ -80,7 +80,7 @@ export const AdminPage = () => {
   const handleChangeRoleSubmit = async (userId, role) => {
     try {
       const response = await fetch(
-        `${import.meta.env.BACKEND_URL}/api/users/Admin/UpdateUser/${userId}/`,
+        `/api/users/Admin/UpdateUser/${userId}/`,
         {
           method: "PUT",
           headers: {

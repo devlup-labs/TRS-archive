@@ -123,7 +123,7 @@ class ResetPasswordEmailSerializer(serializers.Serializer):
 class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = New
-        fields = ['title', 'description', 'image']
+        fields = ['title', 'description', 'url' ,'image']
 
 class ReviewSerializer(serializers.ModelSerializer):
     editor = UserSerializer(read_only=True)

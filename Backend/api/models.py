@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
 import uuid,random,datetime
-
+from django.core.validators import URLValidator
 Roles_Choices = (
         ('admin', 'Admin'),
         ('editor', 'Editor'),
@@ -128,4 +128,5 @@ class Review(models.Model):
 class New(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
+    url=models.TextField(null=True,blank=True,validators=[URLValidator()])
     image = models.ImageField(upload_to='news_images/')

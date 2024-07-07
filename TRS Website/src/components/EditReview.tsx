@@ -221,6 +221,7 @@ const [review_summ,setReview_Summ]=useState("");
           {/* Add your response form fields here */}
            <p className="text-gray-700 mb-2"> <strong>Description:</strong> </p> 
           <textarea
+            rows={6} 
             value={desc}
             className="w-full p-2 border border-gray-300 rounded-md mb-4"
             placeholder="Write your response here..."
