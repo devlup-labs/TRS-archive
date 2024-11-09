@@ -1,73 +1,124 @@
-# TRS-archive
+# TRS-Archive
 
-# React + TypeScript + Vite
+## Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A robust technical review system with a React + TypeScript frontend and Django REST framework backend, designed to streamline document review workflows for academic and research submissions in various fields of robotics.
 
-Currently, two official plugins are available:
+## Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Secure Authentication**: JWT-based login.
+- **Role-Based Access**: Admin, Editor, and Reviewer roles with specific permissions.
+- **Interactive Document Review**: Supports PDF uploads, text-based reviews, and threaded comments.
+- **Real-Time Status Tracking**: Editors monitor review progress, and users receive updates.
+- **Maintenance Mode**: Admin-configurable downtime message.
 
-## Expanding the ESLint configuration
+## Additional Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **User Management**: Admins can search, manage, and temporarily suspend users.
+- **Categorization**: Organized categories and sub-categories, with dropdown and forum-style navigation.
+- **User Profiles**: Profile pages include institute, position, and research area, viewable by others in read-only mode.
+- **Submission Workflow**: Users submit articles; editors assign reviewers and track status.
+- **Reviewer System**: Reviewers can provide text and PDF feedback; editors receive notifications on review completion.
+- **Analytics for Editors**: Summary panels with submission metrics, reviewer activity, and graphical data.
+- **Notifications & Timestamps**: Automated email updates and timestamps for key actions.
 
-- Configure the top-level `parserOptions` property like this:
+## Technology Stack
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: ["./tsconfig.json", "./tsconfig.node.json"],
-    tsconfigRootDir: __dirname,
-  },
-};
-```
+### Frontend
+- React with TypeScript
+- Vite build tool
+- ESLint configuration
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+### Backend
+- Django REST Framework
+- JWT Authentication
+- PostgreSQL
+- Python Virtual Environment
 
-## To setup Frontend Part
+### React + TypeScript Setup
+- Vite configuration
+- HMR enabled
+- ESLint integration
 
-```js
+
+## Quick Start
+
+### Frontend Setup
+```bash
 cd "TRS WebSite"
-```
-```js
 npm install
-```
-```js
-npm run dev (For running on development Server)
+npm run dev
 ```
 
+### ESLint Configuration
+```json
+{
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": ["./tsconfig.json", "./tsconfig.node.json"],
+    "tsconfigRootDir": "__dirname"
+  }
+}
+```
 
-## To setup Backend 
+### Backend Setup
 
-
-- create virtualenv and activate it
-
-```js
+#### Setup Virtual Environment
+```bash
 pip install virtualenv
-```
-```js
 virtualenv venv
+source venv/bin/activate
 ```
-```js
-cd venv/Scripts
-activate
-```
-
-- Installing dependicies
-```js
+#### Install dependencies
+```bash
 pip install django djangorestframework djangorestframework-simplejwt django-cors-headers Pillow python-dotenv
 ```
-- Starting the django backend server
 
-```js
-cd Backend
-```
-```js
+#### Run the server
+```bash
+cd backend
 python manage.py runserver
 ```
+
+### Project Structure
+
+```plaintext
+TRS-archive/
+├── backend/
+│   ├── api/
+│   │   ├── migrations/
+│   │   ├── views/
+│   │   └── models.py
+│   └── manage.py
+└── TRS WebSite/
+    ├── src/
+    ├── package.json
+    └── vite.config.ts
+```
+
+### APIs
+
+- /api/users/ - User management
+- /api/categories/ - Category management
+- /api/reviews/ - Review operations
+- /api/posts/ - Post management
+- /api/comments/ - Comment system
+
+### Core Functionality
+
+- Review Management System
+- Document Version Control
+- User Role Management
+- Category & Subcategory Organization
+- Comment Threading
+- Status Tracking
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Implement changes
+4. Submit a pull request 
