@@ -83,6 +83,7 @@ python manage.py runserver
 
 ### Project Structure
 
+```plaintext
 TRS-archive/
 ├── backend/
 │   ├── api/
@@ -94,6 +95,7 @@ TRS-archive/
     ├── src/
     ├── package.json
     └── vite.config.ts
+```
 
 ### APIs
 
