@@ -59,6 +59,7 @@ class EditorToUserReviewView(GenericAPIView, mixins.CreateModelMixin):
         
         post = Post.objects.get(id=request.data.get('post_id'))
         
+        # Added a check for the 'description' field before processing the review creation
         if 'description' not in request.data:
             return Response("Description must be provided", status=status.HTTP_400_BAD_REQUEST)
         
